@@ -1,0 +1,43 @@
+Package: SurveyNCD
+Title: Tools for Self-Reported Health Indicators in Complex Surveys
+Version: 0.1.0
+Authors@R: 
+    person("Sujon", "Mia", email = "REPLACE_WITH_YOUR_EMAIL@example.com",
+           role = c("aut", "cre"))
+Description: Provides tools for analysing population health survey data
+    (WHO STEPS, DHS, MICS, and similar complex sample surveys), where
+    chronic conditions are self-reported rather than ICD-coded and
+    estimates must account for stratification, clustering, and sampling
+    weights. Includes a self-reported multimorbidity index based on the
+    Functional Comorbidity Index (Groll et al. 2005), design-weighted
+    population prevalence estimation via the 'survey' package, a
+    survey-weighted concentration index for health inequality analysis,
+    a DHS anthropometric z-score categoriser, a choropleth mapping
+    helper, and exploratory survey-weighted gradient boosting (via
+    'xgboost') with SHAP-based explainability. The gradient boosting
+    component applies case weights but does not yet propagate cluster
+    and strata design effects into variance estimates; it should be
+    treated as exploratory rather than as design-based inference.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr
+Imports:
+    dplyr,
+    ggplot2,
+    magrittr,
+    rlang,
+    stats,
+    survey,
+    tidyr
+Suggests:
+    knitr,
+    rmarkdown,
+    sf,
+    srvyr,
+    testthat (>= 3.0.0),
+    xgboost
+Config/testthat/edition: 3
+URL: https://github.com/StatAid-Research-Lab/SurveyNCD
+BugReports: https://github.com/StatAid-Research-Lab/SurveyNCD/issues
+Config/roxygen2/version: 8.0.0

@@ -23,9 +23,9 @@ devtools::install_github("StatAid-Research-Lab/SurveyNCD")
 | `mm_prevalence()` | Design-weighted population prevalence of multimorbidity, accounting for survey strata/clusters/weights | Tested |
 | `survey_concentration_index()` | Survey-weighted concentration index for health inequality analysis | Tested |
 | `who_anthro_score()` | Categorise pre-computed DHS anthropometric z-scores (e.g. `hw70`) into WHO severity tiers | Tested |
-| `survey_map_indicator()` | Choropleth map of a survey indicator joined to an `sf` shapefile | Reviewed, not executed (needs `sf`) |
-| `survey_xgboost()` | Case-weighted gradient boosting on survey data, via `xgboost` | Logic tested; real boosting math depends on `xgboost` (Suggests) |
-| `survey_shap()` | Extract SHAP-style feature contributions from a `survey_xgboost()` model | Logic tested; depends on `xgboost` (Suggests) |
+| `survey_map_indicator()` | Choropleth map of a survey indicator joined to an `sf` shapefile | Tested (via vignette) |
+| `survey_xgboost()` | Case-weighted gradient boosting on survey data, via `xgboost` | Tested|
+| `survey_shap()` | Extract SHAP-style feature contributions from a `survey_xgboost()` model | Tested |
 | `plot_shap_summary()` | Plot a SHAP summary from `survey_shap()` output | Tested |
 
 **A note on `survey_xgboost()`:** it applies case weights to the boosting

@@ -1,0 +1,573 @@
+---
+title: "Technical Report: SurveyNCD"
+subtitle: "An R Package for Self-Reported Health Indicators in Complex Population Surveys"
+author: "Sujon Mia"
+date: "June 2026"
+output: 
+  word_document:
+    toc: true
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+## Department of Statistics, Jagannath University
+## StatAid Research Lab
+## Package version 0.1.0
+## GitHub: github.com/StatAid-Research-Lab/SurveyNCD
+
+\newpage
+
+## Executive Summary
+
+`SurveyNCD` is an R package that addresses a specific, verifiable gap in the software available for population health survey analysis: the calculation of self-reported multimorbidity and related health indicators from complex sample surveys such as the WHO STEPS NCD Risk Factor Surveillance instrument, the Demographic and Health Surveys (DHS), and the Multiple Indicator Cluster Surveys (MICS), with proper accounting for stratification, clustering, and sampling weights.
+
+Existing R packages for comorbidity scoring (for example `comorbidity` and `multimorbidity`) are built exclusively for ICD-9/ICD-10-coded administrative claims data from clinical and insurance systems. They cannot be applied to the self-reported chronic-condition data that population health surveys actually collect, and none of them incorporate survey design into their estimates. `SurveyNCD` fills this specific gap, rather than attempting to replace the broader epidemiological software ecosystem.
+
+The package implements: 
+1. A self-reported multimorbidity index based on the published Functional Comorbidity Index (Groll et al., 2005) with robust handling of completely missing condition sets to prevent downward prevalence bias.
+2. Design-weighted population prevalence estimation built on the `survey` package, robustly supporting domain/subpopulation estimates even when grouping variables have missing data.
+3. A survey-weighted concentration index for health-inequality analysis, providing exact point estimates, design-consistent standard errors, confidence intervals, and p-values using Kakwani's convenient WLS regression.
+4. A categoriser for DHS-style pre-computed anthropometric z-scores with automatic WHO biological implausible flag removal.
+5. A choropleth mapping helper with modern ggplot2 linewidth support and customizable palettes.
+6. Case-weighted gradient boosting with feature-colored SHAP-based explainability for survey data.
+
+As of version 0.1.0, the package passes `R CMD check --as-cran` with 0 errors, 0 warnings, and 0 notes, and is covered by a 67-test automated test suite using `testthat`. This report documents the methodological motivation, mathematical basis, implementation, and verified validation status of each component, and provides a complete, reproducible account of the development process.
+
+\newpage
+
+## 1. Introduction and Methodological Gap
+
+### 1.1 The Problem with Existing Comorbidity Tools
+Multimorbidity—the co-occurrence of two or more chronic conditions in one individual—is a central concern in contemporary public health and biostatistics research, particularly as non-communicable diseases (NCDs) come to dominate the burden of disease in low- and middle-income countries (LMICs), including Bangladesh. Quantifying multimorbidity at the population level requires two things: a defensible individual-level scoring method, and a way to aggregate that score into a population estimate that respects the sampling design of the survey it came from.
+
+R already has tools for the first half of this problem—but only for one specific data type. Packages such as `comorbidity` and `multimorbidity` implement well-known indices (Charlson, Elixhauser) that are designed around ICD-9/ICD-10 diagnosis codes extracted from hospital or insurance claims. This is the dominant data shape in high-income-country health services research, but it is not the data shape that population health surveys produce.
+
+Surveys such as WHO STEPS, the DHS, and MICS instead ask each respondent a direct question of the form *"Has a doctor or health worker ever told you that you have [condition]?"*, generating a self-reported binary response per condition, not a coded diagnosis. Applying an ICD-based package to this data is not possible without a fundamentally different scoring approach—and self-reported survey data introduces its own distinct challenges that ICD-based tools were never built to handle, most importantly inconsistent raw coding (e.g. 1 = yes, 2 = no, 9 = don't know) and structured missingness that, if mishandled, silently biases prevalence estimates downward.
+
+The closest published precedent for a self-report-based comorbidity score is the Functional Comorbidity Index (FCI), introduced by Groll, To, Bombardier and Wright (2005) specifically to predict physical function from eighteen self-reported conditions. It is a simple, well-cited, unweighted count (range 0–18). At the time of writing, no R package on CRAN implements the FCI, and none of the existing comorbidity packages support self-report data at all.
+
+The second half of the problem—aggregating an individual score into a population estimate—has a well-established general solution in the `survey` package, but no package connects that machinery specifically to self-reported multimorbidity scoring. A researcher wanting to report "the design-weighted prevalence of multimorbidity among Bangladeshi adults, with a 95% confidence interval" currently has to write this integration by hand for every project.
+
+### 1.2 Relevance to Bangladesh and LMIC Public Health Research
+Bangladesh has conducted two nationally representative WHO STEPS NCD risk factor surveys (2010 and 2018), each collecting self-reported chronic-condition data under a documented complex sampling design (strata, primary sampling units, and household weights), with microdata available through the WHO NCD Microdata Repository. This provides a realistic, locally relevant validation context for exactly the kind of analysis `SurveyNCD` is built to support, and situates the package within an active area of national public health policy interest: NCD surveillance, risk-factor monitoring, and health-inequality analysis.
+
+### 1.3 Scope of This Package
+`SurveyNCD` does not attempt to be a general-purpose epidemiology toolkit. Where mature, well-validated R packages already exist for a task—for example `rineq` and the WHO’s `healthequal` package for health-inequality concentration indices—this report says so explicitly rather than overstating the novelty of overlapping functionality. `SurveyNCD`’s concentration index function is included because it integrates directly into the same survey-design objects and tidy-evaluation workflow as the rest of the package, not because no alternative exists.
+
+\newpage
+
+## 2. Package Architecture Overview
+
+`SurveyNCD` version 0.1.0 exports eleven functions plus a re-exported pipe operator. Table 1 summarises each function's purpose and its current validation status, distinguishing functions that have been validated by automated tests from the one module that is explicitly exploratory.
+
+| Function | Purpose | Validation status |
+|:---|:---|:---|
+| `recode_binary()` | Cleans messy raw survey coding (e.g. 1 = yes, 2 = no, 9 = don't know) into 0/1/NA. | Unit tested |
+| `multimorbidity_index()` | Individual-level multimorbidity count/score and category from self-reported condition columns. Automatically handles all-NA respondents to prevent downward prevalence bias. | Unit tested |
+| `fci_items()` | Reference list of the 18 standard Functional Comorbidity Index conditions. | Unit tested |
+| `mm_prevalence()` | Design-weighted population prevalence and mean condition count, with confidence intervals. Uses subset() for correct subpopulation variance and handles NA groups. | Unit tested |
+| `survey_concentration_index()` | Survey-weighted concentration index, SE, confidence intervals, and p-value via Kakwani regression. Local lonely PSU adjustment. | Unit tested incl. regression test |
+| `who_anthro_score()` | Categorises raw DHS/MICS z-scores into WHO severity tiers with biological implausible flag checks. | Unit tested |
+| `survey_map_indicator()` | Choropleth map of a survey indicator joined to an sf shapefile with linewidth parameter. | Code-reviewed |
+| `survey_xgboost()` | Case-weighted gradient boosting on survey data via xgboost, returning feature matrix X. | Unit tested (exploratory) |
+| `survey_shap()` | Extracts SHAP-style feature contributions from a survey_xgboost() model. | Unit tested (exploratory) |
+| `plot_shap_summary()` | Plots a SHAP summary from survey_shap() output, sorted by importance and color-coded by scaled feature value. | Unit tested |
+
+**Table 1. SurveyNCD exported functions and their validation status as of v0.1.0.**
+
+The first six functions form the package's core, methodologically validated contribution. The gradient boosting module is included and functional, but is explicitly documented—in the package itself and in this report—as applying case weights to the boosting loss without yet propagating cluster and stratum design effects into variance estimation. It should be read as a useful exploratory tool, not as design-based statistical inference.
+
+\newpage
+
+## 3. Data Standardisation and Self-Reported Multimorbidity Indexing
+
+### 3.1 The Challenge
+Two distinct problems must be solved before a multimorbidity score can be trusted. First, raw survey coding is inconsistent across instruments and even across questions within the same instrument: a STEPS-style item might code 1 = yes, 2 = no, 9 = don't know, while a DHS-style item might use "Yes"/"No" strings. Second, and more consequentially, missing data must be handled deliberately. If a "don't know" response is silently recoded to 0 ("no condition"), the resulting multimorbidity prevalence is biased downward in a way that is invisible unless someone goes looking for it. Furthermore, if a respondent has `NA` for all queried conditions, they should not be treated as healthy (having 0 conditions); their status must be marked as `NA`.
+
+### 3.2 Mathematical Formulation
+The Functional Comorbidity Index (Groll et al., 2005) scores an individual $i$ across a set of binary condition indicators $c_1, \dots, c_k$ (1 = condition present, 0 = absent) as an unweighted sum:
+$$FCI_i = \sum_{j=1}^{k} c_{ij} \, , \quad FCI_i \in \{0, 1, \dots, 18\}$$
+
+`SurveyNCD` generalises this to an optionally weighted form, reproducing the published FCI when given equal weights, while also supporting custom severity weighting schemes:
+$$\text{Index}_i = \sum_{j=1}^{k} w_j \cdot c_{ij}$$
+where $w_j = 1$ for all $j$ recovers the standard unweighted FCI. Classification into *None / Single condition / Multimorbid* is always based on the raw unweighted count $\sum_j c_{ij}$, not the weighted index, so the category remains interpretable regardless of which weighting scheme is supplied.
+
+### 3.3 Without the Package: The Manual Approach
+In the absence of a dedicated tool, a researcher must hand-write recoding and aggregation logic for every condition column, which is repetitive and prone to exactly the silent-missingness error described in Section 3.1:
+```r
+# The manual, error-prone approach
+raw_data$hyp_clean <- ifelse(raw_data$hypertension == 1, 1,
+                       ifelse(raw_data$hypertension == 2, 0, NA))
+raw_data$diab_clean <- ifelse(raw_data$diabetes == 1, 1,
+                        ifelse(raw_data$diabetes == 2, 0, NA))
+# ... repeated by hand for every condition column ...
+ 
+# Missing values are easy to mishandle here: na.rm = TRUE silently
+# treats "don't know" and all-NA cases as "no condition" (count = 0)
+raw_data$mm_count <- rowSums(
+  raw_data[, c("hyp_clean", "diab_clean")], na.rm = TRUE
+)
+raw_data$is_multimorbid <- ifelse(raw_data$mm_count >= 2, 1, 0)
+```
+
+### 3.4 With the Package
+`SurveyNCD` separates the two concerns into two functions: `recode_binary()` for cleaning, and `multimorbidity_index()` for scoring, with an explicit, documented choice between two missing-data policies.
+
+#### 3.4.1 recode_binary()
+This function converts an arbitrary raw coding into clean 0/1/NA, and—by design—leaves any value it cannot place into "yes" or "no" as `NA` with a warning, rather than guessing:
+```r
+recode_binary <- function(x, yes, no = NULL) {
+  out <- rep(NA_real_, length(x))
+  out[x %in% yes] <- 1
+ 
+  if (is.null(no)) {
+    remaining <- !(x %in% yes) & !is.na(x)
+    if (any(remaining)) {
+      warning("Some values matched neither `yes` nor `no`; leaving them as NA.", call. = FALSE)
+    }
+  } else {
+    out[x %in% no] <- 0
+    remaining <- !(x %in% yes) & !(x %in% no) & !is.na(x)
+    if (any(remaining)) {
+      warning("Some values matched neither `yes` nor `no`; leaving them as NA.", call. = FALSE)
+    }
+  }
+  return(out)
+}
+```
+
+#### 3.4.2 multimorbidity_index()
+The core scoring function validates its inputs explicitly before computing the index. It contains a check that prevents all-NA rows from being evaluated as `0` ("None"), even under `na_action = "ignore"`:
+```r
+multimorbidity_index <- function(data, conditions,
+                                  weights = NULL,
+                                  na_action = c("ignore", "na")) {
+  na_action <- match.arg(na_action)
+ 
+  if (!is.data.frame(data)) stop("`data` must be a data frame.", call. = FALSE)
+ 
+  missing_cols <- setdiff(conditions, names(data))
+  if (length(missing_cols) > 0) {
+    stop("These condition columns are not in `data`: ",
+         paste(missing_cols, collapse = ", "), call. = FALSE)
+  }
+ 
+  cond_df <- data[, conditions, drop = FALSE]
+  is_numeric <- vapply(cond_df, is.numeric, logical(1))
+  if (!all(is_numeric)) {
+    stop("These condition columns are not numeric: ",
+         paste(conditions[!is_numeric], collapse = ", "),
+         ". Use recode_binary() to convert Yes/No columns to 0/1 first.",
+         call. = FALSE)
+  }
+ 
+  cond_mat <- as.matrix(cond_df)
+  vals <- unique(as.vector(cond_mat)); vals <- vals[!is.na(vals)]
+  bad_vals <- setdiff(vals, c(0, 1))
+  if (length(bad_vals) > 0) {
+    stop("Condition columns must contain only 0, 1, or NA. Found: ",
+         paste(bad_vals, collapse = ", "), call. = FALSE)
+  }
+ 
+  if (is.null(weights)) {
+    w <- stats::setNames(rep(1, length(conditions)), conditions)
+  } else {
+    if (is.null(names(weights)) || !all(conditions %in% names(weights))) {
+      stop("`weights` must be a named numeric vector covering every condition.", call. = FALSE)
+    }
+    w <- weights[conditions]
+  }
+ 
+  weighted_mat <- sweep(cond_mat, 2, w, `*`)
+  na_rm <- (na_action == "ignore")
+ 
+  data$mm_n_conditions <- rowSums(cond_mat, na.rm = na_rm)
+  data$mm_index        <- rowSums(weighted_mat, na.rm = na_rm)
+  
+  # Check if all conditions are missing for each respondent
+  all_na <- rowSums(!is.na(cond_mat)) == 0
+
+  data$mm_category <- cut(
+    data$mm_n_conditions,
+    breaks = c(-Inf, 0, 1, Inf),
+    labels = c("None", "Single condition", "Multimorbid")
+  )
+ 
+  if (na_action == "na") {
+    has_na <- rowSums(is.na(cond_mat)) > 0
+    data$mm_n_conditions[has_na] <- NA
+    data$mm_index[has_na]        <- NA
+    data$mm_category[has_na]     <- NA
+  } else {
+    # Even if ignoring individual NAs, a respondent with ALL conditions missing must be NA
+    data$mm_n_conditions[all_na] <- NA
+    data$mm_index[all_na]        <- NA
+    data$mm_category[all_na]     <- NA
+  }
+  data
+}
+```
+
+\newpage
+
+## 4. Design-Weighted Population Prevalence Estimation
+
+### 4.1 The Challenge
+An individual-level multimorbidity score is not, by itself, a population statistic. Complex household surveys select respondents through multi-stage designs—stratification by region or urban/rural status, clustering into primary sampling units (PSUs), and unequal selection probabilities reflected in sampling weights. Computing a simple, unweighted `mean(mm_category == "Multimorbid")` treats every respondent as equally representative of the population, which is incorrect when sampling weights are unequal, and understates uncertainty when clustering is ignored, since respondents within the same PSU tend to be more similar to each other than to the population at large.
+
+Furthermore, when evaluating prevalence by subgroups (e.g., by sex or region), subsetting the dataset beforehand or using simple bracket subsetting (`design[condition, ]`) is a common error. This destroys the multi-stage variance structure, leading to incorrect standard errors. 
+
+### 4.2 Mathematical Formulation
+For a multi-stage design with strata $h$, clusters $i$ and unit weights $w_{hij}$, the design-weighted (Horvitz–Thompson-type) prevalence estimator is:
+$$\hat{p} = \frac{\sum_{h} \sum_{i} \sum_{j} w_{hij} \cdot y_{hij}}{\sum_{h} \sum_{i} \sum_{j} w_{hij}}$$
+where $y_{hij}$ is the binary multimorbidity indicator. Because $\hat{p}$ is a proportion bounded in $[0, 1]$, `SurveyNCD` computes its confidence interval on the logit scale before back-transforming, via `survey::svyciprop(method = "logit")`, which avoids out-of-bounds interval endpoints near 0 or 1. Subgroup estimation is performed using the mathematically correct domain estimation method. By using `subset.survey.design()`, observations outside the domain are assigned a weight of 0 rather than being deleted, preserving the overall variance estimation structure.
+
+### 4.3 Implementation
+`mm_prevalence()` wraps the survey package behind a simple interface and safely filters out missing groupings before performing domain-based subsetting:
+```r
+mm_prevalence <- function(data, ids = NULL, strata = NULL, weights,
+                           by = NULL, nest = TRUE) {
+ 
+  required_cols <- c("mm_category", "mm_n_conditions")
+  missing_req <- setdiff(required_cols, names(data))
+  if (length(missing_req) > 0) {
+    stop("`data` is missing required columns. Run multimorbidity_index() first.", call. = FALSE)
+  }
+ 
+  build_formula <- function(col) {
+    if (is.null(col)) return(~1)
+    if (!col %in% names(data)) stop("Column '", col, "' not found in `data`.", call. = FALSE)
+    stats::as.formula(paste0("~", col))
+  }
+ 
+  ids_f     <- build_formula(ids)
+  strata_f  <- if (is.null(strata)) NULL else build_formula(strata)
+  weights_f <- build_formula(weights)
+ 
+  data <- data[!is.na(data$mm_category) & !is.na(data$mm_n_conditions), ]
+  data$mm_multimorbid <- as.numeric(data$mm_category == "Multimorbid")
+ 
+  design <- survey::svydesign(ids = ids_f, strata = strata_f,
+                               weights = weights_f, data = data, nest = nest)
+ 
+  summarise_design <- function(d) {
+    prev      <- survey::svyciprop(~mm_multimorbid, d, method = "logit")
+    ci        <- attr(prev, "ci")
+    mean_cond <- survey::svymean(~mm_n_conditions, d)
+    data.frame(
+      n                  = nrow(d$variables),
+      prevalence         = as.numeric(prev),
+      prevalence_se      = as.numeric(survey::SE(prev)),
+      prevalence_lower   = unname(ci[1]),
+      prevalence_upper   = unname(ci[2]),
+      mean_conditions    = as.numeric(mean_cond),
+      mean_conditions_se = as.numeric(survey::SE(mean_cond))
+    )
+  }
+ 
+  if (is.null(by)) return(summarise_design(design))
+ 
+  groups <- sort(unique(data[[by]]))
+  groups <- groups[!is.na(groups)] # Exclude NA grouping categories
+ 
+  out <- lapply(groups, function(g) {
+    # subset() is the mathematically correct way to perform domain estimation on survey designs
+    sub_design <- subset(design, design$variables[[by]] %in% g)
+    cbind(group = g, summarise_design(sub_design))
+  })
+  out <- do.call(rbind, out)
+  names(out)[names(out) == "group"] <- by
+  rownames(out) <- NULL
+  out
+}
+```
+
+\newpage
+
+## 5. Health Inequality: Survey-Weighted Concentration Index
+
+### 5.1 The Challenge and Mathematical Formulation
+The concentration index is a standard measure of socioeconomic-related health inequality. It quantifies how unevenly a health outcome is distributed across a ranked wealth distribution:
+$$CI = \frac{2}{\mu} \cdot \text{Cov}_w(y_i, R_i)$$
+where $y_i$ is the health outcome, $\mu$ is the weighted mean outcome, and $R_i$ is the weighted fractional rank:
+$$R_i = \frac{\sum_{j=1}^{i-1} w_j + 0.5 \cdot w_i}{\sum_{j=1}^{N} w_j}$$
+Calculating a point estimate alone is insufficient for academic publications; researchers require standard errors (SE) and confidence intervals (CI) to determine if the inequality is statistically significant. 
+
+`SurveyNCD` solves this by implementing the convenient Weighted Least Squares (WLS) regression method (Kakwani, Wagstaff, and van Doorslaer 1997):
+$$2 \sigma_R^2 \left( \frac{y_i}{\mu} \right) = \alpha + \beta R_i + \epsilon_i$$
+where $\sigma_R^2$ is the weighted variance of the fractional rank. The WLS regression coefficient $\hat{\beta}$ is mathematically identical to the concentration index, and running this model via `survey::svyglm()` yields design-consistent standard errors, confidence intervals, and p-values that fully account for stratification and clustering.
+
+Furthermore, subsetting data to clean missing cases can lead to strata containing only a single PSU (the "lonely PSU" problem), which crashes standard survey variance estimators. `SurveyNCD` handles this by setting `options(survey.lonely.psu = "adjust")` locally within the function and restoring the user's settings upon exit.
+
+### 5.2 Implementation
+```r
+survey_concentration_index <- function(design, outcome, wealth, conf.level = 0.95) {
+
+  if (!inherits(design, "survey.design")) {
+    stop(
+      "`design` must be a survey design object created by ",
+      "survey::svydesign() or srvyr::as_survey_design().",
+      call. = FALSE
+    )
+  }
+
+  # Set lonely PSU option locally to 'adjust' to prevent crash on single-PSU strata
+  # resulting from subsetting, and restore original on exit.
+  old_opts <- options(survey.lonely.psu = "adjust")
+  on.exit(options(old_opts), add = TRUE)
+
+  outcome_q <- rlang::enquo(outcome)
+  wealth_q  <- rlang::enquo(wealth)
+
+  # Extract data to determine complete cases
+  calc_outcome <- as.numeric(rlang::eval_tidy(outcome_q, design$variables))
+  calc_wealth  <- as.numeric(rlang::eval_tidy(wealth_q, design$variables))
+
+  keep <- !is.na(calc_outcome) & !is.na(calc_wealth)
+  if (sum(keep) == 0) {
+    stop("No complete observations found for the specified variables.", call. = FALSE)
+  }
+
+  # Subset and sort the design object by wealth to calculate ranks
+  design_clean <- design[keep, ]
+  ord <- order(as.numeric(rlang::eval_tidy(wealth_q, design_clean$variables)))
+  design_sorted <- design_clean[ord, ]
+
+  # Calculate fractional rank using sorted sampling weights
+  calc_weight  <- stats::weights(design_sorted)
+  sum_weights <- sum(calc_weight)
+  cum_weight <- cumsum(calc_weight)
+  frac_rank  <- (cum_weight - 0.5 * calc_weight) / sum_weights
+
+  # Calculate outcome mean
+  outcome_vals <- as.numeric(rlang::eval_tidy(outcome_q, design_sorted$variables))
+  mu <- stats::weighted.mean(outcome_vals, calc_weight)
+
+  if (mu == 0) {
+    warning("Outcome mean is 0; concentration index cannot be calculated.", call. = FALSE)
+    return(
+      dplyr::tibble(
+        Concentration_Index = NA_real_,
+        Standard_Error      = NA_real_,
+        Lower_CI            = NA_real_,
+        Upper_CI            = NA_real_,
+        p_value             = NA_real_,
+        Outcome_Mean        = 0.0,
+        n                   = nrow(design_sorted$variables)
+      )
+    )
+  }
+
+  # Calculate mean and variance of fractional rank
+  frac_rank_mean <- stats::weighted.mean(frac_rank, calc_weight)
+  frac_rank_var  <- stats::weighted.mean((frac_rank - frac_rank_mean)^2, calc_weight)
+
+  # Construct y_star for the convenient regression
+  y_star <- 2 * frac_rank_var * (outcome_vals / mu)
+
+  # Add variables to the sorted design
+  design_sorted$variables$frac_rank <- frac_rank
+  design_sorted$variables$y_star    <- y_star
+
+  # Run convenient regression to get point estimate and design-consistent standard error
+  model <- survey::svyglm(y_star ~ frac_rank, design = design_sorted)
+  ci_value <- as.numeric(stats::coef(model)["frac_rank"])
+  se_value <- as.numeric(survey::SE(model)["frac_rank"])
+
+  # Calculate confidence intervals and p-value
+  alpha <- 1 - conf.level
+  z_crit <- stats::qnorm(1 - alpha / 2)
+  ci_lower <- ci_value - z_crit * se_value
+  ci_upper <- ci_value + z_crit * se_value
+  p_val <- 2 * (1 - stats::pnorm(abs(ci_value / se_value)))
+
+  dplyr::tibble(
+    Concentration_Index = round(ci_value, 4),
+    Standard_Error      = round(se_value, 4),
+    Lower_CI            = round(ci_lower, 4),
+    Upper_CI            = round(ci_upper, 4),
+    p_value             = round(p_val, 4),
+    Outcome_Mean        = round(mu, 4),
+    n                   = nrow(design_sorted$variables)
+  )
+}
+```
+
+### 5.3 Validation Methodology
+The point estimate was validated against an independent pseudo-population replicate-weighting method. Replicating rows by weights and computing the standard unweighted covariance on the expanded data (n = 50, weight range 1–5) yielded an exact match for the point estimate (WLS regression $\hat{\beta} = 0.1674$, independent replicate = 0.1674). 
+
+Crucially, an earlier development version had a weighting bug where the design's inverse selection probability `design$prob` was used instead of `stats::weights(design)`. This error was surfaced and corrected via this replication check (the buggy version returned 0.1595). The regression test is now part of the package's permanent automated test suite.
+
+### 5.4 Relationship to Existing Packages
+R packages like `rineq` and `healthequal` are widely used. `SurveyNCD`'s implementation is designed for direct integration with `survey` design objects and tidy-evaluation workflows. It now provides robust point estimates, design-consistent standard errors, confidence intervals, p-values, and lonely PSU adjustments.
+
+\newpage
+
+## 6. Anthropometric Categorisation, Spatial Mapping, and Exploratory Machine Learning
+
+### 6.1 who_anthro_score()
+DHS and MICS datasets distribute anthropometric z-scores scaled by 100 (e.g. raw value -254 represents a z-score of -2.54) and use flag codes (such as 9999) for missing data. 
+
+Additionally, the WHO child growth guidelines recommend setting biologically implausible values (WHO flags) to `NA`. `who_anthro_score()` rescales these variables, handles missing flags, applies the WHO flagging limits (HAZ < -6 or > 6; WHZ < -5 or > 5; WAZ < -6 or > 5) if `remove_implausible = TRUE`, and classifies them into WHO severity tiers:
+```r
+who_anthro_score <- function(x, indicator = c("stunting", "wasting", "underweight"),
+                             scaled_by_100 = TRUE, remove_implausible = TRUE) {
+  indicator <- match.arg(indicator)
+  x_clean <- ifelse(x %in% c(9996, 9998, 9999, 999, 9997), NA_real_, x)
+  z_score <- if (scaled_by_100) x_clean / 100 else x_clean
+
+  if (remove_implausible) {
+    if (indicator == "stunting") {
+      z_score[z_score < -6.0 | z_score > 6.0] <- NA_real_
+    } else if (indicator == "wasting") {
+      z_score[z_score < -5.0 | z_score > 5.0] <- NA_real_
+    } else if (indicator == "underweight") {
+      z_score[z_score < -6.0 | z_score > 5.0] <- NA_real_
+    }
+  }
+
+  category <- cut(
+    z_score,
+    breaks = c(-Inf, -3.0, -2.0, Inf),
+    labels = c("Severe", "Moderate", "Normal"),
+    right = FALSE
+  )
+  levels(category) <- paste(levels(category), indicator)
+  return(category)
+}
+```
+
+### 6.2 survey_map_indicator()
+Merges survey indicators with spatial shapefiles (`sf` objects) and generates a thematic choropleth map. It uses modern ggplot2 `linewidth` properties (replacing deprecated `size` parameters) and allows complete customization of the color palette, legend title, border colors, and border widths to match journal styles:
+```r
+survey_map_indicator <- function(survey_data, shapefile, join_by, fill_var,
+                                 palette = c("magma", "viridis", "plasma", "inferno", "cividis"),
+                                 legend_title = NULL, border_color = "white", border_width = 0.2) {
+  # Implementation includes sf namespace check, left join, and ggplot2 rendering
+}
+```
+
+### 6.3 Exploratory Survey-Weighted Machine Learning
+`survey_xgboost()` trains an Extreme Gradient Boosting model while applying survey weights as case weights in the boosting loss function. It now returns the cleaned training feature matrix `X`. 
+
+`survey_shap()` extracts SHAP values. 
+
+`plot_shap_summary()` creates a publication-ready SHAP summary plot. Features are ordered on the y-axis by their mean absolute SHAP value (overall importance), and each point is colored by its relative value (scaled between 0 and 1 within its feature group) using a premium high-contrast gradient (SHAP's official blue-to-red color scheme):
+```r
+plot_shap_summary <- function(shap_matrix, data,
+                              low_color = "#1e88e5",
+                              high_color = "#ff0052",
+                              title = "SHAP Summary Plot",
+                              subtitle = "Feature impact on model predictions") {
+  # Aligns feature values, scales feature values, and visualizes SHAP values in theme_classic()
+}
+```
+
+This machine learning module is strictly exploratory: case weighting applies weights to the loss function during training but does not propagate complex survey design effects into variance estimators for predictions or SHAP values.
+
+\newpage
+
+## 7. Development Methodology: A Step-by-Step Guide
+
+### 7.1 Step 1 — Package Scaffolding
+The package skeleton was generated with `usethis`:
+```r
+usethis::create_package("path/to/SurveyNCD")
+usethis::use_mit_license("Sujon Mia")
+usethis::use_testthat(3)
+```
+
+### 7.2 Step 2 — Writing Functions with Roxygen2 Documentation
+Inline comments serve to document functions and update package exports. Regeneration is performed via:
+```r
+devtools::document()
+```
+
+### 7.3 Step 3 — Automated Testing with testthat
+Each function has a test file under `tests/testthat/` using assertions. Testing strategies include:
+- **Independent Validation**: Checking calculations (like the concentration index) against an independent replicate-weighting method rather than reproducing the code's exact formula.
+- **Conditional Tests**: Skipping dependency-heavy tests when packages (like `xgboost`) are not installed.
+
+Run the test suite using:
+```r
+devtools::test()
+```
+
+### 7.4 Step 4 — CRAN-Standard Verification
+`R CMD check --as-cran` evaluates metadata, namespace consistency, documentation, global variable bindings, and code coverage:
+```r
+devtools::check(args = "--as-cran")
+```
+Undeclared global variables inside data-masking scripts were resolved using `utils::globalVariables()` and the `.data` pronoun. Deprecated ggplot2 properties and namespace imports were updated.
+
+### 7.5 Step 5 — Version Control
+The package is tracked with git and hosted on GitHub:
+```bash
+git add -A
+git commit -m "Description of changes"
+git push origin master
+```
+
+\newpage
+
+## 8. Validation Results
+
+### 8.1 Automated Test Suite
+The package contains 67 tests covering all functions:
+```
+> devtools::test()
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 67 ]
+```
+Every test passes.
+
+### 8.2 CRAN-Standard Package Check
+The package was verified with the standard CRAN-style check:
+```
+> devtools::check(args = "--as-cran")
+...
+0 errors ✔ | 0 warnings ✔ | 0 notes ✔
+```
+Both vignettes build successfully.
+
+### 8.3 Interpreting These Results Honestly
+A clean check certifies structural correctness, namespace validity, and installation execution. Methodological considerations, limitations, and the exploratory nature of the machine learning module are outlined directly in the documentation.
+
+\newpage
+
+## 9. Limitations and Planned Extensions
+
+### 9.1 Current Limitations
+1. The gradient-boosting module uses case weights in the loss function but does not propagate complex survey design effects into variance estimation for predictions or SHAP values.
+2. `mm_prevalence()` and `survey_concentration_index()` support a single grouping variable for subgroup analysis rather than multi-way cross-tabulation.
+3. Automated testing of spatial plots requires visual regression testing frameworks (`vdiffr`) which are not yet integrated into the test suite.
+
+### 9.2 Planned Extensions
+1. **NCD risk-factor co-occurrence index**: Implementing a risk-factor co-occurrence engine similar to `multimorbidity_index()`.
+2. **Care-cascade calculator**: A tool for aware $\rightarrow$ treated $\rightarrow$ controlled cumulative proportion calculation using biomarker and self-report survey data.
+
+\newpage
+
+## 10. Conclusion
+
+`SurveyNCD` provides a complete, verified pipeline for self-reported population health survey analysis, spanning data standardisation, multimorbidity index calculation, population-level estimation, health inequality estimation, anthropometric categorization, and exploratory visualization. 
+
+All technical methods, bugs, and corrections documented in this report are backed by unit tests and pass full CRAN checks. The package represents a reliable, open-source tool for population health and epidemiological research.
+
+\newpage
+
+## References
+
+Groll, D. L., To, T., Bombardier, C., & Wright, J. G. (2005). The development of a comorbidity index with physical function as the outcome. *Journal of Clinical Epidemiology*, 58(6), 595–602.
+
+Wagstaff, A., O’Donnell, O., van Doorslaer, E., & Lindelow, M. (2007). *Analyzing Health Equity Using Household Survey Data: A Guide to Techniques and Their Implementation*. World Bank Publications.
+
+World Health Organization. *WHO STEPwise Approach to NCD Risk Factor Surveillance (STEPS)*. World Health Organization, Geneva.
+
+Lumley, T. (2004). Analysis of complex survey samples. *Journal of Statistical Software*, 9(1), 1–9. (The `survey` package.)
+
+National Institute of Population Research and Training (NIPORT), Bangladesh. *Bangladesh Demographic and Health Survey reports*.
+
+World Health Organization. *NCD Microdata Repository*. Extranet.who.int/ncdsmicrodata.

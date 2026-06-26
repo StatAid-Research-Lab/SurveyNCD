@@ -4,7 +4,14 @@
 \alias{plot_shap_summary}
 \title{Plot SHAP Summary}
 \usage{
-plot_shap_summary(shap_matrix, data)
+plot_shap_summary(
+  shap_matrix,
+  data,
+  low_color = "#1e88e5",
+  high_color = "#ff0052",
+  title = "SHAP Summary Plot",
+  subtitle = "Feature impact on model predictions (ranked by mean absolute SHAP)"
+)
 }
 \arguments{
 \item{shap_matrix}{The matrix output from \code{survey_shap()}.}
@@ -13,13 +20,25 @@ plot_shap_summary(shap_matrix, data)
 matrix returned by \code{survey_xgboost()}) or the original data frame. If
 the row count does not match the SHAP matrix, rows with missing values
 will be automatically filtered out.}
+
+\item{low_color}{A character string for the color representing low feature values.
+Default is \code{"#1e88e5"} (standard SHAP blue).}
+
+\item{high_color}{A character string for the color representing high feature values.
+Default is \code{"#ff0052"} (standard SHAP red).}
+
+\item{title}{A character string for the plot title. Default is \code{"SHAP Summary Plot"}.}
+
+\item{subtitle}{A character string for the plot subtitle. Default is
+\code{"Feature impact on model predictions (ranked by mean absolute SHAP)"}.}
 }
 \value{
 A ggplot2 object.
 }
 \description{
 Generates a SHAP summary plot (similar to the Python \code{shap} package) where
-features are ranked on the y-axis, SHAP values are shown on the x-axis, and
-each point (representing an observation) is colored by its relative value for
-that feature (blue for low, red for high).
+features are ranked on the y-axis by their overall importance (mean absolute
+SHAP value), SHAP values are shown on the x-axis, and each point (representing
+a respondent) is colored by its relative value for that feature (blue for low,
+red for high).
 }

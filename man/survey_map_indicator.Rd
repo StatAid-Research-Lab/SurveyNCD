@@ -4,7 +4,16 @@
 \alias{survey_map_indicator}
 \title{Map Survey Indicators Universally}
 \usage{
-survey_map_indicator(survey_data, shapefile, join_by, fill_var)
+survey_map_indicator(
+  survey_data,
+  shapefile,
+  join_by,
+  fill_var,
+  palette = c("magma", "viridis", "plasma", "inferno", "cividis"),
+  legend_title = NULL,
+  border_color = "white",
+  border_width = 0.2
+)
 }
 \arguments{
 \item{survey_data}{A data frame containing the aggregated survey indicators.}
@@ -14,6 +23,16 @@ survey_map_indicator(survey_data, shapefile, join_by, fill_var)
 \item{join_by}{A character string of the column name present in both datasets to merge on.}
 
 \item{fill_var}{A character string of the variable in \code{survey_data} to map (e.g., "Concentration_Index").}
+
+\item{palette}{A character string specifying the viridis color palette option to use:
+\code{"magma"} (default), \code{"viridis"}, \code{"plasma"}, \code{"inferno"}, or \code{"cividis"}.}
+
+\item{legend_title}{A character string for the legend title. If \code{NULL} (default),
+the \code{fill_var} name is used.}
+
+\item{border_color}{A character string for the region border line color. Default is \code{"white"}.}
+
+\item{border_width}{A numeric value for the border line width. Default is \code{0.2}.}
 }
 \value{
 A ggplot2 spatial map object.

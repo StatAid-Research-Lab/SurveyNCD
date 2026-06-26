@@ -103,8 +103,11 @@ mm_prevalence <- function(data, ids = NULL, strata = NULL, weights,
   }
 
   groups <- sort(unique(data[[by]]))
+  groups <- groups[!is.na(groups)] # Exclude NA grouping category
+  
   out <- lapply(groups, function(g) {
-    sub_design <- design[design$variables[[by]] == g, ]
+    # subset() is the mathematically correct way to perform domain estimation on survey designs
+    sub_design <- subset(design, design$variables[[by]] %in% g)
     cbind(group = g, summarise_design(sub_design))
   })
   out <- do.call(rbind, out)

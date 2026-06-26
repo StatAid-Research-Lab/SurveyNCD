@@ -2,20 +2,41 @@
 % Please edit documentation in R/who_anthro_score.R
 \name{who_anthro_score}
 \alias{who_anthro_score}
-\title{Calculate WHO Anthropometric Categories from DHS Data}
+\title{Calculate WHO Anthropometric Categories from DHS/MICS Data}
 \usage{
-who_anthro_score(x, indicator = c("stunting", "wasting", "underweight"))
+who_anthro_score(
+  x,
+  indicator = c("stunting", "wasting", "underweight"),
+  scaled_by_100 = TRUE,
+  remove_implausible = TRUE
+)
 }
 \arguments{
-\item{x}{A numeric vector of raw DHS z-scores.}
+\item{x}{A numeric vector of raw DHS/MICS z-scores.}
 
-\item{indicator}{The type of indicator for labeling (e.g., "stunting", "wasting").}
+\item{indicator}{The type of indicator for labeling and flagging: \code{"stunting"}
+(height-for-age, HAZ), \code{"wasting"} (weight-for-height, WHZ), or
+\code{"underweight"} (weight-for-age, WAZ).}
+
+\item{scaled_by_100}{Logical. If \code{TRUE} (default), divides input values by
+100 (standard for DHS raw recode files like \code{hw70}). If \code{FALSE}, assumes values
+are already on the standard z-score scale (like MICS or cleaned DHS data).}
+
+\item{remove_implausible}{Logical. If \code{TRUE} (default), applies WHO child growth
+standard flagging rules to set biologically implausible values to \code{NA}.
+WHO flags are:
+\itemize{
+\item Stunting (HAZ): < -6.0 or > 6.0
+\item Wasting (WHZ): < -5.0 or > 5.0
+\item Underweight (WAZ): < -6.0 or > 5.0
+}}
 }
 \value{
-A factor vector of WHO categories (Severe, Moderate, Normal).
+A factor vector of WHO categories (Severe, Moderate, Normal) with the
+indicator label appended.
 }
 \description{
-Cleans raw DHS z-score variables (e.g., hw70, hw71, hw72), adjusts the decimal
-scaling, handles DHS-specific missing flags, and categorizes them into WHO
-severity tiers.
+Cleans raw DHS/MICS z-score variables (e.g., hw70, hw71, hw72), adjusts the
+decimal scaling if needed, handles DHS-specific missing flags, applies WHO
+biologically implausible flagging rules, and categorizes them into WHO severity tiers.
 }

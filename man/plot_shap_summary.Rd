@@ -7,13 +7,19 @@
 plot_shap_summary(shap_matrix, data)
 }
 \arguments{
-\item{shap_matrix}{The matrix output from survey_shap().}
+\item{shap_matrix}{The matrix output from \code{survey_shap()}.}
 
-\item{data}{The original dataframe used for training (to provide feature values).}
+\item{data}{The matrix or data frame of training features (e.g. the \code{X}
+matrix returned by \code{survey_xgboost()}) or the original data frame. If
+the row count does not match the SHAP matrix, rows with missing values
+will be automatically filtered out.}
 }
 \value{
 A ggplot2 object.
 }
 \description{
-Plot SHAP Summary
+Generates a SHAP summary plot (similar to the Python \code{shap} package) where
+features are ranked on the y-axis, SHAP values are shown on the x-axis, and
+each point (representing an observation) is colored by its relative value for
+that feature (blue for low, red for high).
 }

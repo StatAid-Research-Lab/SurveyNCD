@@ -17,10 +17,17 @@ test_that("survey_xgboost() and survey_shap() run end to end and handle missing 
   model <- survey_xgboost(design, outcome ~ age + bmi + wealth, nrounds = 5)
   expect_setequal(model$features, c("age", "bmi", "wealth"))
   expect_equal(model$n_obs, n - 1)  # the NA row should be dropped
+  expect_true(is.matrix(model$X))
+  expect_equal(nrow(model$X), n - 1)
+  expect_equal(ncol(model$X), 3)
 
   shap <- survey_shap(model)
   expect_equal(nrow(shap), n - 1)
   expect_true("(Intercept)" %in% colnames(shap))
+
+  # Test plot_shap_summary runs without error and returns a ggplot object
+  p <- plot_shap_summary(shap, model$X)
+  expect_s3_class(p, "ggplot")
 })
 
 test_that("survey_shap() rejects objects that aren't survey_xgboost() output", {

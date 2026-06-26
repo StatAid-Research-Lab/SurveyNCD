@@ -45,3 +45,16 @@ test_that("weights must be a named vector covering every condition", {
     multimorbidity_index(df, conditions = c("a", "b"), weights = c(1, 2))
   )
 })
+
+test_that("multimorbidity_index() handles rows with all missing values correctly", {
+  df <- data.frame(a = c(NA, 1), b = c(NA, 0))
+  # With default na_action = "ignore", the all-NA row should still be evaluated as NA, not 0
+  res <- multimorbidity_index(df, conditions = c("a", "b"))
+  expect_true(is.na(res$mm_n_conditions[1]))
+  expect_true(is.na(res$mm_index[1]))
+  expect_true(is.na(res$mm_category[1]))
+
+  # Row 2 (which has data) should be OK
+  expect_equal(res$mm_n_conditions[2], 1)
+  expect_equal(as.character(res$mm_category[2]), "Single condition")
+})

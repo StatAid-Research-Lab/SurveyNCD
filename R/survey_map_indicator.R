@@ -16,6 +16,15 @@
 #' @import ggplot2
 survey_map_indicator <- function(survey_data, shapefile, join_by, fill_var) {
 
+  # sf is Suggests-only, so it is checked at call time
+  if (!requireNamespace("sf", quietly = TRUE)) {
+    stop(
+      "Package 'sf' is required for survey_map_indicator() but is not ",
+      "installed. Install it with install.packages(\"sf\").",
+      call. = FALSE
+    )
+  }
+
   # Defensive check: Ensure the join column exists in both datasets
   if (!(join_by %in% names(survey_data))) {
     stop("The join_by column does not exist in your survey_data.")
@@ -30,7 +39,7 @@ survey_map_indicator <- function(survey_data, shapefile, join_by, fill_var) {
 
   # Generate the universal map
   map_plot <- ggplot2::ggplot(data = merged_sf) +
-    ggplot2::geom_sf(ggplot2::aes(fill = !!rlang::sym(fill_var)), color = "white", size = 0.2) +
+    ggplot2::geom_sf(ggplot2::aes(fill = !!rlang::sym(fill_var)), color = "white", linewidth = 0.2) +
     ggplot2::scale_fill_viridis_c(option = "magma", na.value = "grey90") +
     ggplot2::theme_void() +
     ggplot2::theme(legend.position = "bottom") +

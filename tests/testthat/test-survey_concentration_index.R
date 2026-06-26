@@ -50,3 +50,22 @@ test_that("survey_concentration_index() requires a survey.design object", {
     survey_concentration_index(data.frame(a = 1), outcome = a, wealth = a)
   )
 })
+
+test_that("survey_concentration_index() returns SE, CI, and p-value", {
+  set.seed(42)
+  n <- 50
+  df <- data.frame(
+    wealth  = rnorm(n, 50, 15),
+    outcome = NA_real_,
+    wt      = sample(1:5, n, replace = TRUE)
+  )
+  df$outcome <- pmax(0, 0.3 * df$wealth + rnorm(n, 0, 5))
+  design <- survey::svydesign(ids = ~1, weights = ~wt, data = df)
+  res <- survey_concentration_index(design, outcome = outcome, wealth = wealth)
+
+  expect_true(all(c("Standard_Error", "Lower_CI", "Upper_CI", "p_value") %in% colnames(res)))
+  expect_true(res$Standard_Error > 0)
+  expect_true(res$Lower_CI <= res$Concentration_Index)
+  expect_true(res$Upper_CI >= res$Concentration_Index)
+  expect_true(res$p_value >= 0 && res$p_value <= 1)
+})

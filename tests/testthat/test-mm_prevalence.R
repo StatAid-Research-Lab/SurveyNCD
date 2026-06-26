@@ -53,3 +53,13 @@ test_that("mm_prevalence() drops rows with missing multimorbidity scores", {
   )
   expect_equal(res$n, nrow(scored) - 1)
 })
+
+test_that("mm_prevalence() does not crash and excludes NA when grouping variable contains NA", {
+  scored <- make_scored_data()
+  scored$region[c(2, 5)] <- NA  # Add some NAs in the grouping variable
+
+  res <- mm_prevalence(scored, ids = "psu", strata = NULL, weights = "wt", by = "region")
+  expect_equal(nrow(res), 2)  # Should only return A and B, omitting NA
+  expect_false(any(is.na(res$region)))
+  expect_equal(sum(res$n), nrow(scored) - 2) # N = 38 (40 - 2)
+})

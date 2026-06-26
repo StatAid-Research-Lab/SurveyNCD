@@ -4,7 +4,7 @@
 \alias{survey_concentration_index}
 \title{Calculate Survey-Weighted Concentration Index}
 \usage{
-survey_concentration_index(design, outcome, wealth)
+survey_concentration_index(design, outcome, wealth, conf.level = 0.95)
 }
 \arguments{
 \item{design}{A survey design object created by \code{survey::svydesign()}
@@ -14,23 +14,32 @@ or \code{srvyr::as_survey_design()} -- anything inheriting from
 \item{outcome}{Unquoted name of the health indicator (e.g. stunting_clean).}
 
 \item{wealth}{Unquoted name of the wealth/ranking variable (e.g. wealth_index).}
+
+\item{conf.level}{Confidence level for the confidence interval. Default is 0.95.}
 }
 \value{
-A tibble with \code{Concentration_Index}, \code{Outcome_Mean},
-and \code{n}. This is a point estimate only -- it does not return a
-standard error or confidence interval, which would require
-propagating the design's clustering and stratification through a
-linearization or replicate-weights variance estimator. That's a
-known limitation, not a hidden one.
+A tibble with \code{Concentration_Index}, \code{Standard_Error},
+\code{Lower_CI}, \code{Upper_CI}, \code{p_value}, \code{Outcome_Mean},
+and \code{n}.
 }
 \description{
 Computes the concentration index (the Wagstaff/O'Donnell "convenient
 covariance" formula) for a health outcome across a socioeconomic
-ranking variable, using proper survey sampling weights.
+ranking variable, using proper survey sampling weights, and computes
+design-consistent standard errors, confidence intervals, and p-values.
 }
 \details{
-\deqn{CI = \frac{2}{\mu} \times Cov(y_i, R_i)}
+\deqn{CI = \frac{2}{\mu} \times Cov_w(y_i, R_i)}
 where \eqn{y_i} is the outcome for individual i, \eqn{\mu} is the
 weighted mean outcome, and \eqn{R_i} is each individual's weighted
 fractional rank in the wealth distribution.
+
+The standard error, confidence intervals, and p-value are calculated using the
+"convenient regression" method (Kakwani, Wagstaff, and van Doorslaer 1997)
+run via \code{survey::svyglm()}:
+\deqn{2 \sigma_R^2 (y_i / \mu) = \alpha + \beta R_i + \epsilon_i}
+where \eqn{\sigma_R^2} is the weighted variance of the fractional rank. The
+coefficient \eqn{\beta} is mathematically identical to the concentration index,
+and its standard error from the regression model is a design-consistent standard
+error that fully accounts for stratification and clustering.
 }

@@ -106,6 +106,9 @@ multimorbidity_index <- function(data,
   data$mm_n_conditions <- rowSums(cond_mat, na.rm = na_rm)
   data$mm_index        <- rowSums(weighted_mat, na.rm = na_rm)
 
+  # Check if all conditions are missing for each respondent
+  all_na <- rowSums(!is.na(cond_mat)) == 0
+
   data$mm_category <- cut(
     data$mm_n_conditions,
     breaks = c(-Inf, 0, 1, Inf),
@@ -117,6 +120,11 @@ multimorbidity_index <- function(data,
     data$mm_n_conditions[has_na] <- NA
     data$mm_index[has_na]        <- NA
     data$mm_category[has_na]     <- NA
+  } else {
+    # Even if ignoring individual NAs, a respondent with ALL conditions missing must be NA
+    data$mm_n_conditions[all_na] <- NA
+    data$mm_index[all_na]        <- NA
+    data$mm_category[all_na]     <- NA
   }
 
   data

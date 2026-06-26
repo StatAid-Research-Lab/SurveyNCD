@@ -60,6 +60,7 @@ survey_xgboost <- function(design, formula, params = list(), nrounds = 100) {
     model    = xgb_model,
     dmatrix  = dtrain,
     features = colnames(X),
-    n_obs    = nrow(X)
+    n_obs    = nrow(X),
+    X        = X
   ))
 }

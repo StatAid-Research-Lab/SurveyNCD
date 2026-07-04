@@ -19,7 +19,7 @@ devtools::install_github("StatAid-Research-Lab/SurveyNCD")
 |---|---|---|
 | `recode_binary()` | Clean messy raw survey coding (e.g. STEPS-style 1=yes/2=no/9=don't know) into 0/1/NA | Tested |
 | `multimorbidity_index()` | Self-reported multimorbidity score (count or weighted), based on the Functional Comorbidity Index. Automatically handles all-NA respondents to avoid prevalence bias. | Tested |
-| `fci_items()` | The 18 standard Functional Comorbidity Index conditions (Groll et al. 2005) | Tested |
+| `fci_items()` | The 18 standard Functional Comorbidity Index conditions ([Groll et al., 2005](https://doi.org/10.1016/j.jclinepi.2004.10.018)) | Tested |
 | `mm_prevalence()` | Design-weighted population prevalence of multimorbidity, accounting for survey strata/clusters/weights. Supports subpopulation analysis without crashing on missing groups. | Tested |
 | `survey_concentration_index()` | Survey-weighted concentration index for health inequality analysis, complete with design-consistent standard errors, confidence intervals, and p-values (via Kakwani convenient WLS regression) | Tested |
 | `who_anthro_score()` | Categorise raw DHS/MICS anthropometric z-scores into WHO severity tiers, with optional removal of biologically implausible values (WHO flags) and scaling adjustments | Tested |

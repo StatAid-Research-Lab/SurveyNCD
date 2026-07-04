@@ -12,3 +12,9 @@ A character vector of the 18 FCI condition descriptions.
 \description{
 Returns the standard condition list for the Functional Comorbidity Index.
 }
+\references{
+Groll, D. L., To, T., Bombardier, C., & Wright, J. G. (2005). The
+development of a comorbidity index with physical function as the outcome.
+\emph{Journal of Clinical Epidemiology}, 58(6), 595-602.
+\doi{10.1016/j.jclinepi.2004.10.018}
+}

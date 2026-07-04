@@ -27,6 +27,12 @@
 #'     and color-coded SHAP visualization.
 #' }
 #'
+#' @references
+#' Groll, D. L., To, T., Bombardier, C., & Wright, J. G. (2005). The
+#' development of a comorbidity index with physical function as the outcome.
+#' \emph{Journal of Clinical Epidemiology}, 58(6), 595-602.
+#' \doi{10.1016/j.jclinepi.2004.10.018}
+#'
 #' @docType package
 #' @name SurveyNCD
 #' @keywords internal

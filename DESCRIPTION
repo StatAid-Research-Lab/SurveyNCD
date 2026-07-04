@@ -9,8 +9,9 @@ Description: Provides tools for analysing population health survey data
     chronic conditions are self-reported rather than ICD-coded and
     estimates must account for stratification, clustering, and sampling
     weights. Includes a self-reported multimorbidity index based on the
-    Functional Comorbidity Index (Groll et al. 2005), design-weighted
-    population prevalence estimation via the 'survey' package, a
+    Functional Comorbidity Index (Groll et al., 2005,
+    <doi:10.1016/j.jclinepi.2004.10.018>), design-weighted population
+    prevalence estimation via the 'survey' package, a
     survey-weighted concentration index for health inequality analysis,
     a DHS anthropometric z-score categoriser, a choropleth mapping
     helper, and exploratory survey-weighted gradient boosting (via

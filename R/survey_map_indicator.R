@@ -38,10 +38,10 @@ survey_map_indicator <- function(survey_data, shapefile, join_by, fill_var,
 
   # Defensive check: Ensure the join column exists in both datasets
   if (!(join_by %in% names(survey_data))) {
-    stop("The join_by column does not exist in your survey_data.")
+    stop("The join_by column does not exist in your survey_data.", call. = FALSE)
   }
   if (!(join_by %in% names(shapefile))) {
-    stop("The join_by column does not exist in your shapefile.")
+    stop("The join_by column does not exist in your shapefile.", call. = FALSE)
   }
 
   # Merge the spatial data with the survey data

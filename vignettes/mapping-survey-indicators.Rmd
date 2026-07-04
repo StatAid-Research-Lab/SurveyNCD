@@ -9,9 +9,11 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+is_sf_ready <- requireNamespace("sf", quietly = TRUE)
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = is_sf_ready
 )
 ```
 

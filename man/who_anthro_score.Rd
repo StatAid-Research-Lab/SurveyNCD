@@ -32,8 +32,8 @@ WHO flags are:
 }}
 }
 \value{
-A factor vector with levels \code{"Severe <indicator>"},
-\code{"Moderate <indicator>"}, and \code{"Normal <indicator>"}.
+A factor vector with levels \code{"Severe [indicator]"},
+\code{"Moderate [indicator]"}, and \code{"Normal [indicator]"}.
 }
 \description{
 Cleans and classifies child anthropometric z-scores (HAZ/WHZ/WAZ) into WHO

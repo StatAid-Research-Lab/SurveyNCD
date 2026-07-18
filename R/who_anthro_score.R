@@ -19,8 +19,8 @@
 #'     \item Underweight (WAZ): < -6.0 or > 5.0
 #'   }
 #'
-#' @return A factor vector with levels `"Severe <indicator>"`,
-#'   `"Moderate <indicator>"`, and `"Normal <indicator>"`.
+#' @return A factor vector with levels `"Severe [indicator]"`,
+#'   `"Moderate [indicator]"`, and `"Normal [indicator]"`.
 #' @export
 who_anthro_score <- function(x, indicator = c("stunting", "wasting", "underweight"),
                              scaled_by_100 = TRUE, remove_implausible = TRUE) {
@@ -61,5 +61,4 @@ who_anthro_score <- function(x, indicator = c("stunting", "wasting", "underweigh
 
   return(category)
 }
-
 

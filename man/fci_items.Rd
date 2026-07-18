@@ -10,7 +10,8 @@ fci_items()
 A character vector of the 18 FCI condition descriptions.
 }
 \description{
-Returns the standard condition list for the Functional Comorbidity Index.
+Returns the canonical set of conditions from the Functional Comorbidity
+Index (FCI), useful for consistent naming and weighting workflows.
 }
 \references{
 Groll, D. L., To, T., Bombardier, C., & Wright, J. G. (2005). The

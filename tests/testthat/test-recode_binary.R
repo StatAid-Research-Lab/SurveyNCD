@@ -16,3 +16,8 @@ test_that("recode_binary() leaves unmatched values as NA, with a warning", {
 test_that("recode_binary() preserves existing NAs", {
   expect_equal(recode_binary(c(1, NA, 2), yes = 1, no = 2), c(1, NA, 0))
 })
+
+test_that("recode_binary() validates yes/no definitions", {
+  expect_error(recode_binary(c(1, 2), yes = numeric(0), no = 2))
+  expect_error(recode_binary(c(1, 2), yes = 1, no = c(1, 2)))
+})

@@ -1,3 +1,14 @@
+# SurveyNCD 0.1.1 (development)
+
+* Improved defensive input validation across core functions to fail fast with
+  clearer messages (`recode_binary()`, `multimorbidity_index()`,
+  `mm_prevalence()`, `survey_concentration_index()`, `survey_xgboost()`,
+  `survey_shap()`, `survey_map_indicator()`).
+* Added targeted regression tests for invalid inputs and empty/edge-case
+  scenarios in prevalence, concentration index, mapping, and XGBoost workflows.
+* Hardened `survey_map_indicator()` plotting internals by using explicit
+  `grid::unit()` namespacing for legend sizing.
+
 # SurveyNCD 0.1.0
 
 ## First release

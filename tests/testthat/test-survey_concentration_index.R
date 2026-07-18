@@ -69,3 +69,10 @@ test_that("survey_concentration_index() returns SE, CI, and p-value", {
   expect_true(res$Upper_CI >= res$Concentration_Index)
   expect_true(res$p_value >= 0 && res$p_value <= 1)
 })
+
+test_that("survey_concentration_index() validates conf.level bounds", {
+  df <- data.frame(wealth = c(1, 2, 3), outcome = c(2, 1, 3), wt = c(1, 1, 1))
+  design <- survey::svydesign(ids = ~1, weights = ~wt, data = df)
+  expect_error(survey_concentration_index(design, outcome = outcome, wealth = wealth, conf.level = 1))
+  expect_error(survey_concentration_index(design, outcome = outcome, wealth = wealth, conf.level = 0))
+})

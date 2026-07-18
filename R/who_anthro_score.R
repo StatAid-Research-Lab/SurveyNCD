@@ -1,16 +1,15 @@
-#' Calculate WHO Anthropometric Categories from DHS/MICS Data
+#' Classify DHS/MICS anthropometric z-scores using WHO thresholds
 #'
-#' Cleans raw DHS/MICS z-score variables (e.g., hw70, hw71, hw72), adjusts the
-#' decimal scaling if needed, handles DHS-specific missing flags, applies WHO
-#' biologically implausible flagging rules, and categorizes them into WHO severity tiers.
+#' Cleans and classifies child anthropometric z-scores (HAZ/WHZ/WAZ) into WHO
+#' severity categories, with optional scaling and implausible-value filtering.
 #'
-#' @param x A numeric vector of raw DHS/MICS z-scores.
+#' @param x A numeric vector of raw anthropometric z-scores.
 #' @param indicator The type of indicator for labeling and flagging: `"stunting"`
 #'   (height-for-age, HAZ), `"wasting"` (weight-for-height, WHZ), or
 #'   `"underweight"` (weight-for-age, WAZ).
-#' @param scaled_by_100 Logical. If `TRUE` (default), divides input values by
-#'   100 (standard for DHS raw recode files like `hw70`). If `FALSE`, assumes values
-#'   are already on the standard z-score scale (like MICS or cleaned DHS data).
+#' @param scaled_by_100 Logical. If `TRUE` (default), divide values by 100
+#'   (common in DHS recode files such as `hw70`). If `FALSE`, values are
+#'   assumed to already be on the z-score scale.
 #' @param remove_implausible Logical. If `TRUE` (default), applies WHO child growth
 #'   standard flagging rules to set biologically implausible values to `NA`.
 #'   WHO flags are:
@@ -20,8 +19,8 @@
 #'     \item Underweight (WAZ): < -6.0 or > 5.0
 #'   }
 #'
-#' @return A factor vector of WHO categories (Severe, Moderate, Normal) with the
-#'   indicator label appended.
+#' @return A factor vector with levels `"Severe [indicator]"`,
+#'   `"Moderate [indicator]"`, and `"Normal [indicator]"`.
 #' @export
 who_anthro_score <- function(x, indicator = c("stunting", "wasting", "underweight"),
                              scaled_by_100 = TRUE, remove_implausible = TRUE) {
@@ -62,6 +61,4 @@ who_anthro_score <- function(x, indicator = c("stunting", "wasting", "underweigh
 
   return(category)
 }
-
-
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/survey_map_indicator.R
 \name{survey_map_indicator}
 \alias{survey_map_indicator}
-\title{Map Survey Indicators Universally}
+\title{Map survey indicators on administrative boundaries}
 \usage{
 survey_map_indicator(
   survey_data,
@@ -16,13 +16,14 @@ survey_map_indicator(
 )
 }
 \arguments{
-\item{survey_data}{A data frame containing the aggregated survey indicators.}
+\item{survey_data}{A data frame containing the indicator values to plot.}
 
-\item{shapefile}{An \code{sf} spatial object containing regional boundaries.}
+\item{shapefile}{An \code{sf} object containing map geometries.}
 
-\item{join_by}{A character string of the column name present in both datasets to merge on.}
+\item{join_by}{A column name present in both \code{survey_data} and \code{shapefile}.}
 
-\item{fill_var}{A character string of the variable in \code{survey_data} to map (e.g., "Concentration_Index").}
+\item{fill_var}{A numeric column in \code{survey_data} to map (e.g.,
+\code{"Concentration_Index"}).}
 
 \item{palette}{A character string specifying the viridis color palette option to use:
 \code{"magma"} (default), \code{"viridis"}, \code{"plasma"}, \code{"inferno"}, or \code{"cividis"}.}
@@ -35,9 +36,9 @@ the \code{fill_var} name is used.}
 \item{border_width}{A numeric value for the border line width. Default is \code{0.2}.}
 }
 \value{
-A ggplot2 spatial map object.
+A \code{ggplot2} object.
 }
 \description{
-This function merges calculated survey indicators with any provided
-spatial shapefile to generate a publication-ready thematic map.
+Joins an indicator table to an \code{sf} boundary object and returns a
+publication-ready choropleth map.
 }

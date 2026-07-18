@@ -63,3 +63,12 @@ test_that("mm_prevalence() does not crash and excludes NA when grouping variable
   expect_false(any(is.na(res$region)))
   expect_equal(sum(res$n), nrow(scored) - 2) # N = 38 (40 - 2)
 })
+
+test_that("mm_prevalence() validates design columns and complete input rows", {
+  scored <- make_scored_data()
+  expect_error(mm_prevalence(scored, ids = "psu", strata = "region", weights = 1))
+
+  scored$mm_category <- NA
+  scored$mm_n_conditions <- NA
+  expect_error(mm_prevalence(scored, ids = "psu", strata = "region", weights = "wt"))
+})

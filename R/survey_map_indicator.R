@@ -1,12 +1,13 @@
-#' Map Survey Indicators Universally
+#' Map survey indicators on administrative boundaries
 #'
-#' This function merges calculated survey indicators with any provided
-#' spatial shapefile to generate a publication-ready thematic map.
+#' Joins an indicator table to an `sf` boundary object and returns a
+#' publication-ready choropleth map.
 #'
-#' @param survey_data A data frame containing the aggregated survey indicators.
-#' @param shapefile An `sf` spatial object containing regional boundaries.
-#' @param join_by A character string of the column name present in both datasets to merge on.
-#' @param fill_var A character string of the variable in `survey_data` to map (e.g., "Concentration_Index").
+#' @param survey_data A data frame containing the indicator values to plot.
+#' @param shapefile An `sf` object containing map geometries.
+#' @param join_by A column name present in both `survey_data` and `shapefile`.
+#' @param fill_var A numeric column in `survey_data` to map (e.g.,
+#'   `"Concentration_Index"`).
 #' @param palette A character string specifying the viridis color palette option to use:
 #'   `"magma"` (default), `"viridis"`, `"plasma"`, `"inferno"`, or `"cividis"`.
 #' @param legend_title A character string for the legend title. If `NULL` (default),
@@ -14,7 +15,7 @@
 #' @param border_color A character string for the region border line color. Default is `"white"`.
 #' @param border_width A numeric value for the border line width. Default is `0.2`.
 #'
-#' @return A ggplot2 spatial map object.
+#' @return A `ggplot2` object.
 #' @export
 #'
 #' @importFrom dplyr left_join
@@ -23,6 +24,18 @@
 survey_map_indicator <- function(survey_data, shapefile, join_by, fill_var,
                                  palette = c("magma", "viridis", "plasma", "inferno", "cividis"),
                                  legend_title = NULL, border_color = "white", border_width = 0.2) {
+  if (!is.data.frame(survey_data)) {
+    stop("`survey_data` must be a data frame.", call. = FALSE)
+  }
+  if (!inherits(shapefile, "sf")) {
+    stop("`shapefile` must be an `sf` object.", call. = FALSE)
+  }
+  if (!is.character(join_by) || length(join_by) != 1 || is.na(join_by)) {
+    stop("`join_by` must be a single column name.", call. = FALSE)
+  }
+  if (!is.character(fill_var) || length(fill_var) != 1 || is.na(fill_var)) {
+    stop("`fill_var` must be a single column name.", call. = FALSE)
+  }
 
   # sf is Suggests-only, so it is checked at call time
   if (!requireNamespace("sf", quietly = TRUE)) {
@@ -43,6 +56,12 @@ survey_map_indicator <- function(survey_data, shapefile, join_by, fill_var,
   if (!(join_by %in% names(shapefile))) {
     stop("The join_by column does not exist in your shapefile.", call. = FALSE)
   }
+  if (!(fill_var %in% names(survey_data))) {
+    stop("The fill_var column does not exist in your survey_data.", call. = FALSE)
+  }
+  if (!is.numeric(survey_data[[fill_var]])) {
+    stop("`fill_var` must reference a numeric column in `survey_data`.", call. = FALSE)
+  }
 
   # Merge the spatial data with the survey data
   merged_sf <- shapefile %>%
@@ -57,8 +76,8 @@ survey_map_indicator <- function(survey_data, shapefile, join_by, fill_var,
       guide = guide_colorbar(
         title.position = "top",
         title.hjust = 0.5,
-        barwidth = unit(15, "lines"),
-        barheight = unit(0.5, "lines")
+        barwidth = grid::unit(15, "lines"),
+        barheight = grid::unit(0.5, "lines")
       )
     ) +
     ggplot2::theme_void(base_size = 11) +

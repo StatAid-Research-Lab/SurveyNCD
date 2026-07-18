@@ -6,11 +6,9 @@
 \alias{SurveyNCD}
 \title{SurveyNCD: Tools for Self-Reported Health Indicators in Complex Surveys}
 \description{
-Provides tools for analysing population health survey data
-(WHO STEPS, DHS, MICS, and similar complex sample surveys), where
-chronic conditions are self-reported rather than ICD-coded and
-estimates must account for stratification, clustering, and sampling
-weights.
+Provides tools to clean, model, and interpret self-reported NCD indicators
+from complex surveys (WHO STEPS, DHS, MICS, and similar designs), where
+valid estimation requires handling weights, strata, and clusters.
 }
 \details{
 The package includes:

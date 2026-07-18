@@ -2,23 +2,24 @@
 % Please edit documentation in R/survey_xgboost.R
 \name{survey_xgboost}
 \alias{survey_xgboost}
-\title{Train an XGBoost Model with Complex Survey Weights}
+\title{Train an XGBoost model with survey case weights}
 \usage{
 survey_xgboost(design, formula, params = list(), nrounds = 100)
 }
 \arguments{
-\item{design}{A \code{survey.design} object containing the data and weights.}
+\item{design}{A \code{survey.design} object containing data and sampling weights.}
 
 \item{formula}{A formula specifying the response and predictor variables.}
 
 \item{params}{A list of XGBoost parameters (e.g., objective, eta, max_depth).}
 
-\item{nrounds}{The number of boosting iterations.}
+\item{nrounds}{Number of boosting iterations.}
 }
 \value{
-A list containing the trained \code{xgb.Booster} model and the \code{xgb.DMatrix}.
+A list with the trained \code{xgb.Booster}, training \code{xgb.DMatrix},
+feature names, used row count, and feature matrix \code{X}.
 }
 \description{
-This function trains an Extreme Gradient Boosting (XGBoost) model while
-strictly enforcing sampling weights from a complex survey design object.
+Trains an \code{xgboost} model using case weights extracted from a survey design
+object.
 }

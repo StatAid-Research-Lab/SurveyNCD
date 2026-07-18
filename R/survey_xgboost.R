@@ -1,18 +1,32 @@
-#' Train an XGBoost Model with Complex Survey Weights
+#' Train an XGBoost model with survey case weights
 #'
-#' This function trains an Extreme Gradient Boosting (XGBoost) model while
-#' strictly enforcing sampling weights from a complex survey design object.
+#' Trains an `xgboost` model using case weights extracted from a survey design
+#' object.
 #'
-#' @param design A \code{survey.design} object containing the data and weights.
+#' @param design A `survey.design` object containing data and sampling weights.
 #' @param formula A formula specifying the response and predictor variables.
 #' @param params A list of XGBoost parameters (e.g., objective, eta, max_depth).
-#' @param nrounds The number of boosting iterations.
+#' @param nrounds Number of boosting iterations.
 #'
-#' @return A list containing the trained \code{xgb.Booster} model and the \code{xgb.DMatrix}.
+#' @return A list with the trained `xgb.Booster`, training `xgb.DMatrix`,
+#'   feature names, used row count, and feature matrix `X`.
 #' @export
 #'
 #' @importFrom stats model.matrix model.response model.frame complete.cases
 survey_xgboost <- function(design, formula, params = list(), nrounds = 100) {
+  if (!inherits(design, "survey.design") && !inherits(design, "survey.design2")) {
+    stop("`design` must be a survey design object.", call. = FALSE)
+  }
+  if (!inherits(formula, "formula")) {
+    stop("`formula` must be a model formula.", call. = FALSE)
+  }
+  if (!is.list(params)) {
+    stop("`params` must be a list of xgboost parameters.", call. = FALSE)
+  }
+  if (!is.numeric(nrounds) || length(nrounds) != 1 || is.na(nrounds) ||
+      nrounds <= 0 || nrounds != as.integer(nrounds)) {
+    stop("`nrounds` must be a positive whole number.", call. = FALSE)
+  }
 
   # xgboost is Suggests-only (it's a heavy compiled dependency, not
   # everyone building this package needs it) -- so it's checked at call
@@ -34,6 +48,9 @@ survey_xgboost <- function(design, formula, params = list(), nrounds = 100) {
   # 2. Defensive Alignment: Identify complete cases to prevent weight misalignment
   mf_temp <- stats::model.frame(formula, data = raw_data, na.action = stats::na.pass)
   valid_rows <- stats::complete.cases(mf_temp)
+  if (!any(valid_rows)) {
+    stop("No complete cases remain after applying `formula`.", call. = FALSE)
+  }
 
   clean_data <- raw_data[valid_rows, ]
   clean_weights <- raw_weights[valid_rows]
@@ -42,6 +59,9 @@ survey_xgboost <- function(design, formula, params = list(), nrounds = 100) {
   mf_clean <- stats::model.frame(formula, data = clean_data)
   X <- stats::model.matrix(formula, mf_clean)[, -1, drop = FALSE] # Remove intercept
   y <- stats::model.response(mf_clean)
+  if (!is.numeric(y)) {
+    stop("Outcome in `formula` must be numeric for survey_xgboost().", call. = FALSE)
+  }
 
   # 4. Construct the weighted XGBoost DMatrix
   dtrain <- xgboost::xgb.DMatrix(data = X, label = y, weight = clean_weights)

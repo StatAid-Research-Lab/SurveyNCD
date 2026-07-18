@@ -1,6 +1,7 @@
 #' The 18 conditions of the Functional Comorbidity Index
 #'
-#' Returns the standard condition list for the Functional Comorbidity Index.
+#' Returns the canonical set of conditions from the Functional Comorbidity
+#' Index (FCI), useful for consistent naming and weighting workflows.
 #'
 #' @return A character vector of the 18 FCI condition descriptions.
 #'

@@ -2,18 +2,18 @@
 % Please edit documentation in R/survey_shap.R
 \name{survey_shap}
 \alias{survey_shap}
-\title{Extract SHAP Values from a Survey-Weighted XGBoost Model}
+\title{Extract SHAP values from a \code{survey_xgboost()} model}
 \usage{
 survey_shap(sxgb_model)
 }
 \arguments{
-\item{sxgb_model}{The list output from the \code{survey_xgboost()} function.}
+\item{sxgb_model}{A fitted model object returned by \code{survey_xgboost()}.}
 }
 \value{
-A matrix of SHAP values detailing the marginal contribution of each
-feature to the final prediction for every observation.
+A numeric matrix of SHAP values with one row per observation and one
+column per feature (plus intercept).
 }
 \description{
-This function cracks open a trained survey-weighted XGBoost model and calculates
-the SHapley Additive exPlanations (SHAP values) for every respondent.
+Computes SHAP contributions for each feature and observation from a fitted
+survey-weighted XGBoost model.
 }

@@ -2,20 +2,22 @@
 % Please edit documentation in R/recode_binary.R
 \name{recode_binary}
 \alias{recode_binary}
-\title{Recode a messy survey column into clean 0/1}
+\title{Recode survey responses into 0/1/NA}
 \usage{
 recode_binary(x, yes, no = NULL)
 }
 \arguments{
-\item{x}{A vector coding a single condition.}
+\item{x}{A vector for one survey item or condition.}
 
-\item{yes}{The raw value(s) that should become 1.}
+\item{yes}{Value(s) in \code{x} that should be coded as \code{1}.}
 
-\item{no}{The raw value(s) that should become 0.}
+\item{no}{Optional value(s) in \code{x} that should be coded as \code{0}. If \code{NULL},
+all non-missing values not listed in \code{yes} remain \code{NA}.}
 }
 \value{
-A numeric vector of 0, 1, or NA.
+A numeric vector containing only \code{0}, \code{1}, and \code{NA}.
 }
 \description{
-Converts alternative survey response values into clean standard numeric 0 or 1 scores.
+Converts raw response values into a standardized binary format for downstream
+analysis.
 }

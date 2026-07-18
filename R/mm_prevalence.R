@@ -33,6 +33,12 @@
 #' @importFrom survey svydesign svyciprop svymean SE
 mm_prevalence <- function(data, ids = NULL, strata = NULL, weights,
                            by = NULL, nest = TRUE) {
+  if (!is.data.frame(data)) {
+    stop("`data` must be a data frame.", call. = FALSE)
+  }
+  if (missing(weights) || !is.character(weights) || length(weights) != 1 || is.na(weights)) {
+    stop("`weights` must be a single column name in `data`.", call. = FALSE)
+  }
 
   required_cols <- c("mm_category", "mm_n_conditions")
   missing_req <- setdiff(required_cols, names(data))
@@ -46,6 +52,9 @@ mm_prevalence <- function(data, ids = NULL, strata = NULL, weights,
 
   build_formula <- function(col) {
     if (is.null(col)) return(~1)
+    if (!is.character(col) || length(col) != 1 || is.na(col)) {
+      stop("Design columns must be provided as single column names.", call. = FALSE)
+    }
     if (!col %in% names(data)) {
       stop("Column '", col, "' not found in `data`.", call. = FALSE)
     }
@@ -68,6 +77,12 @@ mm_prevalence <- function(data, ids = NULL, strata = NULL, weights,
     )
   }
   data <- data[!is.na(data$mm_category) & !is.na(data$mm_n_conditions), ]
+  if (nrow(data) == 0) {
+    stop(
+      "No complete rows remain after removing missing `mm_category`/`mm_n_conditions`.",
+      call. = FALSE
+    )
+  }
   data$mm_multimorbid <- as.numeric(data$mm_category == "Multimorbid")
 
   design <- survey::svydesign(

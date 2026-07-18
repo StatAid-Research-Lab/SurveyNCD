@@ -24,6 +24,18 @@
 survey_map_indicator <- function(survey_data, shapefile, join_by, fill_var,
                                  palette = c("magma", "viridis", "plasma", "inferno", "cividis"),
                                  legend_title = NULL, border_color = "white", border_width = 0.2) {
+  if (!is.data.frame(survey_data)) {
+    stop("`survey_data` must be a data frame.", call. = FALSE)
+  }
+  if (!inherits(shapefile, "sf")) {
+    stop("`shapefile` must be an `sf` object.", call. = FALSE)
+  }
+  if (!is.character(join_by) || length(join_by) != 1 || is.na(join_by)) {
+    stop("`join_by` must be a single column name.", call. = FALSE)
+  }
+  if (!is.character(fill_var) || length(fill_var) != 1 || is.na(fill_var)) {
+    stop("`fill_var` must be a single column name.", call. = FALSE)
+  }
 
   # sf is Suggests-only, so it is checked at call time
   if (!requireNamespace("sf", quietly = TRUE)) {
@@ -44,6 +56,12 @@ survey_map_indicator <- function(survey_data, shapefile, join_by, fill_var,
   if (!(join_by %in% names(shapefile))) {
     stop("The join_by column does not exist in your shapefile.", call. = FALSE)
   }
+  if (!(fill_var %in% names(survey_data))) {
+    stop("The fill_var column does not exist in your survey_data.", call. = FALSE)
+  }
+  if (!is.numeric(survey_data[[fill_var]])) {
+    stop("`fill_var` must reference a numeric column in `survey_data`.", call. = FALSE)
+  }
 
   # Merge the spatial data with the survey data
   merged_sf <- shapefile %>%
@@ -58,8 +76,8 @@ survey_map_indicator <- function(survey_data, shapefile, join_by, fill_var,
       guide = guide_colorbar(
         title.position = "top",
         title.hjust = 0.5,
-        barwidth = unit(15, "lines"),
-        barheight = unit(0.5, "lines")
+        barwidth = grid::unit(15, "lines"),
+        barheight = grid::unit(0.5, "lines")
       )
     ) +
     ggplot2::theme_void(base_size = 11) +

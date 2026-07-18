@@ -33,3 +33,13 @@ test_that("survey_xgboost() and survey_shap() run end to end and handle missing 
 test_that("survey_shap() rejects objects that aren't survey_xgboost() output", {
   expect_error(survey_shap(list(not = "the right shape")))
 })
+
+test_that("survey_xgboost() validates core inputs", {
+  df <- data.frame(outcome = c(1, 2), age = c(20, 21), wt = c(1, 1))
+  design <- survey::svydesign(ids = ~1, weights = ~wt, data = df)
+
+  expect_error(survey_xgboost(df, outcome ~ age))
+  expect_error(survey_xgboost(design, "outcome ~ age"))
+  expect_error(survey_xgboost(design, outcome ~ age, nrounds = 0))
+  expect_error(survey_xgboost(design, outcome ~ age, params = "bad"))
+})

@@ -47,6 +47,12 @@ multimorbidity_index <- function(data,
   if (!is.data.frame(data)) {
     stop("`data` must be a data frame.", call. = FALSE)
   }
+  if (!is.character(conditions) || length(conditions) == 0 || anyNA(conditions)) {
+    stop("`conditions` must be a non-empty character vector of column names.", call. = FALSE)
+  }
+  if (anyDuplicated(conditions) > 0) {
+    stop("`conditions` must not contain duplicate column names.", call. = FALSE)
+  }
 
   missing_cols <- setdiff(conditions, names(data))
   if (length(missing_cols) > 0) {
@@ -87,12 +93,21 @@ multimorbidity_index <- function(data,
   if (is.null(weights)) {
     w <- stats::setNames(rep(1, length(conditions)), conditions)
   } else {
+    if (!is.numeric(weights) || anyNA(weights) || any(!is.finite(weights))) {
+      stop("`weights` must be a numeric vector with finite, non-missing values.", call. = FALSE)
+    }
+    if (any(weights < 0)) {
+      stop("`weights` must be non-negative.", call. = FALSE)
+    }
     if (is.null(names(weights)) || !all(conditions %in% names(weights))) {
       stop(
         "`weights` must be a named numeric vector with one entry for ",
         "every name in `conditions`.",
         call. = FALSE
       )
+    }
+    if (anyNA(names(weights)) || any(names(weights) == "")) {
+      stop("`weights` must have non-empty names.", call. = FALSE)
     }
     w <- weights[conditions]
   }

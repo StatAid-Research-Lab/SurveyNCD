@@ -11,6 +11,16 @@
 #' @return A numeric vector containing only `0`, `1`, and `NA`.
 #' @export
 recode_binary <- function(x, yes, no = NULL) {
+  if (is.data.frame(x) || is.list(x)) {
+    stop("`x` must be a vector, not a data frame or list.", call. = FALSE)
+  }
+  if (missing(yes) || length(yes) == 0) {
+    stop("`yes` must contain at least one value to recode as 1.", call. = FALSE)
+  }
+  if (!is.null(no) && any(yes %in% no)) {
+    stop("`yes` and `no` cannot contain overlapping values.", call. = FALSE)
+  }
+
   out <- rep(NA_real_, length(x))
   out[x %in% yes] <- 1
 

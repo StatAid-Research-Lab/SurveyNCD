@@ -21,7 +21,7 @@ survey_shap <- function(sxgb_model) {
   }
 
   # Defensive check to ensure the user passed the correct object
-  if (is.null(sxgb_model$model) || is.null(sxgb_model$dmatrix)) {
+  if (!is.list(sxgb_model) || is.null(sxgb_model$model) || is.null(sxgb_model$dmatrix)) {
     stop(
       "Input must be the list output from survey_xgboost().",
       call. = FALSE

@@ -35,12 +35,16 @@
 #' @export
 survey_concentration_index <- function(design, outcome, wealth, conf.level = 0.95) {
 
-  if (!inherits(design, "survey.design")) {
+  if (!inherits(design, "survey.design") && !inherits(design, "survey.design2")) {
     stop(
       "`design` must be a survey design object created by ",
       "survey::svydesign() or srvyr::as_survey_design().",
       call. = FALSE
     )
+  }
+  if (!is.numeric(conf.level) || length(conf.level) != 1 || is.na(conf.level) ||
+      conf.level <= 0 || conf.level >= 1) {
+    stop("`conf.level` must be a single numeric value strictly between 0 and 1.", call. = FALSE)
   }
 
   # Set lonely PSU option locally to 'adjust' to prevent crash on single-PSU strata
@@ -67,7 +71,13 @@ survey_concentration_index <- function(design, outcome, wealth, conf.level = 0.9
 
   # Calculate fractional rank using sorted sampling weights
   calc_weight  <- stats::weights(design_sorted)
+  if (anyNA(calc_weight) || any(!is.finite(calc_weight)) || any(calc_weight < 0)) {
+    stop("Survey weights must be finite, non-missing, and non-negative.", call. = FALSE)
+  }
   sum_weights <- sum(calc_weight)
+  if (sum_weights <= 0) {
+    stop("Survey weights must sum to a positive value.", call. = FALSE)
+  }
   cum_weight <- cumsum(calc_weight)
   frac_rank  <- (cum_weight - 0.5 * calc_weight) / sum_weights
 
@@ -111,7 +121,11 @@ survey_concentration_index <- function(design, outcome, wealth, conf.level = 0.9
   z_crit <- stats::qnorm(1 - alpha / 2)
   ci_lower <- ci_value - z_crit * se_value
   ci_upper <- ci_value + z_crit * se_value
-  p_val <- 2 * (1 - stats::pnorm(abs(ci_value / se_value)))
+  p_val <- if (is.na(se_value) || se_value <= 0) {
+    NA_real_
+  } else {
+    2 * (1 - stats::pnorm(abs(ci_value / se_value)))
+  }
 
   dplyr::tibble(
     Concentration_Index = round(ci_value, 4),

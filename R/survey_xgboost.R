@@ -1,14 +1,15 @@
-#' Train an XGBoost Model with Complex Survey Weights
+#' Train an XGBoost model with survey case weights
 #'
-#' This function trains an Extreme Gradient Boosting (XGBoost) model while
-#' strictly enforcing sampling weights from a complex survey design object.
+#' Trains an `xgboost` model using case weights extracted from a survey design
+#' object.
 #'
-#' @param design A \code{survey.design} object containing the data and weights.
+#' @param design A `survey.design` object containing data and sampling weights.
 #' @param formula A formula specifying the response and predictor variables.
 #' @param params A list of XGBoost parameters (e.g., objective, eta, max_depth).
-#' @param nrounds The number of boosting iterations.
+#' @param nrounds Number of boosting iterations.
 #'
-#' @return A list containing the trained \code{xgb.Booster} model and the \code{xgb.DMatrix}.
+#' @return A list with the trained `xgb.Booster`, training `xgb.DMatrix`,
+#'   feature names, used row count, and feature matrix `X`.
 #' @export
 #'
 #' @importFrom stats model.matrix model.response model.frame complete.cases

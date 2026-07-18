@@ -1,12 +1,12 @@
-#' Extract SHAP Values from a Survey-Weighted XGBoost Model
+#' Extract SHAP values from a `survey_xgboost()` model
 #'
-#' This function cracks open a trained survey-weighted XGBoost model and calculates
-#' the SHapley Additive exPlanations (SHAP values) for every respondent.
+#' Computes SHAP contributions for each feature and observation from a fitted
+#' survey-weighted XGBoost model.
 #'
-#' @param sxgb_model The list output from the \code{survey_xgboost()} function.
+#' @param sxgb_model A fitted model object returned by `survey_xgboost()`.
 #'
-#' @return A matrix of SHAP values detailing the marginal contribution of each
-#'   feature to the final prediction for every observation.
+#' @return A numeric matrix of SHAP values with one row per observation and one
+#'   column per feature (plus intercept).
 #' @export
 #'
 #' @importFrom stats predict

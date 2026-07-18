@@ -2,14 +2,14 @@
 % Please edit documentation in R/mm_prevalence.R
 \name{mm_prevalence}
 \alias{mm_prevalence}
-\title{Population-level multimorbidity estimates from complex survey data}
+\title{Design-weighted multimorbidity prevalence and severity}
 \usage{
 mm_prevalence(data, ids = NULL, strata = NULL, weights, by = NULL, nest = TRUE)
 }
 \arguments{
-\item{data}{A data frame already processed by \code{multimorbidity_index()}
-(must contain \code{mm_category} and \code{mm_n_conditions}), plus the survey
-design columns named below.}
+\item{data}{A data frame that already contains \code{mm_category} and
+\code{mm_n_conditions} (typically from \code{multimorbidity_index()}), plus the
+survey design columns referenced below.}
 
 \item{ids}{Name of the cluster/PSU column, or \code{NULL} if the design has
 no clustering (e.g. simple random sample).}
@@ -19,29 +19,22 @@ design is unstratified.}
 
 \item{weights}{Name of the sampling weight column.}
 
-\item{by}{Optional single column name to compute subgroup estimates by
-(e.g. \code{"sex"}, \code{"region"}). \code{NULL} (default) returns one overall row.
-Multi-variable grouping isn't supported yet -- a natural v2 addition.}
+\item{by}{Optional single column name for subgroup estimates (e.g.
+\code{"sex"} or \code{"region"}). \code{NULL} returns one overall estimate row.}
 
 \item{nest}{Passed to \code{survey::svydesign()}. \code{TRUE} (default) assumes
 cluster IDs repeat across strata (true for most DHS/STEPS-style
 designs, where e.g. cluster "1" exists in every region).}
 }
 \value{
-A data frame with one row (or one row per \code{by} group),
-containing \code{n} (unweighted sample size), \code{prevalence} /
-\code{prevalence_se} / \code{prevalence_lower} / \code{prevalence_upper} (design-
-weighted proportion "Multimorbid" with a logit-CI), and
-\code{mean_conditions} / \code{mean_conditions_se}.
+A data frame with one row (or one row per \code{by} level), containing:
+\code{n}, \code{prevalence}, \code{prevalence_se}, \code{prevalence_lower},
+\code{prevalence_upper}, \code{mean_conditions}, and \code{mean_conditions_se}.
 }
 \description{
-Wraps the \code{survey} package to compute design-weighted multimorbidity
-prevalence and mean condition count, properly accounting for the
-stratification, clustering, and sampling weights of a complex survey
-design (WHO STEPS, DHS, MICS, etc.). This is the step that turns an
-individual-level score into a defensible population estimate -- run
-\code{multimorbidity_index()} first to create \code{mm_category} and
-\code{mm_n_conditions}.
+Computes population-level multimorbidity estimates from complex survey data,
+accounting for weights and optional clustering/stratification. Run
+\code{multimorbidity_index()} first to create required fields.
 }
 \examples{
 \dontrun{

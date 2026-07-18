@@ -1,14 +1,10 @@
-#' Calculate a self-reported multimorbidity index
+#' Calculate a multimorbidity index from self-reported conditions
 #'
-#' Computes an individual-level multimorbidity score from a set of
-#' self-reported binary condition indicators (e.g. "Has a doctor ever told
-#' you that you have hypertension?"). This is designed for population
-#' health survey data (WHO STEPS, DHS, SAGE, etc.), where multimorbidity is
-#' captured through self-report rather than ICD-coded diagnoses -- a data
-#' shape that existing comorbidity packages (which all assume ICD claims
-#' data) don't handle.
+#' Computes respondent-level multimorbidity from binary condition indicators,
+#' tailored to survey datasets where conditions are self-reported rather than
+#' ICD-coded.
 #'
-#' @param data A data frame, one row per individual.
+#' @param data A data frame with one row per respondent.
 #' @param conditions A character vector of column names in `data`. Each
 #'   column must already be coded 0/1/NA (1 = condition present). Use
 #'   `recode_binary()` first if your raw data uses Yes/No, 1/2, etc.
@@ -17,17 +13,13 @@
 #'   every condition counts equally -- i.e. a simple unweighted sum, which
 #'   is how the published Functional Comorbidity Index (Groll et al. 2005)
 #'   is scored. See `fci_items()`.
-#' @param na_action How to handle a row with at least one missing
-#'   condition. `"ignore"` (default) sums whatever conditions are
-#'   non-missing for that person. `"na"` returns NA for that person's
-#'   index entirely, which is the safer choice once you move to
-#'   population-level (survey-weighted) estimates, since silently treating
-#'   missing as absent can bias prevalence downward.
+#' @param na_action How to handle rows with at least one missing condition.
+#'   `"ignore"` (default) computes scores from available non-missing
+#'   conditions. `"na"` sets the respondent's index fields to `NA`.
 #'
-#' @return `data` with three columns appended: `mm_n_conditions` (raw
-#'   count of conditions present), `mm_index` (the possibly weighted
-#'   score), and `mm_category` (factor: "None", "Single condition",
-#'   "Multimorbid").
+#' @return `data` with three appended columns: `mm_n_conditions` (count of
+#'   conditions present), `mm_index` (possibly weighted score), and
+#'   `mm_category` (`"None"`, `"Single condition"`, `"Multimorbid"`).
 #'
 #' @references
 #' Groll, D. L., To, T., Bombardier, C., & Wright, J. G. (2005). The

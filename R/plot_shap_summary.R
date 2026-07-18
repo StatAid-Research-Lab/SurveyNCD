@@ -1,14 +1,11 @@
-#' Plot SHAP Summary
+#' Plot a SHAP summary
 #'
-#' Generates a SHAP summary plot (similar to the Python `shap` package) where
-#' features are ranked on the y-axis by their overall importance (mean absolute
-#' SHAP value), SHAP values are shown on the x-axis, and each point (representing
-#' a respondent) is colored by its relative value for that feature (blue for low,
-#' red for high).
+#' Produces a SHAP beeswarm-style summary plot where features are ranked by mean
+#' absolute SHAP value and points are colored from low to high feature values.
 #'
-#' @param shap_matrix The matrix output from \code{survey_shap()}.
-#' @param data The matrix or data frame of training features (e.g. the \code{X}
-#'   matrix returned by \code{survey_xgboost()}) or the original data frame. If
+#' @param shap_matrix The matrix returned by `survey_shap()`.
+#' @param data The feature matrix or data frame used for training (for example
+#'   `model$X` from `survey_xgboost()`), or a compatible source data frame. If
 #'   the row count does not match the SHAP matrix, rows with missing values
 #'   will be automatically filtered out.
 #' @param low_color A character string for the color representing low feature values.

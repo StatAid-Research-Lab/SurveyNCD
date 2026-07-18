@@ -2,14 +2,13 @@
 % Please edit documentation in R/survey_concentration_index.R
 \name{survey_concentration_index}
 \alias{survey_concentration_index}
-\title{Calculate Survey-Weighted Concentration Index}
+\title{Calculate a survey-weighted concentration index}
 \usage{
 survey_concentration_index(design, outcome, wealth, conf.level = 0.95)
 }
 \arguments{
-\item{design}{A survey design object created by \code{survey::svydesign()}
-or \code{srvyr::as_survey_design()} -- anything inheriting from
-\code{"survey.design"} (srvyr's \code{tbl_svy} objects do).}
+\item{design}{A survey design object from \code{survey::svydesign()} or
+\code{srvyr::as_survey_design()}.}
 
 \item{outcome}{Unquoted name of the health indicator (e.g. stunting_clean).}
 
@@ -23,10 +22,8 @@ A tibble with \code{Concentration_Index}, \code{Standard_Error},
 and \code{n}.
 }
 \description{
-Computes the concentration index (the Wagstaff/O'Donnell "convenient
-covariance" formula) for a health outcome across a socioeconomic
-ranking variable, using proper survey sampling weights, and computes
-design-consistent standard errors, confidence intervals, and p-values.
+Computes the concentration index for a health outcome across a wealth/rank
+variable using survey weights and design-consistent inference.
 }
 \details{
 \deqn{CI = \frac{2}{\mu} \times Cov_w(y_i, R_i)}

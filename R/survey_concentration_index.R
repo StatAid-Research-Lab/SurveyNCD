@@ -1,13 +1,10 @@
-#' Calculate Survey-Weighted Concentration Index
+#' Calculate a survey-weighted concentration index
 #'
-#' Computes the concentration index (the Wagstaff/O'Donnell "convenient
-#' covariance" formula) for a health outcome across a socioeconomic
-#' ranking variable, using proper survey sampling weights, and computes
-#' design-consistent standard errors, confidence intervals, and p-values.
+#' Computes the concentration index for a health outcome across a wealth/rank
+#' variable using survey weights and design-consistent inference.
 #'
-#' @param design A survey design object created by \code{survey::svydesign()}
-#'   or \code{srvyr::as_survey_design()} -- anything inheriting from
-#'   \code{"survey.design"} (srvyr's \code{tbl_svy} objects do).
+#' @param design A survey design object from `survey::svydesign()` or
+#'   `srvyr::as_survey_design()`.
 #' @param outcome Unquoted name of the health indicator (e.g. stunting_clean).
 #' @param wealth Unquoted name of the wealth/ranking variable (e.g. wealth_index).
 #' @param conf.level Confidence level for the confidence interval. Default is 0.95.

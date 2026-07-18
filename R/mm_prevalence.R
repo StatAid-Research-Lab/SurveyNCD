@@ -1,33 +1,26 @@
-#' Population-level multimorbidity estimates from complex survey data
+#' Design-weighted multimorbidity prevalence and severity
 #'
-#' Wraps the `survey` package to compute design-weighted multimorbidity
-#' prevalence and mean condition count, properly accounting for the
-#' stratification, clustering, and sampling weights of a complex survey
-#' design (WHO STEPS, DHS, MICS, etc.). This is the step that turns an
-#' individual-level score into a defensible population estimate -- run
-#' `multimorbidity_index()` first to create `mm_category` and
-#' `mm_n_conditions`.
+#' Computes population-level multimorbidity estimates from complex survey data,
+#' accounting for weights and optional clustering/stratification. Run
+#' `multimorbidity_index()` first to create required fields.
 #'
-#' @param data A data frame already processed by `multimorbidity_index()`
-#'   (must contain `mm_category` and `mm_n_conditions`), plus the survey
-#'   design columns named below.
+#' @param data A data frame that already contains `mm_category` and
+#'   `mm_n_conditions` (typically from `multimorbidity_index()`), plus the
+#'   survey design columns referenced below.
 #' @param ids Name of the cluster/PSU column, or `NULL` if the design has
 #'   no clustering (e.g. simple random sample).
 #' @param strata Name of the stratification column, or `NULL` if the
 #'   design is unstratified.
 #' @param weights Name of the sampling weight column.
-#' @param by Optional single column name to compute subgroup estimates by
-#'   (e.g. `"sex"`, `"region"`). `NULL` (default) returns one overall row.
-#'   Multi-variable grouping isn't supported yet -- a natural v2 addition.
+#' @param by Optional single column name for subgroup estimates (e.g.
+#'   `"sex"` or `"region"`). `NULL` returns one overall estimate row.
 #' @param nest Passed to `survey::svydesign()`. `TRUE` (default) assumes
 #'   cluster IDs repeat across strata (true for most DHS/STEPS-style
 #'   designs, where e.g. cluster "1" exists in every region).
 #'
-#' @return A data frame with one row (or one row per `by` group),
-#'   containing `n` (unweighted sample size), `prevalence` /
-#'   `prevalence_se` / `prevalence_lower` / `prevalence_upper` (design-
-#'   weighted proportion "Multimorbid" with a logit-CI), and
-#'   `mean_conditions` / `mean_conditions_se`.
+#' @return A data frame with one row (or one row per `by` level), containing:
+#'   `n`, `prevalence`, `prevalence_se`, `prevalence_lower`,
+#'   `prevalence_upper`, `mean_conditions`, and `mean_conditions_se`.
 #'
 #' @examples
 #' \dontrun{

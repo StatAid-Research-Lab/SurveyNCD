@@ -1,12 +1,13 @@
-#' Map Survey Indicators Universally
+#' Map survey indicators on administrative boundaries
 #'
-#' This function merges calculated survey indicators with any provided
-#' spatial shapefile to generate a publication-ready thematic map.
+#' Joins an indicator table to an `sf` boundary object and returns a
+#' publication-ready choropleth map.
 #'
-#' @param survey_data A data frame containing the aggregated survey indicators.
-#' @param shapefile An `sf` spatial object containing regional boundaries.
-#' @param join_by A character string of the column name present in both datasets to merge on.
-#' @param fill_var A character string of the variable in `survey_data` to map (e.g., "Concentration_Index").
+#' @param survey_data A data frame containing the indicator values to plot.
+#' @param shapefile An `sf` object containing map geometries.
+#' @param join_by A column name present in both `survey_data` and `shapefile`.
+#' @param fill_var A numeric column in `survey_data` to map (e.g.,
+#'   `"Concentration_Index"`).
 #' @param palette A character string specifying the viridis color palette option to use:
 #'   `"magma"` (default), `"viridis"`, `"plasma"`, `"inferno"`, or `"cividis"`.
 #' @param legend_title A character string for the legend title. If `NULL` (default),
@@ -14,7 +15,7 @@
 #' @param border_color A character string for the region border line color. Default is `"white"`.
 #' @param border_width A numeric value for the border line width. Default is `0.2`.
 #'
-#' @return A ggplot2 spatial map object.
+#' @return A `ggplot2` object.
 #' @export
 #'
 #' @importFrom dplyr left_join

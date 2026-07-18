@@ -2,7 +2,7 @@
 % Please edit documentation in R/who_anthro_score.R
 \name{who_anthro_score}
 \alias{who_anthro_score}
-\title{Calculate WHO Anthropometric Categories from DHS/MICS Data}
+\title{Classify DHS/MICS anthropometric z-scores using WHO thresholds}
 \usage{
 who_anthro_score(
   x,
@@ -12,15 +12,15 @@ who_anthro_score(
 )
 }
 \arguments{
-\item{x}{A numeric vector of raw DHS/MICS z-scores.}
+\item{x}{A numeric vector of raw anthropometric z-scores.}
 
 \item{indicator}{The type of indicator for labeling and flagging: \code{"stunting"}
 (height-for-age, HAZ), \code{"wasting"} (weight-for-height, WHZ), or
 \code{"underweight"} (weight-for-age, WAZ).}
 
-\item{scaled_by_100}{Logical. If \code{TRUE} (default), divides input values by
-100 (standard for DHS raw recode files like \code{hw70}). If \code{FALSE}, assumes values
-are already on the standard z-score scale (like MICS or cleaned DHS data).}
+\item{scaled_by_100}{Logical. If \code{TRUE} (default), divide values by 100
+(common in DHS recode files such as \code{hw70}). If \code{FALSE}, values are
+assumed to already be on the z-score scale.}
 
 \item{remove_implausible}{Logical. If \code{TRUE} (default), applies WHO child growth
 standard flagging rules to set biologically implausible values to \code{NA}.
@@ -32,11 +32,10 @@ WHO flags are:
 }}
 }
 \value{
-A factor vector of WHO categories (Severe, Moderate, Normal) with the
-indicator label appended.
+A factor vector with levels \code{"Severe <indicator>"},
+\code{"Moderate <indicator>"}, and \code{"Normal <indicator>"}.
 }
 \description{
-Cleans raw DHS/MICS z-score variables (e.g., hw70, hw71, hw72), adjusts the
-decimal scaling if needed, handles DHS-specific missing flags, applies WHO
-biologically implausible flagging rules, and categorizes them into WHO severity tiers.
+Cleans and classifies child anthropometric z-scores (HAZ/WHZ/WAZ) into WHO
+severity categories, with optional scaling and implausible-value filtering.
 }

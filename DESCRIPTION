@@ -5,7 +5,7 @@ Authors@R:
     c(person("Sujon", "Mia", email = "sujonsgc@gmail.com",
              role = c("aut", "cre")),
       person("Md. Atiqul", "Islam", email = "atique@stat.jnu.ac.bd",
-             role = "rev",
+             role = "ths",
              comment = "Professor, Department of Statistics"))
 Description: Provides tools for analysing population health survey data
     (WHO STEPS, DHS, MICS, and similar complex sample surveys), where

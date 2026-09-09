@@ -12,6 +12,11 @@ A character vector of the 18 FCI condition descriptions.
 \description{
 Returns the standard condition list for the Functional Comorbidity Index.
 }
+\examples{
+fci_items()
+length(fci_items())  # 18
+
+}
 \references{
 Groll, D. L., To, T., Bombardier, C., & Wright, J. G. (2005). The
 development of a comorbidity index with physical function as the outcome.

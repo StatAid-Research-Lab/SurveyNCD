@@ -57,7 +57,7 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item Md. Atiqul Islam \email{atique@stat.jnu.ac.bd} (Professor, Department of Statistics) [reviewer]
+  \item Md. Atiqul Islam \email{atique@stat.jnu.ac.bd} (Professor, Department of Statistics) [thesis advisor]
 }
 
 }

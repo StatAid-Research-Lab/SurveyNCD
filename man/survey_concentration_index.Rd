@@ -43,3 +43,21 @@ coefficient \eqn{\beta} is mathematically identical to the concentration index,
 and its standard error from the regression model is a design-consistent standard
 error that fully accounts for stratification and clustering.
 }
+\examples{
+set.seed(42)
+n <- 50
+df <- data.frame(
+  wealth  = rnorm(n, 50, 15),
+  outcome = pmax(0, 0.3 * rnorm(n, 50, 15) + rnorm(n, 0, 5)),
+  wt      = sample(1:5, n, replace = TRUE)
+)
+design <- survey::svydesign(ids = ~1, weights = ~wt, data = df)
+survey_concentration_index(design, outcome = outcome, wealth = wealth)
+
+}
+\references{
+Kakwani, N., Wagstaff, A., & van Doorslaer, E. (1997). Socioeconomic
+inequalities in health: Measurement, computation, and statistical inference.
+\emph{Journal of Econometrics}, 77(1), 87-103.
+\doi{10.1016/S0304-4076(96)01807-6}
+}

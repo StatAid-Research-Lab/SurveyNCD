@@ -21,8 +21,8 @@ test_that("survey_concentration_index() matches an independent replicate-by-weig
   cov_exp <- cov(expanded$outcome, frac_rank) * (n_exp - 1) / n_exp
   ci_exp <- (2 / mu_exp) * cov_exp
 
-  expect_equal(res$Concentration_Index, round(ci_exp, 4), tolerance = 0.01)
-  expect_equal(res$Outcome_Mean, round(mu_exp, 4), tolerance = 0.01)
+  expect_equal(res$Concentration_Index, ci_exp, tolerance = 0.01)
+  expect_equal(res$Outcome_Mean, mu_exp, tolerance = 0.01)
 })
 
 test_that("survey_concentration_index() uses weights(), not the inverse selection probability", {

@@ -42,3 +42,20 @@ SHAP value), SHAP values are shown on the x-axis, and each point (representing
 a respondent) is colored by its relative value for that feature (blue for low,
 red for high).
 }
+\examples{
+\donttest{
+set.seed(1)
+n <- 30
+df <- data.frame(
+  outcome = rnorm(n, 100, 10),
+  age     = round(runif(n, 18, 80)),
+  bmi     = round(rnorm(n, 24, 4), 1),
+  wt      = round(runif(n, 0.5, 2), 2)
+)
+design <- survey::svydesign(ids = ~1, weights = ~wt, data = df)
+model  <- survey_xgboost(design, outcome ~ age + bmi, nrounds = 5)
+shap   <- survey_shap(model)
+plot_shap_summary(shap, model$X)
+}
+
+}

@@ -40,3 +40,18 @@ Cleans raw DHS/MICS z-score variables (e.g., hw70, hw71, hw72), adjusts the
 decimal scaling if needed, handles DHS-specific missing flags, applies WHO
 biologically implausible flagging rules, and categorizes them into WHO severity tiers.
 }
+\examples{
+# DHS-style raw z-scores (scaled by 100)
+raw <- c(-310, -254, 50, 9999)
+who_anthro_score(raw, indicator = "stunting")
+
+# Already on standard z-score scale
+who_anthro_score(c(-3.1, -2.5, 0.5), indicator = "wasting",
+                 scaled_by_100 = FALSE)
+
+}
+\references{
+World Health Organization (2006). \emph{WHO Child Growth Standards:
+Length/height-for-age, weight-for-age, weight-for-length, weight-for-height
+and body mass index-for-age: Methods and development}. Geneva: WHO.
+}

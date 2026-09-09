@@ -15,6 +15,21 @@
 #' @param border_width A numeric value for the border line width. Default is `0.2`.
 #'
 #' @return A ggplot2 spatial map object.
+#'
+#' @examples
+#' \donttest{
+#' if (requireNamespace("sf", quietly = TRUE)) {
+#'   regional_map <- sf::st_read(
+#'     system.file("shape/nc.shp", package = "sf"), quiet = TRUE
+#'   )
+#'   metrics <- data.frame(
+#'     NAME = c("Ashe", "Alleghany", "Surry"),
+#'     prevalence = c(0.12, 0.08, 0.15)
+#'   )
+#'   survey_map_indicator(metrics, regional_map, "NAME", "prevalence")
+#' }
+#' }
+#'
 #' @export
 #'
 #' @importFrom dplyr left_join

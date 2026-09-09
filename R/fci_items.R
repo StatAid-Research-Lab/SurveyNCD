@@ -10,6 +10,10 @@
 #' \emph{Journal of Clinical Epidemiology}, 58(6), 595-602.
 #' \doi{10.1016/j.jclinepi.2004.10.018}
 #'
+#' @examples
+#' fci_items()
+#' length(fci_items())  # 18
+#'
 #' @export
 fci_items <- function() {
   c(

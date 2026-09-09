@@ -41,3 +41,18 @@ A ggplot2 spatial map object.
 This function merges calculated survey indicators with any provided
 spatial shapefile to generate a publication-ready thematic map.
 }
+\examples{
+\donttest{
+if (requireNamespace("sf", quietly = TRUE)) {
+  regional_map <- sf::st_read(
+    system.file("shape/nc.shp", package = "sf"), quiet = TRUE
+  )
+  metrics <- data.frame(
+    NAME = c("Ashe", "Alleghany", "Surry"),
+    prevalence = c(0.12, 0.08, 0.15)
+  )
+  survey_map_indicator(metrics, regional_map, "NAME", "prevalence")
+}
+}
+
+}

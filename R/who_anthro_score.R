@@ -22,6 +22,21 @@
 #'
 #' @return A factor vector of WHO categories (Severe, Moderate, Normal) with the
 #'   indicator label appended.
+#'
+#' @references
+#' World Health Organization (2006). \emph{WHO Child Growth Standards:
+#' Length/height-for-age, weight-for-age, weight-for-length, weight-for-height
+#' and body mass index-for-age: Methods and development}. Geneva: WHO.
+#'
+#' @examples
+#' # DHS-style raw z-scores (scaled by 100)
+#' raw <- c(-310, -254, 50, 9999)
+#' who_anthro_score(raw, indicator = "stunting")
+#'
+#' # Already on standard z-score scale
+#' who_anthro_score(c(-3.1, -2.5, 0.5), indicator = "wasting",
+#'                  scaled_by_100 = FALSE)
+#'
 #' @export
 who_anthro_score <- function(x, indicator = c("stunting", "wasting", "underweight"),
                              scaled_by_100 = TRUE, remove_implausible = TRUE) {

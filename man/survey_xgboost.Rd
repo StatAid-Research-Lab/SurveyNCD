@@ -16,9 +16,27 @@ survey_xgboost(design, formula, params = list(), nrounds = 100)
 \item{nrounds}{The number of boosting iterations.}
 }
 \value{
-A list containing the trained \code{xgb.Booster} model and the \code{xgb.DMatrix}.
+A list containing the trained \code{xgb.Booster} model, the
+\code{xgb.DMatrix}, the feature names, the observation count, and the
+cleaned training feature matrix \code{X}.
 }
 \description{
 This function trains an Extreme Gradient Boosting (XGBoost) model while
 strictly enforcing sampling weights from a complex survey design object.
+}
+\examples{
+\donttest{
+set.seed(1)
+n <- 30
+df <- data.frame(
+  outcome = rnorm(n, 100, 10),
+  age     = round(runif(n, 18, 80)),
+  bmi     = round(rnorm(n, 24, 4), 1),
+  wt      = round(runif(n, 0.5, 2), 2)
+)
+design <- survey::svydesign(ids = ~1, weights = ~wt, data = df)
+model  <- survey_xgboost(design, outcome ~ age + bmi, nrounds = 5)
+model$features
+}
+
 }

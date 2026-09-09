@@ -44,10 +44,18 @@ individual-level score into a defensible population estimate -- run
 \code{mm_n_conditions}.
 }
 \examples{
-\dontrun{
-scored <- multimorbidity_index(steps_data, conditions = c("htn", "dm"))
+set.seed(1)
+n <- 40
+df <- data.frame(
+  psu    = rep(1:8, each = 5),
+  region = rep(c("A", "B"), each = 20),
+  wt     = round(runif(n, 0.8, 1.4), 2),
+  htn    = rbinom(n, 1, 0.3),
+  dm     = rbinom(n, 1, 0.2)
+)
+scored <- multimorbidity_index(df, conditions = c("htn", "dm"))
 mm_prevalence(scored, ids = "psu", strata = "region", weights = "wt")
 mm_prevalence(scored, ids = "psu", strata = "region", weights = "wt",
-              by = "sex")
-}
+              by = "region")
+
 }

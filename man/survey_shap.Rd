@@ -17,3 +17,20 @@ feature to the final prediction for every observation.
 This function cracks open a trained survey-weighted XGBoost model and calculates
 the SHapley Additive exPlanations (SHAP values) for every respondent.
 }
+\examples{
+\donttest{
+set.seed(1)
+n <- 30
+df <- data.frame(
+  outcome = rnorm(n, 100, 10),
+  age     = round(runif(n, 18, 80)),
+  bmi     = round(rnorm(n, 24, 4), 1),
+  wt      = round(runif(n, 0.5, 2), 2)
+)
+design <- survey::svydesign(ids = ~1, weights = ~wt, data = df)
+model  <- survey_xgboost(design, outcome ~ age + bmi, nrounds = 5)
+shap   <- survey_shap(model)
+head(shap)
+}
+
+}

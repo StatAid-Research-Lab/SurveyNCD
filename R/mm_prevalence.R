@@ -30,16 +30,29 @@
 #'   `mean_conditions` / `mean_conditions_se`.
 #'
 #' @examples
-#' \dontrun{
-#' scored <- multimorbidity_index(steps_data, conditions = c("htn", "dm"))
+#' set.seed(1)
+#' n <- 40
+#' df <- data.frame(
+#'   psu    = rep(1:8, each = 5),
+#'   region = rep(c("A", "B"), each = 20),
+#'   wt     = round(runif(n, 0.8, 1.4), 2),
+#'   htn    = rbinom(n, 1, 0.3),
+#'   dm     = rbinom(n, 1, 0.2)
+#' )
+#' scored <- multimorbidity_index(df, conditions = c("htn", "dm"))
 #' mm_prevalence(scored, ids = "psu", strata = "region", weights = "wt")
 #' mm_prevalence(scored, ids = "psu", strata = "region", weights = "wt",
-#'               by = "sex")
-#' }
+#'               by = "region")
+#'
 #' @export
 #' @importFrom survey svydesign svyciprop svymean SE
 mm_prevalence <- function(data, ids = NULL, strata = NULL, weights,
                            by = NULL, nest = TRUE) {
+
+  # Set lonely PSU option locally to prevent crash on single-PSU strata
+  # (common in subgroup analyses) and restore original on exit.
+  old_opts <- options(survey.lonely.psu = "adjust")
+  on.exit(options(old_opts), add = TRUE)
 
   required_cols <- c("mm_category", "mm_n_conditions")
   missing_req <- setdiff(required_cols, names(data))

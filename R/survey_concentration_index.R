@@ -30,6 +30,22 @@
 #' coefficient \eqn{\beta} is mathematically identical to the concentration index,
 #' and its standard error from the regression model is a design-consistent standard
 #' error that fully accounts for stratification and clustering.
+#' @references
+#' Kakwani, N., Wagstaff, A., & van Doorslaer, E. (1997). Socioeconomic
+#' inequalities in health: Measurement, computation, and statistical inference.
+#' \emph{Journal of Econometrics}, 77(1), 87-103.
+#' \doi{10.1016/S0304-4076(96)01807-6}
+#'
+#' @examples
+#' set.seed(42)
+#' n <- 50
+#' df <- data.frame(
+#'   wealth  = rnorm(n, 50, 15),
+#'   outcome = pmax(0, 0.3 * rnorm(n, 50, 15) + rnorm(n, 0, 5)),
+#'   wt      = sample(1:5, n, replace = TRUE)
+#' )
+#' design <- survey::svydesign(ids = ~1, weights = ~wt, data = df)
+#' survey_concentration_index(design, outcome = outcome, wealth = wealth)
 #'
 #' @importFrom rlang enquo eval_tidy
 #' @importFrom dplyr tibble
@@ -117,12 +133,12 @@ survey_concentration_index <- function(design, outcome, wealth, conf.level = 0.9
   p_val <- 2 * (1 - stats::pnorm(abs(ci_value / se_value)))
 
   dplyr::tibble(
-    Concentration_Index = round(ci_value, 4),
-    Standard_Error      = round(se_value, 4),
-    Lower_CI            = round(ci_lower, 4),
-    Upper_CI            = round(ci_upper, 4),
-    p_value             = round(p_val, 4),
-    Outcome_Mean        = round(mu, 4),
+    Concentration_Index = ci_value,
+    Standard_Error      = se_value,
+    Lower_CI            = ci_lower,
+    Upper_CI            = ci_upper,
+    p_value             = p_val,
+    Outcome_Mean        = mu,
     n                   = nrow(design_sorted$variables)
   )
 }

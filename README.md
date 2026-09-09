@@ -65,6 +65,9 @@ A risk-factor co-occurrence/clustering index (the WHO STEPS "≥3 risk
 factors" convention) and a care-cascade calculator (awareness →
 treatment → control).
 
+## Acknowledgments
+The development of the `SurveyNCD` package and the establishment of StatAid Research Lab were conducted under the general guidance of Dr. Md. Atiqul Islam, Professor in the Department of Statistics. The author is grateful for his overarching mentorship and support of this undergraduate research initiative.
+
 ## License
 
 MIT © Sujon Mia

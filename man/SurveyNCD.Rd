@@ -55,5 +55,10 @@ Authors:
   \item Sujon Mia \email{sujonsgc@gmail.com}
 }
 
+Other contributors:
+\itemize{
+  \item Md. Atiqul Islam \email{atique@stat.jnu.ac.bd} (Professor, Department of Statistics) [reviewer]
+}
+
 }
 \keyword{internal}

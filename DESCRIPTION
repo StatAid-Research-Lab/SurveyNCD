@@ -2,8 +2,11 @@ Package: SurveyNCD
 Title: Tools for Self-Reported Health Indicators in Complex Surveys
 Version: 0.1.0
 Authors@R: 
-    person("Sujon", "Mia", email = "sujonsgc@gmail.com",
-           role = c("aut", "cre"))
+    c(person("Sujon", "Mia", email = "sujonsgc@gmail.com",
+             role = c("aut", "cre")),
+      person("Md. Atiqul", "Islam", email = "atique@stat.jnu.ac.bd",
+             role = "rev",
+             comment = "Professor, Department of Statistics"))
 Description: Provides tools for analysing population health survey data
     (WHO STEPS, DHS, MICS, and similar complex sample surveys), where
     chronic conditions are self-reported rather than ICD-coded and

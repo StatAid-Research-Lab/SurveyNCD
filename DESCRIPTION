@@ -8,13 +8,14 @@ Authors@R:
              role = "ctb",
              comment = "Professor & Academic Mentor, Department of Statistics"))
 Description: Analyses population health survey data from the World Health
-    Organization (WHO) Stepwise Approach to NCD Risk Factor Surveillance
-    (STEPS), Demographic and Health Surveys (DHS), Multiple Indicator
-    Cluster Surveys (MICS), and similar complex sample surveys, where
-    chronic conditions are self-reported rather than coded using the
-    International Classification of Diseases (ICD) and estimates must
-    account for stratification, clustering, and sampling weights. Includes
-    a self-reported multimorbidity index based on the Functional
+    Organization (WHO) Stepwise Approach to Non-Communicable Disease
+    (NCD) Risk Factor Surveillance (STEPS), Demographic and Health
+    Surveys (DHS), Multiple Indicator Cluster Surveys (MICS), and
+    similar complex sample surveys, where chronic conditions are
+    self-reported rather than coded using the International
+    Classification of Diseases (ICD) and estimates must account for
+    stratification, clustering, and sampling weights. Includes a
+    self-reported multimorbidity index based on the Functional
     Comorbidity Index (FCI) described by Groll et al. (2005)
     <doi:10.1016/j.jclinepi.2004.10.018>, design-weighted population
     prevalence estimation via the 'survey' package, a survey-weighted

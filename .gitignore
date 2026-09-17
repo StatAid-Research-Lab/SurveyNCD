@@ -5,3 +5,11 @@
 .DS_Store
 .quarto
 inst/doc
+*.png
+*.tiff
+*.xlsx
+*.csv
+*.graph
+analysis_*.R
+run_*.R
+

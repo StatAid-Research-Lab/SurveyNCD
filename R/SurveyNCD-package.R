@@ -1,9 +1,9 @@
 #' SurveyNCD: Survey-Weighted Analysis of Self-Reported Health Indicators
 #'
 #' Analyses population health survey data from the World Health Organization
-#' (WHO) Stepwise Approach to NCD Risk Factor Surveillance (STEPS),
-#' Demographic and Health Surveys (DHS), Multiple Indicator Cluster Surveys
-#' (MICS), and similar complex sample surveys, where chronic conditions are
+#' (WHO) Stepwise Approach to Non-Communicable Disease (NCD) Risk Factor
+#' Surveillance (STEPS), Demographic and Health Surveys (DHS), Multiple
+#' Indicator Cluster Surveys (MICS), and similar complex sample surveys, where chronic conditions are
 #' self-reported rather than coded using the International Classification of
 #' Diseases (ICD) and estimates must account for stratification, clustering,
 #' and sampling weights.

@@ -14,13 +14,13 @@ points raised by Leonore Hochhauser on 2026-09-17:
 
 3. **All acronyms expanded in the Description text.**
    - WHO: World Health Organization
-   - STEPS: Stepwise Approach to NCD Risk Factor Surveillance
+   - NCD: Non-Communicable Disease
+   - STEPS: Stepwise Approach to Non-Communicable Disease (NCD) Risk Factor Surveillance
    - DHS: Demographic and Health Surveys
    - MICS: Multiple Indicator Cluster Surveys
    - ICD: International Classification of Diseases
    - FCI: Functional Comorbidity Index
    - SHAP: SHapley Additive exPlanations
-   - NCD: Non-Communicable Diseases (in package name context)
 
 ## Test environments
 * Windows 11, R 4.6.0 (local)

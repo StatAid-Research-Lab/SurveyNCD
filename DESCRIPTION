@@ -1,5 +1,5 @@
 Package: SurveyNCD
-Title: Tools for Self-Reported Health Indicators in Complex Surveys
+Title: Survey-Weighted Analysis of Self-Reported Health Indicators
 Version: 0.1.0
 Authors@R: 
     c(person("Sujon", "Mia", email = "sujonsgc@gmail.com",
@@ -7,21 +7,25 @@ Authors@R:
       person("Md. Atiqul", "Islam", email = "atique@stat.jnu.ac.bd",
              role = "ctb",
              comment = "Professor & Academic Mentor, Department of Statistics"))
-Description: Provides tools for analysing population health survey data
-    (WHO STEPS, DHS, MICS, and similar complex sample surveys), where
-    chronic conditions are self-reported rather than ICD-coded and
-    estimates must account for stratification, clustering, and sampling
-    weights. Includes a self-reported multimorbidity index based on the
-    Functional Comorbidity Index (Groll et al., 2005,
-    <doi:10.1016/j.jclinepi.2004.10.018>), design-weighted population
-    prevalence estimation via the 'survey' package, a
-    survey-weighted concentration index for health inequality analysis,
-    a DHS anthropometric z-score categoriser, a choropleth mapping
-    helper, and exploratory survey-weighted gradient boosting (via
-    'xgboost') with SHAP-based explainability. The gradient boosting
-    component applies case weights but does not yet propagate cluster
-    and strata design effects into variance estimates; it should be
-    treated as exploratory rather than as design-based inference.
+Description: Analyses population health survey data from the World Health
+    Organization (WHO) Stepwise Approach to NCD Risk Factor Surveillance
+    (STEPS), Demographic and Health Surveys (DHS), Multiple Indicator
+    Cluster Surveys (MICS), and similar complex sample surveys, where
+    chronic conditions are self-reported rather than coded using the
+    International Classification of Diseases (ICD) and estimates must
+    account for stratification, clustering, and sampling weights. Includes
+    a self-reported multimorbidity index based on the Functional
+    Comorbidity Index (FCI) described by Groll et al. (2005)
+    <doi:10.1016/j.jclinepi.2004.10.018>, design-weighted population
+    prevalence estimation via the 'survey' package, a survey-weighted
+    concentration index for health inequality analysis, a DHS
+    anthropometric z-score categoriser, a choropleth mapping helper, and
+    exploratory survey-weighted gradient boosting (via 'xgboost') with
+    SHapley Additive exPlanations (SHAP) based explainability. The
+    gradient boosting component applies case weights but does not yet
+    propagate cluster and strata design effects into variance estimates;
+    it should be treated as exploratory rather than as design-based
+    inference.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

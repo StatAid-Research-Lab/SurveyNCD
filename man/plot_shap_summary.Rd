@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_shap_summary.R
 \name{plot_shap_summary}
 \alias{plot_shap_summary}
-\title{Plot SHAP Summary}
+\title{Plot SHapley Additive exPlanations (SHAP) Summary}
 \usage{
 plot_shap_summary(
   shap_matrix,
@@ -36,7 +36,7 @@ Default is \code{"#ff0052"} (standard SHAP red).}
 A ggplot2 object.
 }
 \description{
-Generates a SHAP summary plot (similar to the Python \code{shap} package) where
+Generates a SHAP summary plot (similar to the Python 'shap' package) where
 features are ranked on the y-axis by their overall importance (mean absolute
 SHAP value), SHAP values are shown on the x-axis, and each point (representing
 a respondent) is colored by its relative value for that feature (blue for low,

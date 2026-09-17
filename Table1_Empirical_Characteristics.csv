@@ -1,0 +1,25 @@
+"Characteristic","Unweighted_N","Weighted_Percent","Stunting_Prev","Wasting_Prev","CIAF_Prev"
+"National Total",24680,100,22.9,12.3,34.8
+"Child Age: 0-5 months",2224,9.7,15.6,12,31.1
+"Child Age: 6-11 months",2228,9.6,15.5,11.5,27.8
+"Child Age: 12-23 months",4850,20.9,26.8,11.8,36.6
+"Child Age: 24-35 months",4883,21,27.1,12,38.4
+"Child Age: 36-47 months",4667,19.7,24.1,12.5,35.3
+"Child Age: 48-59 months",4505,19.1,20.3,13.5,33.9
+"Sex: Male",12750,51.9,23.5,13.3,35.8
+"Sex: Female",11930,48.1,22.2,11.2,33.8
+"Maternal Education: None",1528,5.9,33,13.8,44.8
+"Maternal Education: Primary",4400,17.9,28.9,13.6,40.8
+"Maternal Education: Secondary",6226,25.1,24.2,13.4,37.2
+"Maternal Education: Higher",10029,40.8,20.3,11.6,32.1
+"Drinking Water: Improved",24260,99,22.8,12.3,34.8
+"Drinking Water: Unimproved",420,1,28,14,41.3
+"Sanitation: Improved/Unshared",23323,95.6,22.6,12.2,34.5
+"Sanitation: Unimproved/Shared",1357,4.4,29.6,13.7,42.1
+"Cooking Fuel: Clean Fuel",6731,33.1,19.3,11.4,30.9
+"Cooking Fuel: Solid Biomass",17949,66.9,24.7,12.7,36.7
+"Wealth: Poorest (Q1)",5441,20,30.8,13.7,43.1
+"Wealth: Second (Q2)",4964,19.7,25.2,14.3,38.6
+"Wealth: Middle (Q3)",4675,20,22.4,11.9,34.1
+"Wealth: Fourth (Q4)",4410,20.8,20.7,12.2,33
+"Wealth: Richest (Q5)",3867,19.5,15.3,9.1,25.3

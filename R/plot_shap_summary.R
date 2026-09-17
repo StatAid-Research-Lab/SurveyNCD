@@ -1,6 +1,6 @@
-#' Plot SHAP Summary
+#' Plot SHapley Additive exPlanations (SHAP) Summary
 #'
-#' Generates a SHAP summary plot (similar to the Python `shap` package) where
+#' Generates a SHAP summary plot (similar to the Python 'shap' package) where
 #' features are ranked on the y-axis by their overall importance (mean absolute
 #' SHAP value), SHAP values are shown on the x-axis, and each point (representing
 #' a respondent) is colored by its relative value for that feature (blue for low,

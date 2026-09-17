@@ -1,0 +1,6 @@
+"Indicator","Weighted_Mean","Standard_CI","Erreygers_Index","Erreygers_SE","Erreygers_Lower_95","Erreygers_Upper_95","p_value","Inequality_Direction"
+"Stunting (HAZ < -2)",0.2406,-0.1284,-0.1236,0.0079,-0.139,-0.1081,"< 0.001","Pro-Poor"
+"Wasting (WHZ < -2)",0.1291,-0.0721,-0.0372,0.0059,-0.0488,-0.0257,"< 0.001","Pro-Poor"
+"Underweight (WAZ < -2)",0.2324,-0.1293,-0.1202,0.0078,-0.1355,-0.1049,"< 0.001","Pro-Poor"
+"Overall CIAF Failure",0.3641,-0.098,-0.1427,0.0089,-0.1601,-0.1253,"< 0.001","Pro-Poor"
+"Triple Failure (Group D)",0.0399,-0.165,-0.0263,0.0035,-0.0333,-0.0194,"< 0.001","Pro-Poor"

@@ -7,3 +7,9 @@
 ^cran-comments\.md$
 ^SurveyNCD_Technical_Report\.Rmd$
 ^SurveyNCD_Technical_Report\.docx$
+^Figure.*\.(png|tiff)$
+^MICS2025_Analysis_Tables\.xlsx$
+^Table.*\.csv$
+^analysis_mics2025_pipeline\.R$
+^run_full_mics2025_analysis\.R$
+^district_graph\.graph$

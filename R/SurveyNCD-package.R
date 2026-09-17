@@ -1,10 +1,12 @@
-#' SurveyNCD: Tools for Self-Reported Health Indicators in Complex Surveys
+#' SurveyNCD: Survey-Weighted Analysis of Self-Reported Health Indicators
 #'
-#' Provides tools for analysing population health survey data
-#' (WHO STEPS, DHS, MICS, and similar complex sample surveys), where
-#' chronic conditions are self-reported rather than ICD-coded and
-#' estimates must account for stratification, clustering, and sampling
-#' weights.
+#' Analyses population health survey data from the World Health Organization
+#' (WHO) Stepwise Approach to NCD Risk Factor Surveillance (STEPS),
+#' Demographic and Health Surveys (DHS), Multiple Indicator Cluster Surveys
+#' (MICS), and similar complex sample surveys, where chronic conditions are
+#' self-reported rather than coded using the International Classification of
+#' Diseases (ICD) and estimates must account for stratification, clustering,
+#' and sampling weights.
 #'
 #' @details
 #' The package includes:
@@ -23,8 +25,8 @@
 #'   \item \code{survey_map_indicator()}: Merges indicators with spatial shapefiles
 #'     and generates thematic maps.
 #'   \item \code{survey_xgboost()}, \code{survey_shap()}, and \code{plot_shap_summary()}:
-#'     Exploratory survey-weighted gradient boosting, SHAP feature importance extraction,
-#'     and color-coded SHAP visualization.
+#'     Exploratory survey-weighted gradient boosting, SHapley Additive exPlanations
+#'     (SHAP) feature importance extraction, and color-coded SHAP visualization.
 #' }
 #'
 #' @references

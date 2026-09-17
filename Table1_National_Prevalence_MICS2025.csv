@@ -1,0 +1,7 @@
+"Indicator","Prevalence","Lower_CI","Upper_CI"
+"Stunting (HAZ < -2)",24.06,23.35,24.78
+"Wasting (WHZ < -2)",12.91,12.41,13.43
+"Underweight (WAZ < -2)",23.24,22.57,23.93
+"Composite Index of Anthropometric Failure (CIAF)",36.41,35.63,37.19
+"Severe Triple Failure (Stunted + Wasted + Underweight)",3.99,3.7,4.29
+"Multiple Anthropometric Failures (>=2)",19.72,19.09,20.36

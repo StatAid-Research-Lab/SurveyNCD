@@ -1,7 +1,8 @@
 # SurveyNCD 0.1.0
 
-## First release
+## First release (CRAN 2026-09-28)
 
+* Initial release officially accepted and published on CRAN (<https://CRAN.R-project.org/package=SurveyNCD>).
 * `recode_binary()`: converts raw survey coding (e.g. 1/2/9) to clean 0/1/NA.
   When `no` is not specified, non-`yes` values are treated as 0.
 * `multimorbidity_index()`: self-reported multimorbidity score based on the

@@ -70,13 +70,18 @@ On the simulated data (1,500 respondents, 60 clusters in 3 strata), the design-b
 
 # Research impact statement
 
-`SurveyNCD` 0.1.0 was released on CRAN on 28 September 2026. Its correctness evidence consists of the automated test suite, the independent replicate-weight check of the concentration index, the bootstrap comparison of its standard error, and a regression test for a weighting error found and fixed during development.
+`SurveyNCD` 0.1.0 was released on CRAN on 28 September 2026. The package has an automated test suite, continuous integration on five operating-system and R-version configurations, two vignettes, and independent validation of its concentration-index estimator (see Software design). At the time of writing the software has not yet been used in a published or preprint analysis, and there is no external adoption to report.
 
-[TODO, REQUIRED BEFORE SUBMISSION: JOSS requires evidence that the software is already used in research and will not accept aspirational statements. Add specific, verifiable items here, for example: the preprint, thesis or manuscript that used `SurveyNCD` (with citation); the dataset and survey wave analysed; any external user, issue, pull request or citation; and a validation against a published STEPS, DHS or MICS estimate or against `rineq`/`healthequal`. If none of these exist yet, delay submission until they do.]
+[TODO, BLOCKING: JOSS requires evidence that the software is already used in research and does not accept aspirational statements. Replace this bracket with specific, verifiable evidence once it exists: a manuscript, preprint or thesis that used `SurveyNCD` (with citation), the survey and wave analysed, and any external users, issues, pull requests or citations. Submitting without this is expected to result in desk rejection.]
 
 # AI usage disclosure
 
-[TODO, REQUIRED, AUTHOR TO CONFIRM AND COMPLETE: State accurately which generative-AI tools were used, where, and how the output was verified. Draft wording to adapt: "Claude Sonnet 5.5 (Anthropic) was used to draft and edit the text of this paper, to write the example script and to prepare a bug fix with a regression test for tied ranks in `survey_concentration_index()`. [Describe any use of AI in writing the package code, tests, vignettes or documentation, or state that none was used.] The author ran the code, checked all reported numbers against the output, reviewed and edited all AI-assisted material, and made the design decisions described above." JOSS treats incomplete disclosure as an ethical breach, so this must reflect what actually happened.]
+Generative AI was used in this project, as follows.
+
+- **Package code.** Claude Sonnet 5.5 (Anthropic) was used to help write the package's R code. [TODO, REQUIRED: state the nature of that assistance (for example generating functions, refactoring, debugging), and say whether the tests, vignettes, documentation and README were also AI-assisted or written by you.]
+- **This paper and recent repository changes.** Claude Sonnet 5.5 (Anthropic) was used in October 2026 to draft and edit the text of this paper, to write the example and validation scripts (`paper/example.R`, `paper/validation.R`), to prepare a fix with a regression test for tied ranks in `survey_concentration_index()`, to add tests for `survey_map_indicator()`, and to draft `CONTRIBUTING.md`, `CITATION.cff` and the README limitations section.
+
+[TODO, REQUIRED, AUTHOR TO CONFIRM BEFORE SUBMISSION: JOSS asks authors to assert that the human authors reviewed, edited and validated all AI-assisted outputs and made the core design decisions. Add that sentence only if it is true, and make sure you can explain each design decision in the Software design section in your own words. JOSS treats incomplete or inaccurate disclosure as an ethical breach.]
 
 # Acknowledgements
 

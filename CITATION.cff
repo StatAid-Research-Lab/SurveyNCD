@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "SurveyNCD: Survey-Weighted Analysis of Self-Reported Health Indicators"
+version: 0.2.0
+license: MIT
+abstract: >-
+  Design-based analysis of self-reported health indicators from complex population
+  surveys (WHO STEPS, DHS, MICS): multimorbidity scoring, prevalence, concentration
+  index, anthropometric categorisation, mapping, and exploratory survey-weighted
+  gradient boosting with SHAP.
+authors:
+  - family-names: Mia
+    given-names: Sujon
+    orcid: "https://orcid.org/0009-0001-1032-2818"
+    affiliation: "StatAid Research Lab, Dhaka, Bangladesh"
+repository-code: "https://github.com/StatAid-Research-Lab/SurveyNCD"
+url: "https://CRAN.R-project.org/package=SurveyNCD"
+identifiers:
+  - type: doi
+    value: "10.32614/CRAN.package.SurveyNCD"
+keywords:
+  - R
+  - survey statistics
+  - multimorbidity
+  - non-communicable diseases
+  - health inequality

@@ -38,15 +38,15 @@ remotes::install_github("StatAid-Research-Lab/SurveyNCD")
 | Function | Module | Description | Status |
 |---|---|---|---|
 | `recode_binary()` | Data Cleaning | Cleans messy raw survey codes (e.g., 1=Yes, 2=No, 9=Don't Know) into clean 0/1/NA | Tested |
-| `multimorbidity_index()` | Morbidity | Computes individual-level multimorbidity count/score based on the Functional Comorbidity Index (FCI). Safely handles all-NA respondents to prevent downward prevalence bias. | Tested |
+| `multimorbidity_index()` | Morbidity | Computes an individual-level count (or weighted score) of self-reported conditions, using the unweighted-count scoring of the Functional Comorbidity Index (FCI); `fci_items()` lists the FCI conditions for reference. Safely handles all-NA respondents to prevent downward prevalence bias. | Tested |
 | `fci_items()` | Reference | Returns the 18 standard Functional Comorbidity Index conditions ([Groll et al., 2005](https://doi.org/10.1016/j.jclinepi.2004.10.018)) | Tested |
 | `mm_prevalence()` | Epidemiology | Calculates design-weighted population prevalence of single conditions or multimorbidity with logit confidence intervals, accounting for strata/clusters/weights and lonely PSUs. | Tested |
 | `survey_concentration_index()` | Health Economics | Calculates the survey-weighted concentration index for socioeconomic health inequality, with design-consistent standard errors, confidence intervals, and p-values via Kakwani's convenient WLS regression. | Tested |
 | `who_anthro_score()` | Nutrition | Categorises raw DHS/MICS anthropometric z-scores (HAZ, WHZ, WAZ) into WHO severity tiers, with automatic flagging and optional removal of biologically implausible values (WHO flags). | Tested |
 | `survey_map_indicator()` | Geospatial | Joins survey indicator estimates with spatial shapefiles (`sf`) and generates publication-grade choropleth maps. | Tested |
-| `survey_xgboost()` | Machine Learning | Implements case-weighted gradient boosting on survey data via `xgboost` (exploratory). | Tested |
-| `survey_shap()` | Explainability | Extracts SHapley Additive exPlanations (SHAP) feature contributions for each survey respondent from `survey_xgboost()` models. | Tested |
-| `plot_shap_summary()` | Visualization | Visualizes SHAP summary plots ranked by mean absolute SHAP value and colored by feature values (blue = low, red = high). | Tested |
+| `survey_xgboost()` | Machine Learning | Implements case-weighted gradient boosting on survey data via `xgboost` (exploratory). | Exploratory (tested when `xgboost` is installed) |
+| `survey_shap()` | Explainability | Extracts SHapley Additive exPlanations (SHAP) feature contributions for each survey respondent from `survey_xgboost()` models. | Exploratory (tested when `xgboost` is installed) |
+| `plot_shap_summary()` | Visualization | Visualizes SHAP summary plots ranked by mean absolute SHAP value and colored by feature values (blue = low, red = high). | Exploratory (tested when `xgboost` is installed) |
 
 > **Note on `survey_xgboost()`:** This module applies survey case weights to the boosting objective function. It is intended for exploratory pattern discovery and predictive feature ranking, rather than design-based asymptotic inference.
 
@@ -85,6 +85,23 @@ mm_prevalence(scored, ids = "psu", strata = "region", weights = "wt", by = "sex"
 # 5. Measure health inequality (Concentration Index with Kakwani standard errors)
 survey_concentration_index(design, outcome = mm_n_conditions, wealth = wealth_index)
 ```
+
+---
+
+## Limitations
+
+* **Complete-case handling.** With `na_action = "na"`, any respondent with a missing
+  condition gets a missing score and is excluded from `mm_prevalence()` (the number
+  excluded is reported). No weight adjustment for this exclusion is made, which can
+  bias estimates when missingness is common.
+* **"Multimorbid" is a convention.** It means two or more of the conditions you supply.
+  With fewer than the 18 FCI conditions this is a condition count, not the validated FCI.
+* `mm_prevalence()` and `survey_concentration_index()` support one grouping variable.
+* `who_anthro_score()` categorises undernutrition tiers only (no overweight category).
+* The gradient-boosting module applies case weights only; it does not propagate strata
+  and clusters into uncertainty and is not design-based inference.
+* Validated on simulated data and against independent calculations; not yet benchmarked
+  on a published survey report.
 
 ---
 

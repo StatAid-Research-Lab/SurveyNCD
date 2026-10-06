@@ -13,3 +13,6 @@
 ^analysis_mics2025_pipeline\.R$
 ^run_full_mics2025_analysis\.R$
 ^district_graph\.graph$
+^CONTRIBUTING\.md$
+^CITATION\.cff$
+^paper$

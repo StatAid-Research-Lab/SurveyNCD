@@ -1,9 +1,10 @@
 Package: SurveyNCD
 Title: Survey-Weighted Analysis of Self-Reported Health Indicators
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     c(person("Sujon", "Mia", email = "sujonsgc@gmail.com",
-             role = c("aut", "cre")),
+             role = c("aut", "cre"),
+             comment = c(ORCID = "0009-0001-1032-2818")),
       person("Md. Atiqul", "Islam", email = "atique@stat.jnu.ac.bd",
              role = "ctb",
              comment = "Professor & Academic Mentor, Department of Statistics"))

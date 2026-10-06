@@ -1,3 +1,18 @@
+# SurveyNCD 0.2.0
+
+* `survey_concentration_index()`: respondents tied on the ranking variable
+  (for example DHS wealth quintiles) now share the mid-point of their group's
+  cumulative-weight interval. Previously ties were ranked by row order, so the
+  estimate changed when the rows of the input were reordered. Results for
+  untied ranking variables are unchanged.
+* Tests: the replicate-weight validation of the concentration index now uses
+  a tolerance of 1e-8 (the two calculations agree to machine precision); added
+  a tie-invariance regression test and tests for `survey_map_indicator()`
+  (run when `sf` is installed).
+* Documentation: README status column now distinguishes tested functions from
+  the exploratory machine-learning module, and a Limitations section was added.
+* Added `CONTRIBUTING.md` and `CITATION.cff`; added the author ORCID.
+
 # SurveyNCD 0.1.0
 
 ## First release (CRAN 2026-09-28)

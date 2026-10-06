@@ -84,11 +84,18 @@ survey_concentration_index <- function(design, outcome, wealth, conf.level = 0.9
   ord <- order(as.numeric(rlang::eval_tidy(wealth_q, design_clean$variables)))
   design_sorted <- design_clean[ord, ]
 
-  # Calculate fractional rank using sorted sampling weights
+  # Calculate fractional rank using sorted sampling weights. Respondents tied
+  # on the ranking variable (e.g. DHS wealth quintiles) share the mid-point of
+  # their group's cumulative-weight interval, so the result does not depend on
+  # the row order of the input data (O'Donnell et al. 2008, ch. 8).
   calc_weight  <- stats::weights(design_sorted)
-  sum_weights <- sum(calc_weight)
-  cum_weight <- cumsum(calc_weight)
-  frac_rank  <- (cum_weight - 0.5 * calc_weight) / sum_weights
+  sum_weights  <- sum(calc_weight)
+  wealth_sorted <- as.numeric(rlang::eval_tidy(wealth_q, design_sorted$variables))
+  cum_hi <- cumsum(calc_weight)
+  cum_lo <- cum_hi - calc_weight
+  grp_lo <- stats::ave(cum_lo, wealth_sorted, FUN = min)
+  grp_hi <- stats::ave(cum_hi, wealth_sorted, FUN = max)
+  frac_rank <- (grp_lo + grp_hi) / 2 / sum_weights
 
   # Calculate outcome mean
   outcome_vals <- as.numeric(rlang::eval_tidy(outcome_q, design_sorted$variables))

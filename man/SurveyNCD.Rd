@@ -49,6 +49,11 @@ Useful links:
 \author{
 \strong{Maintainer}: Sujon Mia \email{sujonsgc@gmail.com} (\href{https://orcid.org/0009-0001-1032-2818}{ORCID})
 
+Authors:
+\itemize{
+  \item Sujon Mia \email{sujonsgc@gmail.com} (\href{https://orcid.org/0009-0001-1032-2818}{ORCID})
+}
+
 Other contributors:
 \itemize{
   \item Md. Atiqul Islam \email{atique@stat.jnu.ac.bd} (Professor & Academic Mentor, Department of Statistics) [contributor]

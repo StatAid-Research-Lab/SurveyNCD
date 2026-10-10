@@ -1,0 +1,150 @@
+---
+title: "A complete analysis with SurveyNCD"
+author: "Sujon Mia - StatAid Research Lab"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A complete analysis with SurveyNCD}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+has_sf  <- requireNamespace("sf", quietly = TRUE)
+has_xgb <- requireNamespace("xgboost", quietly = TRUE)
+```
+
+This vignette walks through a full analysis using every function in
+**SurveyNCD** and the two simulated datasets shipped with the package.
+`ncd_survey` holds 2,400 adults from a stratified two-stage cluster sample
+(12 strata, 120 primary sampling units, unequal weights), and `child_anthro`
+holds 1,034 children under five from the same households. **All data are
+synthetic and the regions are fictitious**, so no result describes a real
+population.
+
+```{r}
+library(SurveyNCD)
+library(survey)
+options(survey.lonely.psu = "adjust")
+str(ncd_survey[, 1:11])
+```
+
+## 1. Clean raw response codes
+
+STEPS-style questions are coded 1 = yes, 2 = no, 9 = don't know. The
+depression item is stored as text. `recode_binary()` maps both to 0/1 and
+leaves anything it cannot place as `NA`, with a warning.
+
+```{r}
+d <- ncd_survey
+d$htn    <- recode_binary(d$htn_raw,    yes = 1, no = 2)
+d$dm     <- recode_binary(d$dm_raw,     yes = 1, no = 2)
+d$arth   <- recode_binary(d$arth_raw,   yes = 1, no = 2)
+d$asthma <- recode_binary(d$asthma_raw, yes = 1, no = 2)
+d$angina <- recode_binary(d$angina_raw, yes = 1, no = 2)
+d$stroke <- recode_binary(d$stroke_raw, yes = 1, no = 2)
+d$dep    <- recode_binary(d$dep_raw,    yes = "Yes", no = "No")
+table(raw = d$htn_raw, clean = d$htn, useNA = "ifany")
+```
+
+## 2. Score each respondent
+
+`fci_items()` lists the 18 conditions of the Functional Comorbidity Index.
+The survey collects six of them, plus hypertension.
+
+```{r}
+fci_items()
+conds <- c("htn", "dm", "arth", "asthma", "angina", "stroke", "dep")
+scored <- multimorbidity_index(d, conditions = conds, na_action = "na")
+table(scored$mm_category, useNA = "ifany")
+```
+
+With `na_action = "na"`, anyone with a "don't know" answer gets a missing
+score rather than being counted as free of that condition.
+
+## 3. Design-based prevalence
+
+```{r}
+mm_prevalence(scored, ids = "psu", strata = "stratum", weights = "wt")
+mm_prevalence(scored, ids = "psu", strata = "stratum", weights = "wt",
+              by = "wealth_quintile")
+```
+
+For comparison, the unweighted sample proportion ignores the design:
+
+```{r}
+mean(scored$mm_category == "Multimorbid", na.rm = TRUE)
+```
+
+## 4. Wealth-related inequality
+
+```{r}
+des <- svydesign(ids = ~psu, strata = ~stratum, weights = ~wt,
+                 data = scored, nest = TRUE)
+survey_concentration_index(des, outcome = mm_n_conditions, wealth = wealth_score)
+survey_concentration_index(des, outcome = dm, wealth = wealth_score)
+survey_concentration_index(des, outcome = dep, wealth = wealth_score)
+```
+
+Respondents tied on the ranking variable, such as wealth quintiles, share a
+mid-rank, so the result does not depend on the order of the rows.
+
+```{r}
+survey_concentration_index(des, outcome = mm_n_conditions, wealth = wealth_quintile)
+```
+
+## 5. Child undernutrition from DHS-coded z-scores
+
+```{r}
+ch <- child_anthro
+ch$stunting <- who_anthro_score(ch$hw70, indicator = "stunting")
+table(ch$stunting, useNA = "ifany")
+ch$stunted <- as.numeric(ch$stunting %in% c("Severe stunting", "Moderate stunting"))
+ch$stunted[is.na(ch$stunting)] <- NA
+cdes <- svydesign(ids = ~psu, strata = ~stratum, weights = ~wt,
+                  data = ch[!is.na(ch$stunted), ], nest = TRUE)
+svyciprop(~stunted, cdes, method = "logit")
+survey_concentration_index(cdes, outcome = stunted, wealth = wealth_score)
+```
+
+## 6. Mapping regional estimates
+
+```{r map, eval = has_sf, fig.alt = "Choropleth of multimorbidity prevalence in six fictitious regions."}
+reg <- mm_prevalence(scored, ids = "psu", strata = "stratum", weights = "wt",
+                     by = "region")
+grid <- sf::st_make_grid(sf::st_as_sfc(sf::st_bbox(c(xmin = 0, ymin = 0, xmax = 3, ymax = 2))),
+                         n = c(3, 2))
+regions_sf <- sf::st_sf(region = paste("Region", LETTERS[c(4, 5, 6, 1, 2, 3)]),
+                        geometry = grid)
+survey_map_indicator(reg, regions_sf, join_by = "region", fill_var = "prevalence",
+                     palette = "cividis", legend_title = "Multimorbidity prevalence")
+```
+
+## 7. Exploratory machine learning
+
+`survey_xgboost()` uses the sampling weights as case weights. It does not
+carry strata or clusters into any measure of uncertainty, so treat it as a
+tool for exploring patterns, not for inference.
+
+```{r ml, eval = has_xgb, fig.alt = "SHAP summary plot ranking age, BMI and wealth as the main contributors."}
+scored$female <- as.numeric(scored$sex == "Female")
+scored$urban  <- as.numeric(scored$residence == "Urban")
+des_ml <- svydesign(ids = ~psu, strata = ~stratum, weights = ~wt,
+                    data = scored, nest = TRUE)
+fit <- survey_xgboost(des_ml, mm_n_conditions ~ age + bmi + wealth_score + female + urban,
+                      params = list(objective = "reg:squarederror", max_depth = 3,
+                                    eta = 0.05, nthread = 1),
+                      nrounds = 150)
+shap <- survey_shap(fit)
+plot_shap_summary(shap, fit$X)
+```
+
+## How the example data were made
+
+The datasets come from a known simulated population of 142,133 adults. The
+code is in `data-raw/simulate_survey.R` in the
+[source repository](https://github.com/StatAid-Research-Lab/SurveyNCD).
+Because the population is known, the design-based estimates above can be
+checked against the truth. For example, the true multimorbidity prevalence
+is 9.5%. The repository's `analysis/` folder repeats the sampling 1,000
+times to check bias and confidence-interval coverage.

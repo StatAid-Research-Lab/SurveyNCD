@@ -16,3 +16,7 @@
 ^CONTRIBUTING\.md$
 ^CITATION\.cff$
 ^paper$
+^data-raw$
+^analysis$
+^SUBMISSION_GUIDE\.md$
+^rjournal$

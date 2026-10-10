@@ -1,5 +1,12 @@
 # SurveyNCD 0.2.0
 
+* New simulated example datasets `ncd_survey` (2,400 adults, STEPS-style raw
+  response codes, stratified two-stage cluster design with unequal weights) and
+  `child_anthro` (1,034 children with DHS-coded z-scores), drawn from a known
+  synthetic population. Generating code is in `data-raw/` of the source
+  repository.
+* New vignette `vignette("full-workflow")` demonstrating every exported function
+  on the example datasets.
 * `survey_concentration_index()`: respondents tied on the ranking variable
   (for example DHS wealth quintiles) now share the mid-point of their group's
   cumulative-weight interval. Previously ties were ranked by row order, so the

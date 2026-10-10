@@ -1,0 +1,19 @@
+\begin{table}[htbp]
+
+\caption{\label{tab:tab_validation_rineq}Concentration index (adults with complete answers on all seven conditions, n = 2054) from survey\_concentration\_index() compared with rineq::ci() (version 0.0.2) and with a 500-replicate design bootstrap that re-computes the fractional ranks in every replicate. The wealth score has 379 tied values; rineq ranks ties by row order while SurveyNCD gives tied respondents a common mid-rank, which explains the small differences; with ties broken the two agree to rounding error. rineq's standard error assumes independent observations and ignores strata and clusters.}
+\centering
+\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lrrrrrrr}
+\toprule
+Outcome & SurveyNCD CI & rineq CI & Abs. diff. (ties) & Abs. diff. (no ties) & SE: SurveyNCD (design) & SE: bootstrap (design) & SE: rineq (iid)\\
+\midrule
+Hypertension & 0.103 & 0.103 & 4.2e-05 & 8.3e-17 & 0.032 & 0.033 & 0.029\\
+Diabetes & 0.320 & 0.320 & 1.9e-05 & 3.3e-16 & 0.060 & 0.056 & 0.044\\
+Depression & -0.194 & -0.194 & 2.3e-05 & 1.1e-16 & 0.063 & 0.057 & 0.048\\
+Number of conditions & 0.025 & 0.025 & 2.4e-05 & 4.9e-17 & 0.027 & 0.026 & 0.020\\
+Multimorbidity & 0.036 & 0.036 & 3.9e-05 & 4.7e-16 & 0.054 & 0.052 & 0.040\\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

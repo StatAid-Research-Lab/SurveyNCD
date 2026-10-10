@@ -40,7 +40,7 @@ remotes::install_github("StatAid-Research-Lab/SurveyNCD")
 | `recode_binary()` | Data Cleaning | Cleans messy raw survey codes (e.g., 1=Yes, 2=No, 9=Don't Know) into clean 0/1/NA | Tested |
 | `multimorbidity_index()` | Morbidity | Computes an individual-level count (or weighted score) of self-reported conditions, using the unweighted-count scoring of the Functional Comorbidity Index (FCI); `fci_items()` lists the FCI conditions for reference. Safely handles all-NA respondents to prevent downward prevalence bias. | Tested |
 | `fci_items()` | Reference | Returns the 18 standard Functional Comorbidity Index conditions ([Groll et al., 2005](https://doi.org/10.1016/j.jclinepi.2004.10.018)) | Tested |
-| `mm_prevalence()` | Epidemiology | Calculates design-weighted population prevalence of single conditions or multimorbidity with logit confidence intervals, accounting for strata/clusters/weights and lonely PSUs. | Tested |
+| `mm_prevalence()` | Epidemiology | Calculates design-weighted population prevalence of multimorbidity and the mean number of conditions, with logit confidence intervals, accounting for strata/clusters/weights and lonely PSUs. | Tested |
 | `survey_concentration_index()` | Health Economics | Calculates the survey-weighted concentration index for socioeconomic health inequality, with design-consistent standard errors, confidence intervals, and p-values via Kakwani's convenient WLS regression. | Tested |
 | `who_anthro_score()` | Nutrition | Categorises raw DHS/MICS anthropometric z-scores (HAZ, WHZ, WAZ) into WHO severity tiers, with automatic flagging and optional removal of biologically implausible values (WHO flags). | Tested |
 | `survey_map_indicator()` | Geospatial | Joins survey indicator estimates with spatial shapefiles (`sf`) and generates publication-grade choropleth maps. | Tested |
@@ -85,6 +85,24 @@ mm_prevalence(scored, ids = "psu", strata = "region", weights = "wt", by = "sex"
 # 5. Measure health inequality (Concentration Index with Kakwani standard errors)
 survey_concentration_index(design, outcome = mm_n_conditions, wealth = wealth_index)
 ```
+
+---
+
+## Example data and a complete worked analysis
+
+Two **simulated** datasets ship with the package so that every function can be tried
+immediately: `ncd_survey` (2,400 adults, STEPS-style raw codes, 12 strata, 120 PSUs,
+unequal weights) and `child_anthro` (1,034 children with DHS-coded z-scores). They are
+drawn from a known synthetic population (`data-raw/`), so estimates can be checked
+against the truth. Regions are fictitious.
+
+```r
+vignette("full-workflow", package = "SurveyNCD")
+```
+
+The repository's `analysis/` folder reproduces every table and figure in the papers
+describing the package, including a 1,000-sample simulation study of bias and
+confidence-interval coverage (`Rscript analysis/run_all.R`).
 
 ---
 

@@ -1,0 +1,10 @@
+Table: The simulated example datasets shipped with SurveyNCD.
+
+|Item                                |        Value|
+|:-----------------------------------|------------:|
+|Adults (households)                 |         2400|
+|Children under 5                    |         1034|
+|Strata                              |           12|
+|Primary sampling units              |          120|
+|Weight range (normalised)           | 0.21 to 3.08|
+|Adults with any 'don't know' answer |  346 (14.4%)|

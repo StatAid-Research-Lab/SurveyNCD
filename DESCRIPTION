@@ -27,11 +27,15 @@ Description: Analyses population health survey data from the World Health
     gradient boosting component applies case weights but does not yet
     propagate cluster and strata design effects into variance estimates;
     it should be treated as exploratory rather than as design-based
-    inference.
+    inference. Simulated example datasets with a known population are
+    included.
 License: MIT + file LICENSE
 Encoding: UTF-8
+LazyData: true
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
+Depends:
+    R (>= 3.5)
 Imports:
     dplyr,
     ggplot2,

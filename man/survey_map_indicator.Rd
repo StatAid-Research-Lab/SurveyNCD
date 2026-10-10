@@ -38,7 +38,7 @@ the \code{fill_var} name is used.}
 A ggplot2 spatial map object.
 }
 \description{
-This function merges calculated survey indicators with any provided
+\strong{Experimental.} This function merges calculated survey indicators with any provided
 spatial shapefile to generate a publication-ready thematic map.
 }
 \examples{

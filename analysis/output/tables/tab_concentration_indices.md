@@ -1,0 +1,16 @@
+Table: Wealth-related concentration indices from survey\_concentration\_index() (ranking: continuous wealth score). Negative values: concentrated among poorer people; positive: among richer people. Design-based SEs account for strata and clusters.
+
+|Outcome                |Population |             CI (95% CI)|    SE|      p|    n|
+|:----------------------|:----------|-----------------------:|-----:|------:|----:|
+|Hypertension           |Adults     |    0.123 (0.065, 0.181)| 0.030| <0.001| 2308|
+|Diabetes               |Adults     |    0.314 (0.206, 0.421)| 0.055| <0.001| 2332|
+|Arthritis              |Adults     |  -0.083 (-0.168, 0.001)| 0.043|  0.052| 2362|
+|Asthma                 |Adults     |  -0.057 (-0.189, 0.076)| 0.068|  0.401| 2388|
+|Angina / heart disease |Adults     |   0.019 (-0.129, 0.166)| 0.075|  0.805| 2347|
+|Stroke                 |Adults     |  -0.199 (-0.503, 0.104)| 0.155|  0.198| 2366|
+|Depression             |Adults     | -0.153 (-0.266, -0.040)| 0.058|  0.008| 2328|
+|Number of conditions   |Adults     |   0.025 (-0.028, 0.079)| 0.027|  0.352| 2054|
+|Multimorbidity         |Adults     |   0.036 (-0.070, 0.142)| 0.054|  0.502| 2054|
+|Stunting               |Children   | -0.250 (-0.312, -0.188)| 0.032| <0.001| 1015|
+|Underweight            |Children   | -0.342 (-0.432, -0.252)| 0.046| <0.001| 1009|
+|Wasting                |Children   | -0.210 (-0.374, -0.046)| 0.084|  0.012| 1007|

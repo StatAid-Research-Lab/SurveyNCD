@@ -2,46 +2,75 @@
 % Please edit documentation in R/survey_concentration_index.R
 \name{survey_concentration_index}
 \alias{survey_concentration_index}
-\title{Calculate Survey-Weighted Concentration Index}
+\title{Survey-weighted concentration index}
 \usage{
-survey_concentration_index(design, outcome, wealth, conf.level = 0.95)
+survey_concentration_index(
+  design,
+  outcome,
+  wealth,
+  conf.level = 0.95,
+  type = c("CI", "generalized", "erreygers", "wagstaff"),
+  bounds = NULL,
+  by = NULL
+)
 }
 \arguments{
-\item{design}{A survey design object created by \code{survey::svydesign()}
-or \code{srvyr::as_survey_design()} -- anything inheriting from
-\code{"survey.design"} (srvyr's \code{tbl_svy} objects do).}
+\item{design}{A survey design object (\pkg{survey} or \pkg{srvyr}).}
 
-\item{outcome}{Unquoted name of the health indicator (e.g. stunting_clean).}
+\item{outcome}{Unquoted name of the health variable.}
 
-\item{wealth}{Unquoted name of the wealth/ranking variable (e.g. wealth_index).}
+\item{wealth}{Unquoted name of the ranking variable.}
 
-\item{conf.level}{Confidence level for the confidence interval. Default is 0.95.}
+\item{conf.level}{Confidence level.}
+
+\item{type}{One of \code{"CI"} (default), \code{"generalized"}, \code{"erreygers"},
+\code{"wagstaff"}.}
+
+\item{bounds}{Numeric vector \code{c(a, b)} of the outcome's bounds, needed for
+\code{"erreygers"} and \code{"wagstaff"}. Defaults to \code{c(0, 1)} when the outcome is
+binary.}
+
+\item{by}{Optional character vector of grouping columns; ranks are
+computed within each group.}
 }
 \value{
-A tibble with \code{Concentration_Index}, \code{Standard_Error},
-\code{Lower_CI}, \code{Upper_CI}, \code{p_value}, \code{Outcome_Mean},
-and \code{n}.
+A tibble of class \code{surveyncd_ci} with any \code{by} columns,
+\code{Concentration_Index}, \code{Standard_Error}, \code{Lower_CI}, \code{Upper_CI},
+\code{p_value}, \code{Outcome_Mean}, \code{n} and \code{Type}.
 }
 \description{
-Computes the concentration index (the Wagstaff/O'Donnell "convenient
-covariance" formula) for a health outcome across a socioeconomic
-ranking variable, using proper survey sampling weights, and computes
-design-consistent standard errors, confidence intervals, and p-values.
+Computes the concentration index of a health variable across a
+socioeconomic ranking (for example a wealth score), with design-based
+standard errors, confidence intervals and p-values that account for
+stratification and clustering. The standard, generalized, Erreygers and
+Wagstaff indices are available.
 }
 \details{
-\deqn{CI = \frac{2}{\mu} \times Cov_w(y_i, R_i)}
-where \eqn{y_i} is the outcome for individual i, \eqn{\mu} is the
-weighted mean outcome, and \eqn{R_i} is each individual's weighted
-fractional rank in the wealth distribution.
+The standard concentration index is
+\deqn{C = \frac{2}{\mu} \mathrm{cov}_w(y_i, R_i),}
+where \eqn{\mu} is the weighted mean of \eqn{y} and \eqn{R_i} the weighted
+fractional rank: the mid-point of each respondent's interval of the
+cumulative weight distribution (Lerman and Yitzhaki 1989). Respondents
+tied on the ranking variable share the mid-point of their tied group's
+interval, so results do not depend on the order of the data.
 
-The standard error, confidence intervals, and p-value are calculated using the
-"convenient regression" method (Kakwani, Wagstaff, and van Doorslaer 1997)
-run via \code{survey::svyglm()}:
-\deqn{2 \sigma_R^2 (y_i / \mu) = \alpha + \beta R_i + \epsilon_i}
-where \eqn{\sigma_R^2} is the weighted variance of the fractional rank. The
-coefficient \eqn{\beta} is mathematically identical to the concentration index,
-and its standard error from the regression model is a design-consistent standard
-error that fully accounts for stratification and clustering.
+Each index is the slope \eqn{\beta} of the "convenient regression" of
+Kakwani, Wagstaff and van Doorslaer (1997),
+\eqn{2\sigma_R^2 \, h(y_i) = \alpha + \beta R_i + \varepsilon_i}, fitted
+with \code{\link[survey:svyglm]{survey::svyglm()}} so that its standard error is design-based. With
+bounds \eqn{a \le y \le b} (O'Donnell et al. 2016):
+\itemize{
+\item \code{"CI"} (standard): \eqn{h(y) = y/\mu}.
+\item \code{"generalized"}: \eqn{h(y) = y}, giving \eqn{\mu C}.
+\item \code{"erreygers"}: \eqn{h(y) = 4y/(b - a)}, giving
+\eqn{4\mu C/(b-a)} (Erreygers 2009).
+\item \code{"wagstaff"}: \eqn{h(y) = (b - a)y/((b - \mu)(\mu - a))}, giving
+\eqn{(b-a)\mu C/((b-\mu)(\mu-a))}; for binary outcomes \eqn{C/(1-\mu)}
+(Wagstaff 2005).
+}
+For bounded outcomes such as binary indicators the Erreygers or Wagstaff
+index is usually preferred. The standard error treats the ranks and
+\eqn{\mu} as fixed.
 }
 \examples{
 set.seed(42)
@@ -49,10 +78,13 @@ n <- 50
 df <- data.frame(
   wealth  = rnorm(n, 50, 15),
   outcome = pmax(0, 0.3 * rnorm(n, 50, 15) + rnorm(n, 0, 5)),
+  sick    = rbinom(n, 1, 0.3),
   wt      = sample(1:5, n, replace = TRUE)
 )
 design <- survey::svydesign(ids = ~1, weights = ~wt, data = df)
 survey_concentration_index(design, outcome = outcome, wealth = wealth)
+survey_concentration_index(design, outcome = sick, wealth = wealth,
+                           type = "erreygers")
 
 }
 \references{
@@ -60,4 +92,16 @@ Kakwani, N., Wagstaff, A., & van Doorslaer, E. (1997). Socioeconomic
 inequalities in health: Measurement, computation, and statistical inference.
 \emph{Journal of Econometrics}, 77(1), 87-103.
 \doi{10.1016/S0304-4076(96)01807-6}
+
+Erreygers, G. (2009). Correcting the concentration index.
+\emph{Journal of Health Economics}, 28(2), 504-515.
+\doi{10.1016/j.jhealeco.2008.02.003}
+
+Wagstaff, A. (2005). The bounds of the concentration index when the variable
+of interest is binary, with an application to immunization inequality.
+\emph{Health Economics}, 14(4), 429-432. \doi{10.1002/hec.953}
+
+O'Donnell, O., O'Neill, S., Van Ourti, T., & Walsh, B. (2016). conindex:
+Estimation of concentration indices. \emph{The Stata Journal}, 16(1),
+112-138. \doi{10.1177/1536867X1601600112}
 }

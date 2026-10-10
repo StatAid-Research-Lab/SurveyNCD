@@ -1,0 +1,197 @@
+---
+title: "A complete analysis with SurveyNCD"
+author: "Sujon Mia - StatAid Research Lab"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A complete analysis with SurveyNCD}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+has_sf  <- requireNamespace("sf", quietly = TRUE)
+has_xgb <- requireNamespace("xgboost", quietly = TRUE)
+```
+
+This vignette walks through a full analysis with **SurveyNCD** using the two
+simulated datasets shipped with the package:
+
+* `ncd_survey` holds 2,400 adults from a stratified two-stage cluster sample
+  (12 strata, 120 primary sampling units, unequal weights).
+* `child_anthro` holds 1,034 children under five from the same households.
+
+**All data are synthetic and the regions are fictitious**, so no result
+describes a real population. For a real-data example, see
+`vignette("real-data-nhanes")`.
+
+The workflow has four steps: build the design once, clean and score
+respondents, then estimate and plot.
+
+```{r}
+library(SurveyNCD)
+library(survey)
+```
+
+## 1. Clean raw answers and score respondents
+
+STEPS-style questions are coded 1 = yes, 2 = no, 9 = don't know; the
+depression item is stored as text. `recode_binary()` maps both to 0/1 and
+leaves anything it cannot place as `NA`.
+
+```{r}
+d <- ncd_survey
+for (v in c("htn", "dm", "arth", "asthma", "angina", "stroke")) {
+  d[[v]] <- suppressWarnings(recode_binary(d[[paste0(v, "_raw")]], yes = 1, no = 2))
+}
+d$dep <- suppressWarnings(recode_binary(d$dep_raw, yes = "Yes", no = "No"))
+conds  <- c("htn", "dm", "arth", "asthma", "angina", "stroke", "dep")
+labels <- c(htn = "Hypertension", dm = "Diabetes", arth = "Arthritis",
+            asthma = "Asthma", angina = "Angina", stroke = "Stroke",
+            dep = "Depression")
+
+scored <- multimorbidity_index(d, conditions = conds, na_action = "na")
+scored$age_group <- cut(scored$age, c(18, 30, 45, 60, 70), right = FALSE,
+                        labels = c("18-29", "30-44", "45-59", "60-69"))
+table(scored$mm_category, useNA = "ifany")
+```
+
+## 2. Build the survey design once
+
+`steps_design()`, `dhs_design()` and `mics_design()` use each programme's
+standard variable names. Here the columns are already named `psu` and
+`stratum`, so only the weight is needed. Every estimation function below
+takes this design object.
+
+```{r}
+des <- steps_design(scored, weight = "wt")
+```
+
+## 3. Prevalence
+
+```{r}
+ncd_table(des, conds, by = "sex", labels = labels)
+```
+
+`survey_prevalence()` returns the numbers behind the table and accepts
+several grouping variables:
+
+```{r}
+prev <- survey_prevalence(des, c("htn", "dm"), by = c("residence", "sex"))
+prev
+ggplot2::autoplot(prev)
+```
+
+Multimorbidity, overall and by two variables:
+
+```{r}
+mm_prevalence(des)
+mm_prevalence(des, by = c("residence", "sex"))
+```
+
+### Age standardisation
+
+Comparisons between groups or surveys with different age structures need
+age-standardised estimates. `who_standard_population()` re-aggregates the WHO
+World Standard Population to the STEPS age groups.
+
+```{r}
+std <- who_standard_population(breaks = c(18, 30, 45, 60, 70))
+std
+mm_standardize(des, c("mm_multimorbid", "htn"), age_group = "age_group",
+               standard = std, by = "residence")
+```
+
+### Which conditions occur together?
+
+```{r, fig.alt = "Bar chart of the prevalence of the most common pairs of conditions."}
+pairs <- mm_patterns(des, conds, top = 8)
+pairs
+ggplot2::autoplot(pairs)
+```
+
+An observed-to-expected ratio (`oe_ratio`) above 1 means a pair occurs more
+often than if the two conditions were independent.
+
+### How much could "don't know" answers matter?
+
+```{r}
+mm_bounds(des, conds)
+```
+
+The lower and upper bounds treat every missing answer as "no" and as "yes"
+respectively. Any assumption about the missing answers gives a prevalence
+between them.
+
+## 4. Socioeconomic inequality
+
+```{r}
+survey_concentration_index(des, outcome = dm, wealth = wealth_score)
+```
+
+For a binary outcome the Erreygers- or Wagstaff-corrected index is usually
+preferred:
+
+```{r}
+survey_concentration_index(des, outcome = dm, wealth = wealth_score, type = "erreygers")
+survey_concentration_index(des, outcome = dep, wealth = wealth_score, type = "erreygers",
+                           by = "residence")
+```
+
+Respondents tied on the ranking variable, such as wealth quintiles, share a
+mid-rank, so the result does not depend on the order of the rows.
+
+Concentration curves and the slope and relative indices of inequality:
+
+```{r, fig.alt = "Concentration curves for diabetes in urban and rural areas lying below the diagonal."}
+ggplot2::autoplot(survey_concentration_curve(des, dm, wealth_score, by = "residence"))
+survey_slope_index(des, dm, wealth_score)
+```
+
+## 5. Child undernutrition from DHS-coded z-scores
+
+```{r}
+ch <- child_anthro
+ch$stunting <- who_anthro_score(ch$hw70, indicator = "stunting")
+ch$stunted  <- as.numeric(ch$stunting %in% c("Severe stunting", "Moderate stunting"))
+ch$stunted[is.na(ch$stunting)] <- NA
+cdes <- steps_design(ch, weight = "wt")
+survey_prevalence(cdes, "stunted", by = "wealth_quintile")
+survey_concentration_index(cdes, outcome = stunted, wealth = wealth_score, type = "wagstaff")
+```
+
+## 6. Experimental: mapping and machine learning
+
+These functions are marked **experimental**. The map helper needs an `sf`
+boundary file. The gradient-boosting functions use sampling weights as case
+weights only, with no design-based uncertainty, so they are for exploring
+patterns, not for inference.
+
+```{r map, eval = has_sf, fig.alt = "Choropleth of multimorbidity prevalence in six fictitious regions."}
+reg <- mm_prevalence(des, by = "region")
+grid <- sf::st_make_grid(sf::st_as_sfc(sf::st_bbox(c(xmin = 0, ymin = 0, xmax = 3, ymax = 2))),
+                         n = c(3, 2))
+regions_sf <- sf::st_sf(region = paste("Region", LETTERS[c(4, 5, 6, 1, 2, 3)]),
+                        geometry = grid)
+survey_map_indicator(as.data.frame(reg), regions_sf, join_by = "region",
+                     fill_var = "prevalence", palette = "cividis")
+```
+
+```{r ml, eval = has_xgb, fig.alt = "SHAP summary plot ranking age, BMI and wealth as the main contributors."}
+scored$female <- as.numeric(scored$sex == "Female")
+scored$urban  <- as.numeric(scored$residence == "Urban")
+des_ml <- steps_design(scored, weight = "wt")
+fit <- survey_xgboost(des_ml, mm_n_conditions ~ age + bmi + wealth_score + female + urban,
+                      params = list(objective = "reg:squarederror", max_depth = 3,
+                                    eta = 0.05, nthread = 1),
+                      nrounds = 150)
+plot_shap_summary(survey_shap(fit), fit$X)
+```
+
+## How the example data were made
+
+The datasets come from a known simulated population of 142,133 adults. The
+code is in `data-raw/simulate_survey.R` in the
+[source repository](https://github.com/StatAid-Research-Lab/SurveyNCD).
+Because the population is known, estimates can be checked against the truth:
+for example, the true multimorbidity prevalence is 9.5%.

@@ -33,58 +33,89 @@ remotes::install_github("StatAid-Research-Lab/SurveyNCD")
 
 ---
 
-## Key Features & Functions
+## What SurveyNCD does
 
-| Function | Module | Description | Status |
-|---|---|---|---|
-| `recode_binary()` | Data Cleaning | Cleans messy raw survey codes (e.g., 1=Yes, 2=No, 9=Don't Know) into clean 0/1/NA | Tested |
-| `multimorbidity_index()` | Morbidity | Computes individual-level multimorbidity count/score based on the Functional Comorbidity Index (FCI). Safely handles all-NA respondents to prevent downward prevalence bias. | Tested |
-| `fci_items()` | Reference | Returns the 18 standard Functional Comorbidity Index conditions ([Groll et al., 2005](https://doi.org/10.1016/j.jclinepi.2004.10.018)) | Tested |
-| `mm_prevalence()` | Epidemiology | Calculates design-weighted population prevalence of single conditions or multimorbidity with logit confidence intervals, accounting for strata/clusters/weights and lonely PSUs. | Tested |
-| `survey_concentration_index()` | Health Economics | Calculates the survey-weighted concentration index for socioeconomic health inequality, with design-consistent standard errors, confidence intervals, and p-values via Kakwani's convenient WLS regression. | Tested |
-| `who_anthro_score()` | Nutrition | Categorises raw DHS/MICS anthropometric z-scores (HAZ, WHZ, WAZ) into WHO severity tiers, with automatic flagging and optional removal of biologically implausible values (WHO flags). | Tested |
-| `survey_map_indicator()` | Geospatial | Joins survey indicator estimates with spatial shapefiles (`sf`) and generates publication-grade choropleth maps. | Tested |
-| `survey_xgboost()` | Machine Learning | Implements case-weighted gradient boosting on survey data via `xgboost` (exploratory). | Tested |
-| `survey_shap()` | Explainability | Extracts SHapley Additive exPlanations (SHAP) feature contributions for each survey respondent from `survey_xgboost()` models. | Tested |
-| `plot_shap_summary()` | Visualization | Visualizes SHAP summary plots ranked by mean absolute SHAP value and colored by feature values (blue = low, red = high). | Tested |
+Four steps cover a typical analysis: build the design once, clean and score the
+answers, estimate, then report.
 
-> **Note on `survey_xgboost()`:** This module applies survey case weights to the boosting objective function. It is intended for exploratory pattern discovery and predictive feature ranking, rather than design-based asymptotic inference.
+| Step | Functions |
+|---|---|
+| **1. Design** | `dhs_design()`, `mics_design()`, `steps_design()`: the correct design from each programme's standard variable names (or any `survey`/`srvyr` design) |
+| **2. Clean and score** | `recode_binary()` (1/2/9 or text codes to 0/1/NA), `multimorbidity_index()` (condition count, adjustable threshold), `fci_items()`, `who_anthro_score()` (DHS-coded child z-scores) |
+| **3. Estimate** | `survey_prevalence()` (any binary indicators, several grouping variables), `mm_prevalence()`, `mm_standardize()` with `who_standard_population()` (age standardisation), `mm_patterns()` (pairs and triads, observed/expected), `mm_bounds()` ("don't know" sensitivity bounds) |
+| **4. Inequality** | `survey_concentration_index()` (standard, generalized, Erreygers, Wagstaff; by group), `survey_concentration_curve()`, `survey_slope_index()` (SII and RII) |
+| **Report** | `ncd_table()` (publication-ready table), `autoplot()` methods for every result |
+| *Experimental* | `survey_map_indicator()`, `survey_xgboost()`, `survey_shap()`, `plot_shap_summary()` |
+
+All variance estimation is done by the [survey](https://CRAN.R-project.org/package=survey) package, so every standard error reflects strata, clusters and weights. Each estimator is tested against an independent calculation.
+
+> **Experimental functions.** The machine-learning functions apply sampling weights as case weights but do not carry strata and clusters into any measure of uncertainty. Use them to explore patterns, not for inference. Their interface may change.
 
 ---
 
-## Quick Start Example
+## Quick start
 
 ```r
 library(SurveyNCD)
-library(survey)
 
-# 1. Clean messy raw survey coding
-df$hypertension <- recode_binary(df$hypertension_raw, yes = 1, no = 2)
-df$diabetes     <- recode_binary(df$diabetes_raw,     yes = 1, no = 2)
+d <- ncd_survey                                   # simulated STEPS-style data
+d$htn <- recode_binary(d$htn_raw, yes = 1, no = 2)
+d$dm  <- recode_binary(d$dm_raw,  yes = 1, no = 2)
+d$dep <- recode_binary(d$dep_raw, yes = "Yes", no = "No")
+d <- multimorbidity_index(d, c("htn", "dm", "dep"), na_action = "na")
 
-# 2. Score individual-level multimorbidity (safely handling all-NA cases)
-scored <- multimorbidity_index(
-  df, 
-  conditions = c("hypertension", "diabetes"), 
-  na_action = "na"
-)
+des <- steps_design(d, weight = "wt")             # psu / stratum / weight
 
-# 3. Create a complex survey design object
-design <- svydesign(
-  ids = ~psu, 
-  strata = ~region, 
-  weights = ~wt, 
-  data = scored, 
-  nest = TRUE
-)
-
-# 4. Design-weighted population prevalence
-mm_prevalence(scored, ids = "psu", strata = "region", weights = "wt")
-mm_prevalence(scored, ids = "psu", strata = "region", weights = "wt", by = "sex")
-
-# 5. Measure health inequality (Concentration Index with Kakwani standard errors)
-survey_concentration_index(design, outcome = mm_n_conditions, wealth = wealth_index)
+ncd_table(des, c("htn", "dm", "dep"), by = "sex")             # formatted table
+survey_prevalence(des, "htn", by = c("sex", "residence"))     # numbers behind it
+mm_prevalence(des, by = "residence")                          # multimorbidity
+mm_patterns(des, c("htn", "dm", "dep"))                       # common pairs
+survey_concentration_index(des, dm, wealth_score, type = "erreygers")
+ggplot2::autoplot(survey_concentration_curve(des, dm, wealth_score))
 ```
+
+With DHS data:
+
+```r
+des <- dhs_design(ir_data)    # PSU v021, strata v023, weight v005 / 1e6
+```
+
+## Example data and a complete worked analysis
+
+Two **simulated** datasets ship with the package so that every function can be tried
+immediately: `ncd_survey` (2,400 adults, STEPS-style raw codes, 12 strata, 120 PSUs,
+unequal weights) and `child_anthro` (1,034 children with DHS-coded z-scores). They are
+drawn from a known synthetic population (`data-raw/`), so estimates can be checked
+against the truth. Regions are fictitious.
+
+```r
+vignette("full-workflow", package = "SurveyNCD")   # simulated data, every function
+vignette("real-data-nhanes", package = "SurveyNCD") # real NHANES 2009-2010 data
+```
+
+The repository's `analysis/` folder reproduces every table and figure in the papers
+describing the package, including a 1,000-sample simulation study of bias and
+confidence-interval coverage (`Rscript analysis/run_all.R`).
+
+---
+
+## Limitations
+
+* **Complete-case handling.** With `na_action = "na"`, any respondent with a missing
+  condition gets a missing score and is excluded from `mm_prevalence()` (the number
+  excluded is reported). No weight adjustment for this exclusion is made, which can
+  bias estimates when missingness is common.
+* **"Multimorbid" is a convention.** It means at least `threshold` (default 2) of the conditions
+  you supply. With fewer than the 18 FCI conditions this is a condition count, not the validated FCI.
+  `mm_bounds()` shows how much the "don't know" answers could matter.
+* `who_anthro_score()` categorises undernutrition tiers only (no overweight category).
+* The gradient-boosting module applies case weights only; it does not propagate strata
+  and clusters into uncertainty and is not design-based inference.
+* Concentration-index standard errors treat the ranks as fixed; a design bootstrap gave
+  standard errors within about 11% in the validation study.
+* Validated on simulated data with a known population and against independent calculations,
+  and demonstrated on real NHANES data (`vignette("real-data-nhanes")`). Not yet benchmarked
+  against a published STEPS, DHS or MICS report.
 
 ---
 

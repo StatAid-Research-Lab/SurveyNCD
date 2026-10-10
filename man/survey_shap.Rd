@@ -14,7 +14,7 @@ A matrix of SHAP values detailing the marginal contribution of each
 feature to the final prediction for every observation.
 }
 \description{
-This function cracks open a trained survey-weighted XGBoost model and calculates
+\strong{Experimental.} This function cracks open a trained survey-weighted XGBoost model and calculates
 the SHapley Additive exPlanations (SHAP values) for every respondent.
 }
 \examples{

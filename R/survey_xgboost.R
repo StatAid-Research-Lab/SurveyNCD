@@ -1,6 +1,7 @@
 #' Train an XGBoost Model with Complex Survey Weights
 #'
-#' This function trains an Extreme Gradient Boosting (XGBoost) model while
+#' @description
+#' \strong{Experimental.} This function trains an Extreme Gradient Boosting (XGBoost) model while
 #' strictly enforcing sampling weights from a complex survey design object.
 #'
 #' @param design A \code{survey.design} object containing the data and weights.

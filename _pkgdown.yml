@@ -1,0 +1,20 @@
+url: https://stataid-research-lab.github.io/SurveyNCD/
+template:
+  bootstrap: 5
+reference:
+  - title: Survey designs
+    contents: [dhs_design, mics_design, steps_design]
+  - title: Cleaning and scoring
+    contents: [recode_binary, multimorbidity_index, fci_items, who_anthro_score]
+  - title: Prevalence and multimorbidity
+    contents: [survey_prevalence, mm_prevalence, mm_standardize, who_standard_population, mm_patterns, mm_bounds]
+  - title: Inequality
+    contents: [survey_concentration_index, survey_concentration_curve, survey_slope_index]
+  - title: Reporting
+    contents: [ncd_table, autoplot.surveyncd]
+  - title: Example data
+    contents: [ncd_survey, child_anthro]
+  - title: Experimental
+    contents: [survey_map_indicator, survey_xgboost, survey_shap, plot_shap_summary]
+  - title: Internal
+    contents: [SurveyNCD, "%>%"]

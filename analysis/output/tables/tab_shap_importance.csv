@@ -1,0 +1,6 @@
+"Feature","Mean |SHAP|"
+"age",0.2083
+"bmi",0.0775
+"wealth_score",0.072
+"urban",0.0242
+"female",0.016

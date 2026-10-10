@@ -1,0 +1,202 @@
+\begin{thebibliography}{26}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Afshar et~al.(2015)Afshar, Roderick, Kowal, Dimitrov, and
+  Hill]{afshar2015}
+S.~Afshar, P.~J. Roderick, P.~Kowal, B.~D. Dimitrov, and A.~G. Hill.
+\newblock Multimorbidity and the inequalities of global ageing: A
+  cross-sectional study of 28 countries using the {World Health Surveys}.
+\newblock \emph{BMC Public Health}, 15:\penalty0 776, 2015.
+\newblock \doi{10.1186/s12889-015-2008-7}.
+
+\bibitem[Antiporta et~al.(2024)Antiporta, Men{\'e}ndez, Kirkby, and
+  Hosseinpoor]{healthequal}
+D.~A. Antiporta, P.~Men{\'e}ndez, K.~Kirkby, and A.~Hosseinpoor.
+\newblock \emph{healthequal: Compute Summary Measures of Health Inequality},
+  2024.
+\newblock URL \url{https://CRAN.R-project.org/package=healthequal}.
+\newblock R package version 1.0.1.
+
+\bibitem[Barnett et~al.(2012)Barnett, Mercer, Norbury, Watt, Wyke, and
+  Guthrie]{barnett2012}
+K.~Barnett, S.~W. Mercer, M.~Norbury, G.~Watt, S.~Wyke, and B.~Guthrie.
+\newblock Epidemiology of multimorbidity and implications for health care,
+  research, and medical education: A cross-sectional study.
+\newblock \emph{The Lancet}, 2012.
+\newblock \doi{10.1016/S0140-6736(12)60240-2}.
+
+\bibitem[Bensken(2023)]{bensken2023}
+W.~Bensken.
+\newblock \emph{multimorbidity: Harmonizing Various Comorbidity,
+  Multimorbidity, and Frailty Measures}, 2023.
+\newblock URL \url{https://CRAN.R-project.org/package=multimorbidity}.
+\newblock R package version 0.5.1.
+
+\bibitem[Binder(1983)]{binder1983}
+D.~A. Binder.
+\newblock On the variances of asymptotically normal estimators from complex
+  surveys.
+\newblock \emph{International Statistical Review}, 51\penalty0 (3):\penalty0
+  279--292, 1983.
+\newblock \doi{10.2307/1402588}.
+
+\bibitem[Chen and Guestrin(2016)]{chen2016}
+T.~Chen and C.~Guestrin.
+\newblock {XGBoost}: A scalable tree boosting system.
+\newblock In \emph{Proceedings of the 22nd {ACM} {SIGKDD} International
+  Conference on Knowledge Discovery and Data Mining}, pages 785--794, 2016.
+\newblock \doi{10.1145/2939672.2939785}.
+
+\bibitem[Corsi et~al.(2012)Corsi, Neuman, Finlay, and Subramanian]{corsi2012}
+D.~J. Corsi, M.~Neuman, J.~E. Finlay, and S.~V. Subramanian.
+\newblock Demographic and health surveys: A profile.
+\newblock \emph{International Journal of Epidemiology}, 41\penalty0
+  (6):\penalty0 1602--1613, 2012.
+\newblock \doi{10.1093/ije/dys184}.
+
+\bibitem[Devleesschauwer et~al.(2025)Devleesschauwer, Willim{\`e}s, {Van
+  Malderen}, Konings, Speybroeck, and Meili]{rineq}
+B.~Devleesschauwer, S.~Willim{\`e}s, C.~{Van Malderen}, P.~Konings,
+  N.~Speybroeck, and K.~Meili.
+\newblock \emph{rineq: Concentration Index and Decomposition for Health
+  Inequalities}, 2025.
+\newblock URL \url{https://CRAN.R-project.org/package=rineq}.
+\newblock R package version 0.3.0.
+
+\bibitem[Erreygers(2009)]{erreygers2009}
+G.~Erreygers.
+\newblock Correcting the concentration index.
+\newblock \emph{Journal of Health Economics}, 28\penalty0 (2):\penalty0
+  504--515, 2009.
+\newblock \doi{10.1016/j.jhealeco.2008.02.003}.
+
+\bibitem[Fortin et~al.(2012)Fortin, Stewart, Poitras, Almirall, and
+  Maddocks]{fortin2012}
+M.~Fortin, M.~Stewart, M.-E. Poitras, J.~Almirall, and H.~Maddocks.
+\newblock A systematic review of prevalence studies on multimorbidity: Toward a
+  more uniform methodology.
+\newblock \emph{Annals of Family Medicine}, 10\penalty0 (2):\penalty0 142--151,
+  2012.
+\newblock \doi{10.1370/afm.1337}.
+
+\bibitem[Gasparini(2018)]{gasparini2018}
+A.~Gasparini.
+\newblock comorbidity: An {R} package for computing comorbidity scores.
+\newblock \emph{Journal of Open Source Software}, 3\penalty0 (23):\penalty0
+  648, 2018.
+\newblock \doi{10.21105/joss.00648}.
+
+\bibitem[Groll et~al.(2005)Groll, To, Bombardier, and Wright]{groll2005}
+D.~L. Groll, T.~To, C.~Bombardier, and J.~G. Wright.
+\newblock The development of a comorbidity index with physical function as the
+  outcome.
+\newblock \emph{Journal of Clinical Epidemiology}, 58\penalty0 (6):\penalty0
+  595--602, 2005.
+\newblock \doi{10.1016/j.jclinepi.2004.10.018}.
+
+\bibitem[Kakwani et~al.(1997)Kakwani, Wagstaff, and {van
+  Doorslaer}]{kakwani1997}
+N.~Kakwani, A.~Wagstaff, and E.~{van Doorslaer}.
+\newblock Socioeconomic inequalities in health: Measurement, computation, and
+  statistical inference.
+\newblock \emph{Journal of Econometrics}, 77\penalty0 (1):\penalty0 87--103,
+  1997.
+\newblock \doi{10.1016/S0304-4076(96)01807-6}.
+
+\bibitem[Khan and Hancioglu(2019)]{khan2019}
+S.~Khan and A.~Hancioglu.
+\newblock Multiple indicator cluster surveys: Delivering robust data on
+  children and women across the globe.
+\newblock \emph{Studies in Family Planning}, 50\penalty0 (3):\penalty0
+  279--286, 2019.
+\newblock \doi{10.1111/sifp.12103}.
+
+\bibitem[Lerman and Yitzhaki(1989)]{lerman1989}
+R.~I. Lerman and S.~Yitzhaki.
+\newblock Improving the accuracy of estimates of {Gini} coefficients.
+\newblock \emph{Journal of Econometrics}, 1989.
+\newblock \doi{10.1016/0304-4076(89)90074-2}.
+
+\bibitem[Lumley(2004)]{lumley2004}
+T.~Lumley.
+\newblock Analysis of complex survey samples.
+\newblock \emph{Journal of Statistical Software}, 9\penalty0 (8):\penalty0
+  1--19, 2004.
+\newblock \doi{10.18637/jss.v009.i08}.
+
+\bibitem[Lumley(2010)]{lumley2010}
+T.~Lumley.
+\newblock \emph{Complex Surveys: A Guide to Analysis Using {R}}.
+\newblock John Wiley \& Sons, Hoboken, NJ, 2010.
+\newblock \doi{10.1002/9780470580066}.
+
+\bibitem[Lumley and Scott(2017)]{lumley2017}
+T.~Lumley and A.~Scott.
+\newblock Fitting regression models to survey data.
+\newblock \emph{Statistical Science}, 2017.
+\newblock \doi{10.1214/16-STS605}.
+
+\bibitem[Lundberg and Lee(2017)]{lundberg2017}
+S.~M. Lundberg and S.-I. Lee.
+\newblock A unified approach to interpreting model predictions.
+\newblock In \emph{Advances in Neural Information Processing Systems 30}, 2017.
+\newblock URL \url{https://arxiv.org/abs/1705.07874}.
+
+\bibitem[Morris et~al.(2019)Morris, White, and Crowther]{morris2019}
+T.~P. Morris, I.~R. White, and M.~J. Crowther.
+\newblock Using simulation studies to evaluate statistical methods.
+\newblock \emph{Statistics in Medicine}, 38\penalty0 (11):\penalty0 2074--2102,
+  2019.
+\newblock \doi{10.1002/sim.8086}.
+
+\bibitem[O'Donnell et~al.(2008)O'Donnell, {van Doorslaer}, Wagstaff, and
+  Lindelow]{odonnell2008}
+O.~O'Donnell, E.~{van Doorslaer}, A.~Wagstaff, and M.~Lindelow.
+\newblock \emph{Analyzing Health Equity Using Household Survey Data: A Guide to
+  Techniques and Their Implementation}.
+\newblock The World Bank, Washington, DC, 2008.
+\newblock \doi{10.1596/978-0-8213-6933-3}.
+
+\bibitem[Pebesma(2018)]{pebesma2018}
+E.~Pebesma.
+\newblock Simple features for {R}: Standardized support for spatial vector
+  data.
+\newblock \emph{The R Journal}, 10\penalty0 (1):\penalty0 439--446, 2018.
+\newblock \doi{10.32614/RJ-2018-009}.
+
+\bibitem[Riley et~al.(2016)Riley, Guthold, Cowan, Savin, Bhatti, Armstrong, and
+  Bonita]{riley2016}
+L.~Riley, R.~Guthold, M.~Cowan, S.~Savin, L.~Bhatti, T.~Armstrong, and
+  R.~Bonita.
+\newblock The {World Health Organization} {STEPwise} approach to
+  noncommunicable disease risk-factor surveillance: Methods, challenges, and
+  opportunities.
+\newblock \emph{American Journal of Public Health}, 106\penalty0 (1):\penalty0
+  74--78, 2016.
+\newblock \doi{10.2105/AJPH.2015.302962}.
+
+\bibitem[Schumacher(2026)]{anthro}
+D.~Schumacher.
+\newblock \emph{anthro: Computation of the {WHO} Child Growth Standards}, 2026.
+\newblock URL \url{https://CRAN.R-project.org/package=anthro}.
+\newblock R package version 1.1.0.
+
+\bibitem[Wagstaff et~al.(1991)Wagstaff, Paci, and {van
+  Doorslaer}]{wagstaff1991}
+A.~Wagstaff, P.~Paci, and E.~{van Doorslaer}.
+\newblock On the measurement of inequalities in health.
+\newblock \emph{Social Science \& Medicine}, 33\penalty0 (5):\penalty0
+  545--557, 1991.
+\newblock \doi{10.1016/0277-9536(91)90212-U}.
+
+\bibitem[{WHO Multicentre Growth Reference Study Group}(2006)]{who2006}
+{WHO Multicentre Growth Reference Study Group}.
+\newblock {WHO} child growth standards based on length/height, weight and age.
+\newblock \emph{Acta Paediatrica}, 95\penalty0 (S450):\penalty0 76--85, 2006.
+\newblock \doi{10.1111/j.1651-2227.2006.tb02378.x}.
+
+\end{thebibliography}

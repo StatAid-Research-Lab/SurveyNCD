@@ -8,7 +8,8 @@ multimorbidity_index(
   data,
   conditions,
   weights = NULL,
-  na_action = c("ignore", "na")
+  na_action = c("ignore", "na"),
+  threshold = 2
 )
 }
 \arguments{
@@ -30,12 +31,17 @@ non-missing for that person. \code{"na"} returns NA for that person's
 index entirely, which is the safer choice once you move to
 population-level (survey-weighted) estimates, since silently treating
 missing as absent can bias prevalence downward.}
+
+\item{threshold}{Number of conditions at or above which a respondent is
+classified as multimorbid. The default, 2, is the most common definition;
+3 is often used for "complex multimorbidity".}
 }
 \value{
-\code{data} with three columns appended: \code{mm_n_conditions} (raw
+\code{data} with four columns appended: \code{mm_n_conditions} (raw
 count of conditions present), \code{mm_index} (the possibly weighted
-score), and \code{mm_category} (factor: "None", "Single condition",
-"Multimorbid").
+score), \code{mm_category} (factor: "None", "Single condition" or, when
+\code{threshold > 2}, "1-k conditions", and "Multimorbid") and
+\code{mm_multimorbid} (1 if the count is at least \code{threshold}, else 0).
 }
 \description{
 Computes an individual-level multimorbidity score from a set of

@@ -13,3 +13,13 @@ inst/doc
 analysis_*.R
 run_*.R
 
+
+# keep reproducible paper materials (exceptions to the patterns above)
+!paper/*.png
+!analysis/run_all.R
+!analysis/output/**
+rjournal/*.aux
+rjournal/*.log
+rjournal/*.out
+rjournal/*.blg
+rjournal/*.brf

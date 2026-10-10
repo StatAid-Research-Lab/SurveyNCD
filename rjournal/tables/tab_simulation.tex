@@ -1,0 +1,26 @@
+\begin{table}[htbp]
+
+\caption{\label{tab:tab_simulation}Monte Carlo evaluation over 1000 independent samples drawn with the same stratified two-stage design from one simulated population (142,133 adults; 64,169 children). Coverage of nominal 95\% intervals (Monte Carlo SE about 0.7 points). SE ratio = mean estimated SE / empirical SE.}
+\centering
+\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{llrrrrrrr}
+\toprule
+Estimand & Method & True value & Mean estimate & Rel. bias \% & Empirical SE & Mean model SE & SE ratio & Coverage \%\\
+\midrule
+Multimorbidity prevalence & Full design (SurveyNCD) & 0.0949 & 0.0953 & 0.4 & 0.0093 & 0.0094 & 1.01 & 95.5\\
+ & Weights only &  & 0.0953 & 0.4 & 0.0093 & 0.0078 & 0.84 & 90.7\\
+ & Unweighted, iid &  & 0.0959 & 1.1 & 0.0075 & 0.0065 & 0.87 & 90.5\\
+CI: number of conditions & Full design (SurveyNCD) & 0.0275 & 0.0284 & 2.9 & 0.0261 & 0.0260 & 0.99 & 94.2\\
+ & Weights only &  & 0.0284 & 2.9 & 0.0261 & 0.0236 & 0.90 & 92.6\\
+ & Unweighted, iid &  & 0.0331 & 20.0 & 0.0223 & 0.0200 & 0.89 & 91.6\\
+Stunting prevalence & Full design (SurveyNCD) & 0.2684 & 0.2676 & -0.3 & 0.0206 & 0.0199 & 0.97 & 93.4\\
+ & Weights only &  & 0.2676 & -0.3 & 0.0206 & 0.0165 & 0.80 & 88.7\\
+ & Unweighted, iid &  & 0.2642 & -1.6 & 0.0159 & 0.0135 & 0.85 & 88.9\\
+CI: stunting & Full design (SurveyNCD) & -0.2589 & -0.2591 & -0.1 & 0.0349 & 0.0350 & 1.00 & 95.0\\
+ & Weights only &  & -0.2591 & -0.1 & 0.0349 & 0.0333 & 0.95 & 93.9\\
+ & Unweighted, iid &  & -0.2657 & -2.6 & 0.0288 & 0.0278 & 0.97 & 94.0\\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

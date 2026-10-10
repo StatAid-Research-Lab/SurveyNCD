@@ -21,8 +21,8 @@ test_that("survey_concentration_index() matches an independent replicate-by-weig
   cov_exp <- cov(expanded$outcome, frac_rank) * (n_exp - 1) / n_exp
   ci_exp <- (2 / mu_exp) * cov_exp
 
-  expect_equal(res$Concentration_Index, ci_exp, tolerance = 0.01)
-  expect_equal(res$Outcome_Mean, mu_exp, tolerance = 0.01)
+  expect_equal(res$Concentration_Index, ci_exp, tolerance = 1e-8)
+  expect_equal(res$Outcome_Mean, mu_exp, tolerance = 1e-8)
 })
 
 test_that("survey_concentration_index() uses weights(), not the inverse selection probability", {
@@ -68,4 +68,28 @@ test_that("survey_concentration_index() returns SE, CI, and p-value", {
   expect_true(res$Lower_CI <= res$Concentration_Index)
   expect_true(res$Upper_CI >= res$Concentration_Index)
   expect_true(res$p_value >= 0 && res$p_value <= 1)
+})
+
+test_that("survey_concentration_index() is invariant to row order when wealth has ties", {
+  set.seed(7)
+  n <- 400
+  df <- data.frame(
+    quintile = sample(1:5, n, replace = TRUE),
+    wt       = runif(n, 0.5, 2.5)
+  )
+  df$y <- rbinom(n, 1, plogis(-0.5 - 0.3 * df$quintile))
+
+  d1 <- survey::svydesign(ids = ~1, weights = ~wt, data = df)
+  d2 <- survey::svydesign(ids = ~1, weights = ~wt, data = df[sample(n), ])
+  r1 <- survey_concentration_index(d1, outcome = y, wealth = quintile)
+  r2 <- survey_concentration_index(d2, outcome = y, wealth = quintile)
+  expect_equal(r1$Concentration_Index, r2$Concentration_Index, tolerance = 1e-10)
+
+  # Independent mid-rank calculation (tied respondents share a group mid-rank)
+  o  <- order(df$quintile); y <- df$y[o]; w <- df$wt[o]; q <- df$quintile[o]
+  hi <- cumsum(w); lo <- hi - w
+  R  <- (ave(lo, q, FUN = min) + ave(hi, q, FUN = max)) / 2 / sum(w)
+  mu <- weighted.mean(y, w)
+  ci <- 2 / mu * sum(w * (y - mu) * (R - weighted.mean(R, w))) / sum(w)
+  expect_equal(r1$Concentration_Index, ci, tolerance = 1e-8)
 })

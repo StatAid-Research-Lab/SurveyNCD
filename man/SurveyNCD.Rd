@@ -15,25 +15,22 @@ Diseases (ICD) and estimates must account for stratification, clustering,
 and sampling weights.
 }
 \details{
-The package includes:
-\itemize{
-\item \code{survey_concentration_index()}: Calculates the survey-weighted
-concentration index with design-consistent standard errors, confidence
-intervals, and p-values using Kakwani's convenient WLS regression.
-\item \code{who_anthro_score()}: Categorizes raw DHS/MICS anthropometric
-z-scores into WHO severity tiers, with optional removal of biologically
-implausible values (WHO flags) and scaling adjustments.
-\item \code{mm_prevalence()}: Calculates design-weighted population prevalence
-of multimorbidity, robust to missing grouping variables.
-\item \code{multimorbidity_index()}: Computes individual-level multimorbidity
-scores based on the Functional Comorbidity Index, safely handling all-NA
-cases to prevent downward prevalence bias.
-\item \code{survey_map_indicator()}: Merges indicators with spatial shapefiles
-and generates thematic maps.
-\item \code{survey_xgboost()}, \code{survey_shap()}, and \code{plot_shap_summary()}:
-Exploratory survey-weighted gradient boosting, SHapley Additive exPlanations
-(SHAP) feature importance extraction, and color-coded SHAP visualization.
+A typical analysis has four steps:
+\enumerate{
+\item \strong{Design}: \code{\link[=dhs_design]{dhs_design()}}, \code{\link[=mics_design]{mics_design()}}, \code{\link[=steps_design]{steps_design()}}
+(or any \pkg{survey}/\pkg{srvyr} design).
+\item \strong{Clean and score}: \code{\link[=recode_binary]{recode_binary()}}, \code{\link[=multimorbidity_index]{multimorbidity_index()}},
+\code{\link[=fci_items]{fci_items()}}, \code{\link[=who_anthro_score]{who_anthro_score()}}.
+\item \strong{Estimate}: \code{\link[=survey_prevalence]{survey_prevalence()}}, \code{\link[=mm_prevalence]{mm_prevalence()}},
+\code{\link[=mm_standardize]{mm_standardize()}} with \code{\link[=who_standard_population]{who_standard_population()}}, \code{\link[=mm_patterns]{mm_patterns()}},
+\code{\link[=mm_bounds]{mm_bounds()}}.
+\item \strong{Inequality}: \code{\link[=survey_concentration_index]{survey_concentration_index()}},
+\code{\link[=survey_concentration_curve]{survey_concentration_curve()}}, \code{\link[=survey_slope_index]{survey_slope_index()}}.
 }
+Results can be reported with \code{\link[=ncd_table]{ncd_table()}} and plotted with \code{autoplot()}.
+\code{\link[=survey_map_indicator]{survey_map_indicator()}}, \code{\link[=survey_xgboost]{survey_xgboost()}}, \code{\link[=survey_shap]{survey_shap()}} and
+\code{\link[=plot_shap_summary]{plot_shap_summary()}} are experimental. See \code{vignette("full-workflow")} and
+\code{vignette("real-data-nhanes")}.
 }
 \references{
 Groll, D. L., To, T., Bombardier, C., & Wright, J. G. (2005). The
@@ -50,12 +47,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Sujon Mia \email{sujonsgc@gmail.com}
-
-Authors:
-\itemize{
-  \item Sujon Mia \email{sujonsgc@gmail.com}
-}
+\strong{Maintainer}: Sujon Mia \email{sujonsgc@gmail.com} (\href{https://orcid.org/0009-0001-1032-2818}{ORCID})
 
 Other contributors:
 \itemize{

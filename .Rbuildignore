@@ -13,3 +13,13 @@
 ^analysis_mics2025_pipeline\.R$
 ^run_full_mics2025_analysis\.R$
 ^district_graph\.graph$
+^CONTRIBUTING\.md$
+^CITATION\.cff$
+^paper$
+^data-raw$
+^analysis$
+^SUBMISSION_GUIDE\.md$
+^rjournal$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

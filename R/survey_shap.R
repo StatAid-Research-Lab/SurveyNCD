@@ -1,6 +1,7 @@
 #' Extract SHAP Values from a Survey-Weighted XGBoost Model
 #'
-#' This function cracks open a trained survey-weighted XGBoost model and calculates
+#' @description
+#' \strong{Experimental.} This function cracks open a trained survey-weighted XGBoost model and calculates
 #' the SHapley Additive exPlanations (SHAP values) for every respondent.
 #'
 #' @param sxgb_model The list output from the \code{survey_xgboost()} function.

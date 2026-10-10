@@ -1,5 +1,38 @@
 # SurveyNCD 0.2.0
 
+## New features
+
+* **Survey design helpers** `dhs_design()`, `mics_design()` and `steps_design()`
+  build the design from each programme's standard variable names (DHS: PSU
+  `v021`, strata `v023`, weight `v005` / 1e6).
+* **`survey_prevalence()`**: design-based prevalence of any number of binary
+  indicators, overall or by one or more grouping variables, with design effects.
+* **`mm_prevalence()`** now also accepts a survey design object, supports several
+  `by` variables and excludes missing scores by domain estimation (same
+  estimates as before for complete designs).
+* **`multimorbidity_index(threshold = )`** sets the number of conditions defining
+  multimorbidity (e.g. 3 for complex multimorbidity) and adds `mm_multimorbid`.
+* **`mm_patterns()`**: prevalence of condition pairs/triads with
+  observed-to-expected ratios.
+* **`mm_standardize()`** and **`who_standard_population()`**: direct age
+  standardisation to the WHO World Standard Population, with design-based SEs.
+* **`mm_bounds()`**: sensitivity bounds for "don't know" answers.
+* **`survey_concentration_index()`** gains `type = "generalized"`, `"erreygers"`
+  and `"wagstaff"`, `bounds`, and `by` for group-wise indices.
+* **`survey_concentration_curve()`** and **`survey_slope_index()`** (slope and
+  relative index of inequality).
+* **`ncd_table()`**: publication-ready prevalence tables.
+* **`autoplot()`** methods for prevalence, multimorbidity, concentration-index,
+  concentration-curve and pattern results.
+* New vignette `vignette("real-data-nhanes")` using real NHANES 2009-2010 data.
+
+## Changes
+
+* `survey_map_indicator()`, `survey_xgboost()`, `survey_shap()` and
+  `plot_shap_summary()` are now labelled experimental.
+* Concentration-index p-values are computed as `2 * pnorm(-|z|)` for accuracy
+  with very small values.
+
 * New simulated example datasets `ncd_survey` (2,400 adults, STEPS-style raw
   response codes, stratified two-stage cluster design with unequal weights) and
   `child_anthro` (1,034 children with DHS-coded z-scores), drawn from a known

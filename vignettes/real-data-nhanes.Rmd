@@ -1,0 +1,77 @@
+---
+title: "Real data: high cholesterol in NHANES 2009-2010"
+author: "Sujon Mia - StatAid Research Lab"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Real data: high cholesterol in NHANES 2009-2010}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+```
+
+This vignette applies SurveyNCD to real survey data: the extract of the US
+National Health and Nutrition Examination Survey (NHANES) 2009-2010 that ships
+with the **survey** package. It has 8,591 participants with the real design
+variables (masked strata and PSUs, examination weights) and one health
+indicator:
+
+* `HI_CHOL`: total cholesterol of 240 mg/dL or more, from a blood test.
+
+It also includes age group, sex and race/ethnicity. The extract has no
+self-reported conditions or wealth variable, so it cannot show the
+multimorbidity or socioeconomic-inequality functions. Those are demonstrated
+on simulated data in `vignette("full-workflow")`. Here it shows the design
+handling, group-wise prevalence, age standardisation and tables on a real
+complex sample.
+
+```{r}
+library(SurveyNCD)
+library(survey)
+data(nhanes, package = "survey")
+
+nh <- transform(
+  nhanes,
+  sex  = factor(RIAGENDR, 1:2, c("Male", "Female")),
+  race = factor(race, 1:4, c("Hispanic", "Non-Hispanic white",
+                              "Non-Hispanic black", "Other")),
+  age_group = factor(agecat, levels(agecat), c("0-19", "20-39", "40-59", "60+"))
+)
+des <- svydesign(ids = ~SDMVPSU, strata = ~SDMVSTRA, weights = ~WTMEC2YR,
+                 nest = TRUE, data = nh)
+```
+
+## Prevalence with design-based confidence intervals
+
+`HI_CHOL` is missing for participants without a valid blood test. These are
+excluded by domain estimation, so the design is kept intact.
+
+```{r}
+survey_prevalence(des, "HI_CHOL")
+ncd_table(des, "HI_CHOL", by = "race",
+          labels = c(HI_CHOL = "Total cholesterol >= 240 mg/dL"))
+```
+
+```{r, fig.alt = "Prevalence of high cholesterol by sex and age group with confidence intervals."}
+ggplot2::autoplot(survey_prevalence(des, "HI_CHOL", by = c("age_group", "sex")))
+```
+
+## Age-standardised comparisons
+
+Crude prevalence differs between groups partly because their age structures
+differ. Direct standardisation to the WHO World Standard Population removes
+that difference. The NHANES age groups map onto the standard with breaks at
+0, 20, 40, 60 and 105 years.
+
+```{r}
+std <- who_standard_population(breaks = c(0, 20, 40, 60, 105),
+                               labels = c("0-19", "20-39", "40-59", "60+"))
+std
+mm_standardize(des, "HI_CHOL", age_group = "age_group", standard = std, by = "race")
+```
+
+Compare the `crude` and `standardized` columns. Groups with younger age
+structures move up after standardisation, and groups with older ones move
+down.

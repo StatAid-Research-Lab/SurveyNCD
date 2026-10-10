@@ -21,9 +21,9 @@ test_that("child_anthro links to households and uses DHS z-score coding", {
 
 test_that("the shipped datasets run through the core workflow", {
   d <- ncd_survey
-  d$htn <- recode_binary(d$htn_raw, yes = 1, no = 2)
-  d$dm  <- recode_binary(d$dm_raw,  yes = 1, no = 2)
-  d$dep <- recode_binary(d$dep_raw, yes = "Yes", no = "No")
+  d$htn <- suppressWarnings(recode_binary(d$htn_raw, yes = 1, no = 2))
+  d$dm  <- suppressWarnings(recode_binary(d$dm_raw,  yes = 1, no = 2))
+  d$dep <- suppressWarnings(recode_binary(d$dep_raw, yes = "Yes", no = "No"))
   s <- multimorbidity_index(d, c("htn", "dm", "dep"), na_action = "na")
   est <- suppressMessages(
     mm_prevalence(s, ids = "psu", strata = "stratum", weights = "wt")

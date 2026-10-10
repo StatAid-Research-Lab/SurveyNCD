@@ -1,40 +1,70 @@
-#' Calculate Survey-Weighted Concentration Index
+#' Survey-weighted concentration index
 #'
-#' Computes the concentration index (the Wagstaff/O'Donnell "convenient
-#' covariance" formula) for a health outcome across a socioeconomic
-#' ranking variable, using proper survey sampling weights, and computes
-#' design-consistent standard errors, confidence intervals, and p-values.
-#'
-#' @param design A survey design object created by \code{survey::svydesign()}
-#'   or \code{srvyr::as_survey_design()} -- anything inheriting from
-#'   \code{"survey.design"} (srvyr's \code{tbl_svy} objects do).
-#' @param outcome Unquoted name of the health indicator (e.g. stunting_clean).
-#' @param wealth Unquoted name of the wealth/ranking variable (e.g. wealth_index).
-#' @param conf.level Confidence level for the confidence interval. Default is 0.95.
-#'
-#' @return A tibble with \code{Concentration_Index}, \code{Standard_Error},
-#'   \code{Lower_CI}, \code{Upper_CI}, \code{p_value}, \code{Outcome_Mean},
-#'   and \code{n}.
+#' Computes the concentration index of a health variable across a
+#' socioeconomic ranking (for example a wealth score), with design-based
+#' standard errors, confidence intervals and p-values that account for
+#' stratification and clustering. The standard, generalized, Erreygers and
+#' Wagstaff indices are available.
 #'
 #' @details
-#' \deqn{CI = \frac{2}{\mu} \times Cov_w(y_i, R_i)}
-#' where \eqn{y_i} is the outcome for individual i, \eqn{\mu} is the
-#' weighted mean outcome, and \eqn{R_i} is each individual's weighted
-#' fractional rank in the wealth distribution.
+#' The standard concentration index is
+#' \deqn{C = \frac{2}{\mu} \mathrm{cov}_w(y_i, R_i),}
+#' where \eqn{\mu} is the weighted mean of \eqn{y} and \eqn{R_i} the weighted
+#' fractional rank: the mid-point of each respondent's interval of the
+#' cumulative weight distribution (Lerman and Yitzhaki 1989). Respondents
+#' tied on the ranking variable share the mid-point of their tied group's
+#' interval, so results do not depend on the order of the data.
 #'
-#' The standard error, confidence intervals, and p-value are calculated using the
-#' "convenient regression" method (Kakwani, Wagstaff, and van Doorslaer 1997)
-#' run via \code{survey::svyglm()}:
-#' \deqn{2 \sigma_R^2 (y_i / \mu) = \alpha + \beta R_i + \epsilon_i}
-#' where \eqn{\sigma_R^2} is the weighted variance of the fractional rank. The
-#' coefficient \eqn{\beta} is mathematically identical to the concentration index,
-#' and its standard error from the regression model is a design-consistent standard
-#' error that fully accounts for stratification and clustering.
+#' Each index is the slope \eqn{\beta} of the "convenient regression" of
+#' Kakwani, Wagstaff and van Doorslaer (1997),
+#' \eqn{2\sigma_R^2 \, h(y_i) = \alpha + \beta R_i + \varepsilon_i}, fitted
+#' with [survey::svyglm()] so that its standard error is design-based. With
+#' bounds \eqn{a \le y \le b} (O'Donnell et al. 2016):
+#' \itemize{
+#'   \item `"CI"` (standard): \eqn{h(y) = y/\mu}.
+#'   \item `"generalized"`: \eqn{h(y) = y}, giving \eqn{\mu C}.
+#'   \item `"erreygers"`: \eqn{h(y) = 4y/(b - a)}, giving
+#'     \eqn{4\mu C/(b-a)} (Erreygers 2009).
+#'   \item `"wagstaff"`: \eqn{h(y) = (b - a)y/((b - \mu)(\mu - a))}, giving
+#'     \eqn{(b-a)\mu C/((b-\mu)(\mu-a))}; for binary outcomes \eqn{C/(1-\mu)}
+#'     (Wagstaff 2005).
+#' }
+#' For bounded outcomes such as binary indicators the Erreygers or Wagstaff
+#' index is usually preferred. The standard error treats the ranks and
+#' \eqn{\mu} as fixed.
+#'
+#' @param design A survey design object (\pkg{survey} or \pkg{srvyr}).
+#' @param outcome Unquoted name of the health variable.
+#' @param wealth Unquoted name of the ranking variable.
+#' @param conf.level Confidence level.
+#' @param type One of `"CI"` (default), `"generalized"`, `"erreygers"`,
+#'   `"wagstaff"`.
+#' @param bounds Numeric vector `c(a, b)` of the outcome's bounds, needed for
+#'   `"erreygers"` and `"wagstaff"`. Defaults to `c(0, 1)` when the outcome is
+#'   binary.
+#' @param by Optional character vector of grouping columns; ranks are
+#'   computed within each group.
+#'
+#' @return A tibble of class `surveyncd_ci` with any `by` columns,
+#'   `Concentration_Index`, `Standard_Error`, `Lower_CI`, `Upper_CI`,
+#'   `p_value`, `Outcome_Mean`, `n` and `Type`.
 #' @references
 #' Kakwani, N., Wagstaff, A., & van Doorslaer, E. (1997). Socioeconomic
 #' inequalities in health: Measurement, computation, and statistical inference.
 #' \emph{Journal of Econometrics}, 77(1), 87-103.
 #' \doi{10.1016/S0304-4076(96)01807-6}
+#'
+#' Erreygers, G. (2009). Correcting the concentration index.
+#' \emph{Journal of Health Economics}, 28(2), 504-515.
+#' \doi{10.1016/j.jhealeco.2008.02.003}
+#'
+#' Wagstaff, A. (2005). The bounds of the concentration index when the variable
+#' of interest is binary, with an application to immunization inequality.
+#' \emph{Health Economics}, 14(4), 429-432. \doi{10.1002/hec.953}
+#'
+#' O'Donnell, O., O'Neill, S., Van Ourti, T., & Walsh, B. (2016). conindex:
+#' Estimation of concentration indices. \emph{The Stata Journal}, 16(1),
+#' 112-138. \doi{10.1177/1536867X1601600112}
 #'
 #' @examples
 #' set.seed(42)
@@ -42,18 +72,22 @@
 #' df <- data.frame(
 #'   wealth  = rnorm(n, 50, 15),
 #'   outcome = pmax(0, 0.3 * rnorm(n, 50, 15) + rnorm(n, 0, 5)),
+#'   sick    = rbinom(n, 1, 0.3),
 #'   wt      = sample(1:5, n, replace = TRUE)
 #' )
 #' design <- survey::svydesign(ids = ~1, weights = ~wt, data = df)
 #' survey_concentration_index(design, outcome = outcome, wealth = wealth)
+#' survey_concentration_index(design, outcome = sick, wealth = wealth,
+#'                            type = "erreygers")
 #'
-#' @importFrom rlang enquo eval_tidy
+#' @importFrom rlang enquo eval_tidy as_name
 #' @importFrom dplyr tibble
 #' @importFrom stats weighted.mean weights coef qnorm pnorm
 #' @importFrom survey svyglm SE
 #' @export
-survey_concentration_index <- function(design, outcome, wealth, conf.level = 0.95) {
-
+survey_concentration_index <- function(design, outcome, wealth, conf.level = 0.95,
+                                       type = c("CI", "generalized", "erreygers", "wagstaff"),
+                                       bounds = NULL, by = NULL) {
   if (!inherits(design, "survey.design")) {
     stop(
       "`design` must be a survey design object created by ",
@@ -61,91 +95,81 @@ survey_concentration_index <- function(design, outcome, wealth, conf.level = 0.9
       call. = FALSE
     )
   }
-
-  # Set lonely PSU option locally to 'adjust' to prevent crash on single-PSU strata
-  # resulting from subsetting, and restore original on exit.
+  type <- match.arg(type)
   old_opts <- options(survey.lonely.psu = "adjust")
   on.exit(options(old_opts), add = TRUE)
 
   outcome_q <- rlang::enquo(outcome)
   wealth_q  <- rlang::enquo(wealth)
+  y_all <- as.numeric(rlang::eval_tidy(outcome_q, design$variables))
+  x_all <- as.numeric(rlang::eval_tidy(wealth_q, design$variables))
+  design <- .set_var(design, ".sncd_y", y_all)
+  design <- .set_var(design, ".sncd_x", x_all)
 
-  # Extract data to determine complete cases
-  calc_outcome <- as.numeric(rlang::eval_tidy(outcome_q, design$variables))
-  calc_wealth  <- as.numeric(rlang::eval_tidy(wealth_q, design$variables))
+  if (type %in% c("erreygers", "wagstaff")) {
+    yy <- y_all[!is.na(y_all)]
+    if (is.null(bounds)) {
+      if (all(yy %in% c(0, 1))) bounds <- c(0, 1) else
+        stop("`bounds = c(lower, upper)` is required for type = '", type,
+             "' unless the outcome is binary.", call. = FALSE)
+    }
+    if (length(bounds) != 2 || bounds[1] >= bounds[2]) {
+      stop("`bounds` must be c(lower, upper) with lower < upper.", call. = FALSE)
+    }
+    if (any(yy < bounds[1] | yy > bounds[2])) {
+      stop("The outcome has values outside `bounds`.", call. = FALSE)
+    }
+  }
 
-  keep <- !is.na(calc_outcome) & !is.na(calc_wealth)
-  if (sum(keep) == 0) {
+  doms <- .domains(design, by)
+  out <- do.call(rbind, lapply(doms, function(g) {
+    .bind_key(g$key, as.data.frame(.ci_one(g$design, conf.level, type, bounds)))
+  }))
+  if (all(c("Concentration_Index", "n") %in% names(out)) && sum(out$n) == 0) {
     stop("No complete observations found for the specified variables.", call. = FALSE)
   }
+  out <- dplyr::as_tibble(out)
+  class(out) <- c("surveyncd_ci", class(out))
+  out
+}
 
-  # Subset and sort the design object by wealth to calculate ranks
-  design_clean <- design[keep, ]
-  ord <- order(as.numeric(rlang::eval_tidy(wealth_q, design_clean$variables)))
-  design_sorted <- design_clean[ord, ]
-
-  # Weighted fractional rank: mid-point of each respondent's interval of the
-  # cumulative weight distribution (Lerman and Yitzhaki 1989). Respondents tied
-  # on the ranking variable (e.g. DHS wealth quintiles) share the mid-point of
-  # their tied group's interval, so the result does not depend on row order.
-  calc_weight  <- stats::weights(design_sorted)
-  sum_weights  <- sum(calc_weight)
-  wealth_sorted <- as.numeric(rlang::eval_tidy(wealth_q, design_sorted$variables))
-  cum_hi <- cumsum(calc_weight)
-  cum_lo <- cum_hi - calc_weight
-  grp_lo <- stats::ave(cum_lo, wealth_sorted, FUN = min)
-  grp_hi <- stats::ave(cum_hi, wealth_sorted, FUN = max)
-  frac_rank <- (grp_lo + grp_hi) / 2 / sum_weights
-
-  # Calculate outcome mean
-  outcome_vals <- as.numeric(rlang::eval_tidy(outcome_q, design_sorted$variables))
-  mu <- stats::weighted.mean(outcome_vals, calc_weight)
-
-  if (mu == 0) {
+.ci_one <- function(d, conf.level, type, bounds) {
+  y <- d$variables$.sncd_y; x <- d$variables$.sncd_x
+  w <- .design_weights(d)
+  keep <- !is.na(y) & !is.na(x) & w > 0
+  na_row <- function(mu = NA_real_, n = 0L) data.frame(
+    Concentration_Index = NA_real_, Standard_Error = NA_real_, Lower_CI = NA_real_,
+    Upper_CI = NA_real_, p_value = NA_real_, Outcome_Mean = mu, n = n, Type = type)
+  if (sum(keep) == 0) return(na_row())
+  dc <- d[keep, ]
+  y <- y[keep]; x <- x[keep]; w <- w[keep]
+  R <- .frac_rank(x, w)
+  mu <- stats::weighted.mean(y, w)
+  if (type %in% c("CI", "wagstaff") && mu == 0) {
     warning("Outcome mean is 0; concentration index cannot be calculated.", call. = FALSE)
-    return(
-      dplyr::tibble(
-        Concentration_Index = NA_real_,
-        Standard_Error      = NA_real_,
-        Lower_CI            = NA_real_,
-        Upper_CI            = NA_real_,
-        p_value             = NA_real_,
-        Outcome_Mean        = 0.0,
-        n                   = nrow(design_sorted$variables)
-      )
-    )
+    return(na_row(0, nrow(dc$variables)))
   }
-
-  # Calculate mean and variance of fractional rank
-  frac_rank_mean <- stats::weighted.mean(frac_rank, calc_weight)
-  frac_rank_var  <- stats::weighted.mean((frac_rank - frac_rank_mean)^2, calc_weight)
-
-  # Construct y_star for the convenient regression
-  y_star <- 2 * frac_rank_var * (outcome_vals / mu)
-
-  # Add variables to the sorted design
-  design_sorted$variables$frac_rank <- frac_rank
-  design_sorted$variables$y_star    <- y_star
-
-  # Run convenient regression to get point estimate and design-consistent standard error
-  model <- survey::svyglm(y_star ~ frac_rank, design = design_sorted)
-  ci_value <- as.numeric(stats::coef(model)["frac_rank"])
-  se_value <- as.numeric(survey::SE(model)["frac_rank"])
-
-  # Calculate confidence intervals and p-value
-  alpha <- 1 - conf.level
-  z_crit <- stats::qnorm(1 - alpha / 2)
-  ci_lower <- ci_value - z_crit * se_value
-  ci_upper <- ci_value + z_crit * se_value
-  p_val <- 2 * (1 - stats::pnorm(abs(ci_value / se_value)))
-
-  dplyr::tibble(
-    Concentration_Index = ci_value,
-    Standard_Error      = se_value,
-    Lower_CI            = ci_lower,
-    Upper_CI            = ci_upper,
-    p_value             = p_val,
+  s2 <- stats::weighted.mean((R - stats::weighted.mean(R, w))^2, w)
+  h <- switch(type,
+    CI          = y / mu,
+    generalized = y,
+    erreygers   = 4 * y / (bounds[2] - bounds[1]),
+    wagstaff    = (bounds[2] - bounds[1]) * y / ((bounds[2] - mu) * (mu - bounds[1]))
+  )
+  dc <- .set_var(dc, ".sncd_R", R)
+  dc <- .set_var(dc, ".sncd_ystar", 2 * s2 * h)
+  model <- survey::svyglm(.sncd_ystar ~ .sncd_R, design = dc)
+  est <- as.numeric(stats::coef(model)[".sncd_R"])
+  se  <- as.numeric(survey::SE(model)[".sncd_R"])
+  z <- stats::qnorm(1 - (1 - conf.level) / 2)
+  data.frame(
+    Concentration_Index = est,
+    Standard_Error      = se,
+    Lower_CI            = est - z * se,
+    Upper_CI            = est + z * se,
+    p_value             = 2 * stats::pnorm(-abs(est / se)),
     Outcome_Mean        = mu,
-    n                   = nrow(design_sorted$variables)
+    n                   = nrow(dc$variables),
+    Type                = type
   )
 }

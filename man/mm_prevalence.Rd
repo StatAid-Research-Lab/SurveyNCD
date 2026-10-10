@@ -4,44 +4,47 @@
 \alias{mm_prevalence}
 \title{Population-level multimorbidity estimates from complex survey data}
 \usage{
-mm_prevalence(data, ids = NULL, strata = NULL, weights, by = NULL, nest = TRUE)
+mm_prevalence(
+  data,
+  ids = NULL,
+  strata = NULL,
+  weights = NULL,
+  by = NULL,
+  nest = TRUE,
+  level = 0.95
+)
 }
 \arguments{
-\item{data}{A data frame already processed by \code{multimorbidity_index()}
-(must contain \code{mm_category} and \code{mm_n_conditions}), plus the survey
-design columns named below.}
+\item{data}{A survey design whose data contain the output of
+\code{\link[=multimorbidity_index]{multimorbidity_index()}}, or such a data frame.}
 
-\item{ids}{Name of the cluster/PSU column, or \code{NULL} if the design has
-no clustering (e.g. simple random sample).}
+\item{ids, strata, weights}{Column names of the clusters, strata and weights
+(only when \code{data} is a data frame). \code{ids = NULL} means no clustering and
+\code{strata = NULL} no stratification.}
 
-\item{strata}{Name of the stratification column, or \code{NULL} if the
-design is unstratified.}
+\item{by}{Optional character vector of one or more grouping columns.}
 
-\item{weights}{Name of the sampling weight column.}
+\item{nest}{Passed to \code{\link[survey:svydesign]{survey::svydesign()}} when \code{data} is a data frame.}
 
-\item{by}{Optional single column name to compute subgroup estimates by
-(e.g. \code{"sex"}, \code{"region"}). \code{NULL} (default) returns one overall row.
-Multi-variable grouping isn't supported yet -- a natural v2 addition.}
-
-\item{nest}{Passed to \code{survey::svydesign()}. \code{TRUE} (default) assumes
-cluster IDs repeat across strata (true for most DHS/STEPS-style
-designs, where e.g. cluster "1" exists in every region).}
+\item{level}{Confidence level.}
 }
 \value{
-A data frame with one row (or one row per \code{by} group),
-containing \code{n} (unweighted sample size), \code{prevalence} /
-\code{prevalence_se} / \code{prevalence_lower} / \code{prevalence_upper} (design-
-weighted proportion "Multimorbid" with a logit-CI), and
-\code{mean_conditions} / \code{mean_conditions_se}.
+A data frame of class \code{surveyncd_mm_prevalence} with any \code{by}
+columns, \code{n}, \code{prevalence}, \code{prevalence_se}, \code{prevalence_lower},
+\code{prevalence_upper}, \code{mean_conditions} and \code{mean_conditions_se}.
 }
 \description{
-Wraps the \code{survey} package to compute design-weighted multimorbidity
-prevalence and mean condition count, properly accounting for the
-stratification, clustering, and sampling weights of a complex survey
-design (WHO STEPS, DHS, MICS, etc.). This is the step that turns an
-individual-level score into a defensible population estimate -- run
-\code{multimorbidity_index()} first to create \code{mm_category} and
+Design-weighted prevalence of multimorbidity and mean number of
+conditions, accounting for stratification, clustering and sampling weights.
+Run \code{\link[=multimorbidity_index]{multimorbidity_index()}} first to create \code{mm_category} and
 \code{mm_n_conditions}.
+}
+\details{
+\code{data} can be either a survey design object (recommended; for example from
+\code{\link[=dhs_design]{dhs_design()}} or \code{\link[survey:svydesign]{survey::svydesign()}}) or a data frame plus the names of
+the design columns. Respondents with a missing multimorbidity score are
+excluded by domain estimation: the full design is kept for variance
+estimation and the number excluded is reported.
 }
 \examples{
 set.seed(1)
@@ -49,13 +52,16 @@ n <- 40
 df <- data.frame(
   psu    = rep(1:8, each = 5),
   region = rep(c("A", "B"), each = 20),
+  sex    = rep(c("F", "M"), 20),
   wt     = round(runif(n, 0.8, 1.4), 2),
   htn    = rbinom(n, 1, 0.3),
   dm     = rbinom(n, 1, 0.2)
 )
 scored <- multimorbidity_index(df, conditions = c("htn", "dm"))
 mm_prevalence(scored, ids = "psu", strata = "region", weights = "wt")
-mm_prevalence(scored, ids = "psu", strata = "region", weights = "wt",
-              by = "region")
 
+# Design-first interface, several grouping variables
+des <- survey::svydesign(ids = ~psu, strata = ~region, weights = ~wt,
+                         data = scored, nest = TRUE)
+mm_prevalence(des, by = c("region", "sex"))
 }

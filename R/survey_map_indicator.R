@@ -1,6 +1,7 @@
 #' Map Survey Indicators Universally
 #'
-#' This function merges calculated survey indicators with any provided
+#' @description
+#' \strong{Experimental.} This function merges calculated survey indicators with any provided
 #' spatial shapefile to generate a publication-ready thematic map.
 #'
 #' @param survey_data A data frame containing the aggregated survey indicators.

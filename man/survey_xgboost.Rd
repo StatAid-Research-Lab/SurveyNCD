@@ -21,7 +21,7 @@ A list containing the trained \code{xgb.Booster} model, the
 cleaned training feature matrix \code{X}.
 }
 \description{
-This function trains an Extreme Gradient Boosting (XGBoost) model while
+\strong{Experimental.} This function trains an Extreme Gradient Boosting (XGBoost) model while
 strictly enforcing sampling weights from a complex survey design object.
 }
 \examples{

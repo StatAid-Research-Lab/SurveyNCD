@@ -9,25 +9,22 @@
 #' and sampling weights.
 #'
 #' @details
-#' The package includes:
-#' \itemize{
-#'   \item \code{survey_concentration_index()}: Calculates the survey-weighted
-#'     concentration index with design-consistent standard errors, confidence
-#'     intervals, and p-values using Kakwani's convenient WLS regression.
-#'   \item \code{who_anthro_score()}: Categorizes raw DHS/MICS anthropometric
-#'     z-scores into WHO severity tiers, with optional removal of biologically
-#'     implausible values (WHO flags) and scaling adjustments.
-#'   \item \code{mm_prevalence()}: Calculates design-weighted population prevalence
-#'     of multimorbidity, robust to missing grouping variables.
-#'   \item \code{multimorbidity_index()}: Computes individual-level multimorbidity
-#'     scores based on the Functional Comorbidity Index, safely handling all-NA
-#'     cases to prevent downward prevalence bias.
-#'   \item \code{survey_map_indicator()}: Merges indicators with spatial shapefiles
-#'     and generates thematic maps.
-#'   \item \code{survey_xgboost()}, \code{survey_shap()}, and \code{plot_shap_summary()}:
-#'     Exploratory survey-weighted gradient boosting, SHapley Additive exPlanations
-#'     (SHAP) feature importance extraction, and color-coded SHAP visualization.
+#' A typical analysis has four steps:
+#' \enumerate{
+#'   \item \strong{Design}: [dhs_design()], [mics_design()], [steps_design()]
+#'     (or any \pkg{survey}/\pkg{srvyr} design).
+#'   \item \strong{Clean and score}: [recode_binary()], [multimorbidity_index()],
+#'     [fci_items()], [who_anthro_score()].
+#'   \item \strong{Estimate}: [survey_prevalence()], [mm_prevalence()],
+#'     [mm_standardize()] with [who_standard_population()], [mm_patterns()],
+#'     [mm_bounds()].
+#'   \item \strong{Inequality}: [survey_concentration_index()],
+#'     [survey_concentration_curve()], [survey_slope_index()].
 #' }
+#' Results can be reported with [ncd_table()] and plotted with `autoplot()`.
+#' [survey_map_indicator()], [survey_xgboost()], [survey_shap()] and
+#' [plot_shap_summary()] are experimental. See `vignette("full-workflow")` and
+#' `vignette("real-data-nhanes")`.
 #'
 #' @references
 #' Groll, D. L., To, T., Bombardier, C., & Wright, J. G. (2005). The

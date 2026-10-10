@@ -20,3 +20,6 @@
 ^analysis$
 ^SUBMISSION_GUIDE\.md$
 ^rjournal$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

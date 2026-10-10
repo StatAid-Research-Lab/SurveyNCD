@@ -24,10 +24,15 @@
 #'   population-level (survey-weighted) estimates, since silently treating
 #'   missing as absent can bias prevalence downward.
 #'
-#' @return `data` with three columns appended: `mm_n_conditions` (raw
+#' @param threshold Number of conditions at or above which a respondent is
+#'   classified as multimorbid. The default, 2, is the most common definition;
+#'   3 is often used for "complex multimorbidity".
+#'
+#' @return `data` with four columns appended: `mm_n_conditions` (raw
 #'   count of conditions present), `mm_index` (the possibly weighted
-#'   score), and `mm_category` (factor: "None", "Single condition",
-#'   "Multimorbid").
+#'   score), `mm_category` (factor: "None", "Single condition" or, when
+#'   `threshold > 2`, "1-k conditions", and "Multimorbid") and
+#'   `mm_multimorbid` (1 if the count is at least `threshold`, else 0).
 #'
 #' @references
 #' Groll, D. L., To, T., Bombardier, C., & Wright, J. G. (2005). The
@@ -47,9 +52,14 @@
 multimorbidity_index <- function(data,
                                   conditions,
                                   weights = NULL,
-                                  na_action = c("ignore", "na")) {
+                                  na_action = c("ignore", "na"),
+                                  threshold = 2) {
 
   na_action <- match.arg(na_action)
+  if (!is.numeric(threshold) || length(threshold) != 1 || threshold < 1 ||
+      threshold != round(threshold)) {
+    stop("`threshold` must be a single positive whole number.", call. = FALSE)
+  }
 
   # ---- 1. validate inputs --------------------------------------------------
   if (!is.data.frame(data)) {
@@ -115,11 +125,17 @@ multimorbidity_index <- function(data,
   # Check if all conditions are missing for each respondent
   all_na <- rowSums(!is.na(cond_mat)) == 0
 
-  data$mm_category <- cut(
-    data$mm_n_conditions,
-    breaks = c(-Inf, 0, 1, Inf),
-    labels = c("None", "Single condition", "Multimorbid")
-  )
+  if (threshold == 1) {
+    data$mm_category <- cut(data$mm_n_conditions, breaks = c(-Inf, 0, Inf),
+                            labels = c("None", "Multimorbid"))
+  } else {
+    mid <- if (threshold == 2) "Single condition" else paste0("1-", threshold - 1, " conditions")
+    data$mm_category <- cut(
+      data$mm_n_conditions,
+      breaks = c(-Inf, 0, threshold - 1, Inf),
+      labels = c("None", mid, "Multimorbid")
+    )
+  }
 
   if (na_action == "na") {
     has_na <- rowSums(is.na(cond_mat)) > 0
@@ -132,6 +148,7 @@ multimorbidity_index <- function(data,
     data$mm_index[all_na]        <- NA
     data$mm_category[all_na]     <- NA
   }
+  data$mm_multimorbid <- as.numeric(data$mm_category == "Multimorbid")
 
   data
 }

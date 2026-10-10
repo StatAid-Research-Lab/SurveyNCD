@@ -10,7 +10,7 @@ steps below are done, and the **Journal of Open Source Software (JOSS)**, which 
 
 | Item | Status |
 |---|---|
-| Package 0.2.0 (tie fix, simulated datasets, new vignette, tests) | Done. 99 tests pass; `R CMD check` 0 errors, 0 warnings (offline sandbox) |
+| Package 0.2.0: design helpers, `survey_prevalence()`, multimorbidity patterns, age standardisation, missing-answer bounds, corrected concentration indices, curves, SII/RII, `ncd_table()`, `autoplot()`, NHANES vignette, tie fix, simulated datasets | Done. 154 tests pass; `R CMD check` 0 errors, 0 warnings (offline sandbox) |
 | Simulated data with a known population (`ncd_survey`, `child_anthro`, `data-raw/`) | Done |
 | Full analysis using all 10 functions, with 8 tables and 6 figures (`analysis/`) | Done. Reproduces in about 6 minutes |
 | Validation against `rineq`, design bootstrap, tie check, 1,000-sample simulation | Done |
@@ -41,12 +41,20 @@ higher and reviews are long, so check its current scope and policies before choo
 
 ## 2. Release SurveyNCD 0.2.0 (needed before the R Journal submission)
 
-1. **Apply the changes** to your GitHub repository, either by unzipping `SurveyNCD-0.2.0-submission-ready.zip` over
-   your working copy, or with `git am patches/*.patch`. Push to GitHub.
+1. **Put the work on GitHub.** The easiest route is the git bundle, which contains the whole branch with its history.
+   From your local clone of the repository:
+   ```sh
+   git fetch /path/to/SurveyNCD-v0.2.0.bundle feature/v0.2.0-toolkit:feature/v0.2.0-toolkit
+   git push origin feature/v0.2.0-toolkit
+   ```
+   Then open a pull request on GitHub from `feature/v0.2.0-toolkit` into `master`, review it, and merge it.
+   Alternatives: `git am patches/*.patch` on a new branch, or unzip `SurveyNCD-0.2.0-submission-ready.zip` over your
+   working copy. (If you install the Claude GitHub App for the StatAid-Research-Lab organisation, Claude can push the
+   branch and open the pull request for you next time.)
 2. **Check locally** (Windows R 4.6, as you used for CRAN):
    ```r
    install.packages(c("sf", "xgboost", "rineq", "srvyr", "knitr", "rmarkdown"))
-   devtools::document()      # regenerates Rd files with your roxygen2 version
+   devtools::document()      # regenerates Rd files with your roxygen2 version (they were built with 7.3.1 here)
    devtools::check(args = "--as-cran")
    devtools::check_win_devel()   # results arrive by e-mail
    ```

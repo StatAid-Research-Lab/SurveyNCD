@@ -1,0 +1,8 @@
+# Keep GitHub language stats focused on the R package.
+# These folders hold journal manuscripts and analysis outputs, not package code,
+# and are already excluded from the CRAN build via .Rbuildignore.
+rjournal/** linguist-documentation
+analysis/** linguist-documentation
+paper/** linguist-documentation
+*.tex linguist-documentation
+*.sty linguist-vendored

@@ -1,0 +1,118 @@
+# Calculating Health Inequality in Complex Surveys
+
+## Introduction
+
+Analyzing health inequalities—such as the concentration of childhood
+malnutrition among the poorest wealth quintiles—is a critical component
+of global health research. However, calculating standardized metrics
+like the **Concentration Index** using data from complex, multi-stage
+stratified cluster surveys (such as DHS or MICS) is methodologically
+challenging.
+
+The `SurveyNCD` package, developed by the **StatAid Research Lab**,
+provides a streamlined, mathematically rigorous pipeline to automate
+these calculations.
+
+This vignette demonstrates how to process raw anthropometric data and
+calculate survey-weighted health inequality metrics in just a few lines
+of code.
+
+## Setup and Package Loading
+
+First, load `SurveyNCD` along with the standard `tidyverse` and `srvyr`
+packages for data manipulation and survey design handling.
+
+``` r
+
+library(SurveyNCD)
+library(dplyr)
+library(srvyr)
+```
+
+## Phase 1: Cleaning Anthropometric Data
+
+Raw survey datasets often store Z-scores as integers (e.g., `-254`
+instead of `-2.54`) and use specific numerical flags (like `9999`) to
+indicate missing or biologically implausible data. Failing to account
+for these flags will severely distort your means and indices.
+
+The
+[`who_anthro_score()`](https://stataid-research-lab.github.io/SurveyNCD/reference/who_anthro_score.md)
+function automatically cleans these values and categorizes them
+according to strict WHO child growth standards.
+
+``` r
+
+# Simulating raw survey data with a missing flag (9999)
+raw_survey_data <- tibble(
+  cluster_id = c(1, 1, 2, 2),
+  strata = c(1, 1, 2, 2),
+  sample_weight = c(1.2, 0.8, 1.1, 0.9),
+  wealth_score = c(-1.5, -0.2, 0.5, 1.8),
+  raw_hw70 = c(-310, -254, 50, 9999) # Raw Height-for-Age
+)
+
+# Apply the SurveyNCD cleaning function
+cleaned_data <- raw_survey_data %>%
+  mutate(
+    stunting_category = who_anthro_score(raw_hw70, indicator = "stunting"),
+    is_stunted = case_when(
+      stunting_category %in% c("Severe stunting", "Moderate stunting") ~ 1,
+      stunting_category == "Normal stunting" ~ 0,
+      TRUE ~ NA_real_
+    )
+  )
+
+cleaned_data %>% select(raw_hw70, stunting_category, is_stunted)
+#> # A tibble: 4 × 3
+#>   raw_hw70 stunting_category is_stunted
+#>      <dbl> <fct>                  <dbl>
+#> 1     -310 Severe stunting            1
+#> 2     -254 Moderate stunting          1
+#> 3       50 Normal stunting            0
+#> 4     9999 NA                        NA
+```
+
+## Phase 2: Specifying the Complex Survey Design
+
+Before calculating inequality, we must declare the complex survey
+design.
+
+``` r
+
+svy_design <- cleaned_data %>%
+  as_survey_design(
+    ids = cluster_id,
+    strata = strata,
+    weights = sample_weight
+  )
+```
+
+## Phase 3: Calculating the Concentration Index
+
+The
+[`survey_concentration_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_concentration_index.md)
+function handles the internal complexities of calculating weighted
+fractional ranks and covariances across the survey design.
+
+``` r
+
+stunting_inequality <- svy_design %>%
+  survey_concentration_index(
+    outcome = is_stunted,
+    wealth = wealth_score
+  )
+
+print(stunting_inequality)
+#> # A tibble: 1 × 8
+#>   Concentration_Index Standard_Error Lower_CI Upper_CI     p_value Outcome_Mean
+#>                 <dbl>          <dbl>    <dbl>    <dbl>       <dbl>        <dbl>
+#> 1              -0.355         0.0711   -0.494   -0.215 0.000000606        0.645
+#> # ℹ 2 more variables: n <int>, Type <chr>
+```
+
+### Interpretation
+
+The output provides both the weighted prevalence of the outcome and the
+precise `Concentration_Index`. A negative index confirms a pro-poor
+inequality in child stunting.

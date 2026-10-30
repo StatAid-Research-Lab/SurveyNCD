@@ -148,4 +148,4 @@ The development of the `SurveyNCD` package and the establishment of StatAid Rese
 
 ## License
 
-MIT © [Sujon Mia](https://github.com/StatAid-Research-Lab)
+MIT (c) [Sujon Mia](https://github.com/StatAid-Research-Lab)

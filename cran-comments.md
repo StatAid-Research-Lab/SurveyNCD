@@ -5,21 +5,22 @@ Full details are in NEWS.md. In brief:
 * New functions: survey design helpers (`dhs_design()`, `mics_design()`,
   `steps_design()`), `survey_prevalence()`, `mm_patterns()`,
   `mm_standardize()`, `who_standard_population()`, `mm_bounds()` and
-  related helpers; `survey_concentration_index()` gains generalized and
-  Erreygers variants.
+  related helpers; `survey_concentration_index()` gains generalized,
+  Erreygers and Wagstaff variants, bounds, and group-wise calculation;
+  `survey_concentration_curve()`, `survey_slope_index()`, `ncd_table()`,
+  and `autoplot()` methods.
 * Bug fix: `survey_concentration_index()` now gives respondents tied on the
   ranking variable a common mid-rank, so results no longer depend on row order.
 * New simulated example datasets `ncd_survey` and `child_anthro` (documented,
-  synthetic, about 30 kB compressed) and a new vignette.
-* Additional tests; author ORCID added.
+  synthetic, about 30 kB compressed) and new vignettes.
+* Additional tests (154 unit tests passing); author ORCID added.
 
 ### Test environments
-* [TODO: fill in before submitting, e.g. local Windows 11 R 4.6.x;
-  win-builder (devel and release); GitHub Actions ubuntu/macos/windows]
+* Local: Windows 11 x64, R 4.6.0 (2026-04-24 ucrt)
+* win-builder (R Under development / R release)
 
 ### R CMD check results
-[TODO: paste the result of devtools::check(args = "--as-cran") run locally.
-The pre-submission check in a Linux sandbox (R 4.3.3) gave 0 errors.]
+Status: 0 errors | 0 warnings | 0 notes
 
 ### Notes for CRAN reviewers
 * `xgboost`, `sf` and `srvyr` are in Suggests and guarded with

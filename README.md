@@ -4,6 +4,8 @@
 [![CRAN status](https://www.r-pkg.org/badges/version/SurveyNCD)](https://CRAN.R-project.org/package=SurveyNCD)
 [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/SurveyNCD)](https://CRAN.R-project.org/package=SurveyNCD)
 [![CRAN Monthly Downloads](https://cranlogs.r-pkg.org/badges/SurveyNCD)](https://CRAN.R-project.org/package=SurveyNCD)
+[![R-CMD-check](https://github.com/StatAid-Research-Lab/SurveyNCD/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/StatAid-Research-Lab/SurveyNCD/actions/workflows/R-CMD-check.yaml)
+[![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://stataid-research-lab.github.io/SurveyNCD/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![CRAN checks](https://badges.cranchecks.info/worst/SurveyNCD.svg)](https://cran.r-project.org/web/checks/check_results_SurveyNCD.html)
 <!-- badges: end -->
@@ -132,7 +134,7 @@ citation("SurveyNCD")
   title = {SurveyNCD: Survey-Weighted Analysis of Self-Reported Health Indicators},
   author = {Sujon Mia},
   year = {2026},
-  note = {R package version 0.1.0},
+  note = {R package version 0.2.0},
   url = {https://CRAN.R-project.org/package=SurveyNCD},
   doi = {10.32614/CRAN.package.SurveyNCD}
 }

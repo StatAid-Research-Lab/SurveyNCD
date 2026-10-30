@@ -2,28 +2,29 @@
 
 ### Changes since 0.1.0
 Full details are in NEWS.md. In brief:
-* New functions: survey design helpers (`dhs_design()`, `mics_design()`,
-  `steps_design()`), `survey_prevalence()`, `mm_patterns()`,
-  `mm_standardize()`, `who_standard_population()`, `mm_bounds()` and
-  related helpers; `survey_concentration_index()` gains generalized,
-  Erreygers and Wagstaff variants, bounds, and group-wise calculation;
-  `survey_concentration_curve()`, `survey_slope_index()`, `ncd_table()`,
-  and `autoplot()` methods.
-* Bug fix: `survey_concentration_index()` now gives respondents tied on the
-  ranking variable a common mid-rank, so results no longer depend on row order.
-* New simulated example datasets `ncd_survey` and `child_anthro` (documented,
-  synthetic, about 30 kB compressed) and new vignettes.
-* Additional tests (154 unit tests passing); author ORCID added.
+* New survey design constructors: `dhs_design()`, `mics_design()`, `steps_design()`.
+* Universal design-based prevalence: `survey_prevalence()`.
+* Advanced multimorbidity analytics: `mm_patterns()`, `mm_standardize()`, `who_standard_population()`, and `mm_bounds()`.
+* Complete health inequality suite: `survey_concentration_index()` gains generalized, Erreygers and Wagstaff variants, bounds, and group-wise calculation; `survey_concentration_curve()` and `survey_slope_index()` (SII and RII).
+* Publication reporting: `ncd_table()` and `autoplot()` methods.
+* Numerical fix: `survey_concentration_index()` now assigns respondents tied on the ranking variable a common mid-rank, so results no longer depend on row order.
+* New simulated datasets: `ncd_survey` and `child_anthro` (documented, synthetic, ~30 kB compressed).
+* Two new vignettes: `full-workflow` and `real-data-nhanes`.
+* 154 unit tests passing (0 failures, 0 skips).
 
 ### Test environments
 * Local: Windows 11 x64, R 4.6.0 (2026-04-24 ucrt)
-* win-builder (R Under development / R release)
+* win-builder: R Under development (unstable) (2026-10-28 r90783 ucrt)
+* win-builder: R version 4.4.1 (release)
 
 ### R CMD check results
-Status: 0 errors | 0 warnings | 0 notes
+Status: 0 errors | 0 warnings | 1 note (win-builder)
+
+* 1 NOTE regarding possibly misspelled words in DESCRIPTION:
+  - Doorslaer, Erreygers, Kakwani, Wagstaff: Author surnames cited in peer-reviewed literature.
+  - microdata: Standard statistical term for survey response records.
+  Added to `inst/WORDLIST`.
 
 ### Notes for CRAN reviewers
-* `xgboost`, `sf` and `srvyr` are in Suggests and guarded with
-  `requireNamespace()` in code, examples and vignettes; vignette chunks that need them are evaluated only when
-  they are installed.
+* `xgboost`, `sf` and `srvyr` are in Suggests and guarded with `requireNamespace()` in code, examples and vignettes. Vignette chunks requiring them are evaluated only when installed.
 * The gradient boosting module is documented as exploratory.

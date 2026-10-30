@@ -161,7 +161,7 @@ citation("SurveyNCD")
   title = {SurveyNCD: Survey-Weighted Analysis of Self-Reported Health Indicators},
   author = {Sujon Mia},
   year = {2026},
-  note = {R package version 0.1.0},
+  note = {R package version 0.2.0},
   url = {https://CRAN.R-project.org/package=SurveyNCD},
   doi = {10.32614/CRAN.package.SurveyNCD}
 }

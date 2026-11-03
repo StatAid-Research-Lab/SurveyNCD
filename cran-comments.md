@@ -1,4 +1,7 @@
-## Submission: SurveyNCD 0.2.0 (update)
+## Resubmission: SurveyNCD 0.2.0
+
+This is a resubmission addressing reviewer feedback from Uwe Ligges:
+* Fixed invalid URL in README.md: replaced the inactive documentation URL with the active repository URL (https://github.com/StatAid-Research-Lab/SurveyNCD). All URLs in README and DESCRIPTION have been verified and return HTTP 200/301/303.
 
 ### Changes since 0.1.0
 Full details are in NEWS.md. In brief:
@@ -18,8 +21,8 @@ Full details are in NEWS.md. In brief:
 * win-builder: R version 4.4.1 (release)
 
 ### R CMD check results
-Status: 0 errors | 0 warnings | 1 note (win-builder)
-
+Status: 0 errors | 0 warnings | 0 notes (local)
+Status on win-builder: 1 NOTE
 * 1 NOTE regarding possibly misspelled words in DESCRIPTION:
   - Doorslaer, Erreygers, Kakwani, Wagstaff: Author surnames cited in peer-reviewed literature.
   - microdata: Standard statistical term for survey response records.

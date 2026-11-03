@@ -5,7 +5,7 @@
 [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/SurveyNCD)](https://CRAN.R-project.org/package=SurveyNCD)
 [![CRAN Monthly Downloads](https://cranlogs.r-pkg.org/badges/SurveyNCD)](https://CRAN.R-project.org/package=SurveyNCD)
 [![R-CMD-check](https://github.com/StatAid-Research-Lab/SurveyNCD/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/StatAid-Research-Lab/SurveyNCD/actions/workflows/R-CMD-check.yaml)
-[![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://stataid-research-lab.github.io/SurveyNCD/)
+[![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://github.com/StatAid-Research-Lab/SurveyNCD)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![CRAN checks](https://badges.cranchecks.info/worst/SurveyNCD.svg)](https://cran.r-project.org/web/checks/check_results_SurveyNCD.html)
 <!-- badges: end -->

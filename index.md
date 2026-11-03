@@ -48,12 +48,12 @@ score the answers, estimate, then report.
 
 | Step | Functions |
 |----|----|
-| **1. Design** | [`dhs_design()`](https://stataid-research-lab.github.io/SurveyNCD/reference/design_helpers.md), [`mics_design()`](https://stataid-research-lab.github.io/SurveyNCD/reference/design_helpers.md), [`steps_design()`](https://stataid-research-lab.github.io/SurveyNCD/reference/design_helpers.md): the correct design from each programme’s standard variable names (or any `survey`/`srvyr` design) |
-| **2. Clean and score** | [`recode_binary()`](https://stataid-research-lab.github.io/SurveyNCD/reference/recode_binary.md) (1/2/9 or text codes to 0/1/NA), [`multimorbidity_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/multimorbidity_index.md) (condition count, adjustable threshold), [`fci_items()`](https://stataid-research-lab.github.io/SurveyNCD/reference/fci_items.md), [`who_anthro_score()`](https://stataid-research-lab.github.io/SurveyNCD/reference/who_anthro_score.md) (DHS-coded child z-scores) |
-| **3. Estimate** | [`survey_prevalence()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_prevalence.md) (any binary indicators, several grouping variables), [`mm_prevalence()`](https://stataid-research-lab.github.io/SurveyNCD/reference/mm_prevalence.md), [`mm_standardize()`](https://stataid-research-lab.github.io/SurveyNCD/reference/mm_standardize.md) with [`who_standard_population()`](https://stataid-research-lab.github.io/SurveyNCD/reference/who_standard_population.md) (age standardisation), [`mm_patterns()`](https://stataid-research-lab.github.io/SurveyNCD/reference/mm_patterns.md) (pairs and triads, observed/expected), [`mm_bounds()`](https://stataid-research-lab.github.io/SurveyNCD/reference/mm_bounds.md) (“don’t know” sensitivity bounds) |
-| **4. Inequality** | [`survey_concentration_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_concentration_index.md) (standard, generalized, Erreygers, Wagstaff; by group), [`survey_concentration_curve()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_concentration_curve.md), [`survey_slope_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_slope_index.md) (SII and RII) |
-| **Report** | [`ncd_table()`](https://stataid-research-lab.github.io/SurveyNCD/reference/ncd_table.md) (publication-ready table), `autoplot()` methods for every result |
-| *Experimental* | [`survey_map_indicator()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_map_indicator.md), [`survey_xgboost()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_xgboost.md), [`survey_shap()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_shap.md), [`plot_shap_summary()`](https://stataid-research-lab.github.io/SurveyNCD/reference/plot_shap_summary.md) |
+| **1. Design** | [`dhs_design()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/design_helpers.md), [`mics_design()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/design_helpers.md), [`steps_design()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/design_helpers.md): the correct design from each programme’s standard variable names (or any `survey`/`srvyr` design) |
+| **2. Clean and score** | [`recode_binary()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/recode_binary.md) (1/2/9 or text codes to 0/1/NA), [`multimorbidity_index()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/multimorbidity_index.md) (condition count, adjustable threshold), [`fci_items()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/fci_items.md), [`who_anthro_score()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/who_anthro_score.md) (DHS-coded child z-scores) |
+| **3. Estimate** | [`survey_prevalence()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_prevalence.md) (any binary indicators, several grouping variables), [`mm_prevalence()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/mm_prevalence.md), [`mm_standardize()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/mm_standardize.md) with [`who_standard_population()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/who_standard_population.md) (age standardisation), [`mm_patterns()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/mm_patterns.md) (pairs and triads, observed/expected), [`mm_bounds()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/mm_bounds.md) (“don’t know” sensitivity bounds) |
+| **4. Inequality** | [`survey_concentration_index()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_concentration_index.md) (standard, generalized, Erreygers, Wagstaff; by group), [`survey_concentration_curve()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_concentration_curve.md), [`survey_slope_index()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_slope_index.md) (SII and RII) |
+| **Report** | [`ncd_table()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/ncd_table.md) (publication-ready table), `autoplot()` methods for every result |
+| *Experimental* | [`survey_map_indicator()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_map_indicator.md), [`survey_xgboost()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_xgboost.md), [`survey_shap()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_shap.md), [`plot_shap_summary()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/plot_shap_summary.md) |
 
 All variance estimation is done by the
 [survey](https://CRAN.R-project.org/package=survey) package, so every
@@ -122,16 +122,16 @@ study of bias and confidence-interval coverage
 
 - **Complete-case handling.** With `na_action = "na"`, any respondent
   with a missing condition gets a missing score and is excluded from
-  [`mm_prevalence()`](https://stataid-research-lab.github.io/SurveyNCD/reference/mm_prevalence.md)
+  [`mm_prevalence()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/mm_prevalence.md)
   (the number excluded is reported). No weight adjustment for this
   exclusion is made, which can bias estimates when missingness is
   common.
 - **“Multimorbid” is a convention.** It means at least `threshold`
   (default 2) of the conditions you supply. With fewer than the 18 FCI
   conditions this is a condition count, not the validated FCI.
-  [`mm_bounds()`](https://stataid-research-lab.github.io/SurveyNCD/reference/mm_bounds.md)
+  [`mm_bounds()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/mm_bounds.md)
   shows how much the “don’t know” answers could matter.
-- [`who_anthro_score()`](https://stataid-research-lab.github.io/SurveyNCD/reference/who_anthro_score.md)
+- [`who_anthro_score()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/who_anthro_score.md)
   categorises undernutrition tiers only (no overweight category).
 - The gradient-boosting module applies case weights only; it does not
   propagate strata and clusters into uncertainty and is not design-based
@@ -141,7 +141,7 @@ study of bias and confidence-interval coverage
   study.
 - Validated on simulated data with a known population and against
   independent calculations, and demonstrated on real NHANES data
-  ([`vignette("real-data-nhanes")`](https://stataid-research-lab.github.io/SurveyNCD/articles/real-data-nhanes.md)).
+  ([`vignette("real-data-nhanes")`](https://github.com/StatAid-Research-Lab/SurveyNCD/articles/real-data-nhanes.md)).
   Not yet benchmarked against a published STEPS, DHS or MICS report.
 
 ------------------------------------------------------------------------

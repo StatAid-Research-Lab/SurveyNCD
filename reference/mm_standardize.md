@@ -21,7 +21,7 @@ mm_standardize(design, vars, age_group, standard, by = NULL, level = 0.95)
 
   Character vector of 0/1 indicator columns (for example
   `"mm_multimorbid"` from
-  [`multimorbidity_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/multimorbidity_index.md)).
+  [`multimorbidity_index()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/multimorbidity_index.md)).
 
 - age_group:
 
@@ -31,7 +31,7 @@ mm_standardize(design, vars, age_group, standard, by = NULL, level = 0.95)
 
   Standard population: a data frame with columns `age_group` and
   `weight` (as returned by
-  [`who_standard_population()`](https://stataid-research-lab.github.io/SurveyNCD/reference/who_standard_population.md)),
+  [`who_standard_population()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/who_standard_population.md)),
   or a named numeric vector. Every age group in the data must appear in
   it.
 

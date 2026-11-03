@@ -10,7 +10,7 @@ two simulated datasets shipped with the package:
 
 **All data are synthetic and the regions are fictitious**, so no result
 describes a real population. For a real-data example, see
-[`vignette("real-data-nhanes")`](https://stataid-research-lab.github.io/SurveyNCD/articles/real-data-nhanes.md).
+[`vignette("real-data-nhanes")`](https://github.com/StatAid-Research-Lab/SurveyNCD/articles/real-data-nhanes.md).
 
 The workflow has four steps: build the design once, clean and score
 respondents, then estimate and plot.
@@ -33,7 +33,7 @@ library(survey)
 
 STEPS-style questions are coded 1 = yes, 2 = no, 9 = don’t know; the
 depression item is stored as text.
-[`recode_binary()`](https://stataid-research-lab.github.io/SurveyNCD/reference/recode_binary.md)
+[`recode_binary()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/recode_binary.md)
 maps both to 0/1 and leaves anything it cannot place as `NA`.
 
 ``` r
@@ -59,10 +59,10 @@ table(scored$mm_category, useNA = "ifany")
 
 ## 2. Build the survey design once
 
-[`steps_design()`](https://stataid-research-lab.github.io/SurveyNCD/reference/design_helpers.md),
-[`dhs_design()`](https://stataid-research-lab.github.io/SurveyNCD/reference/design_helpers.md)
+[`steps_design()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/design_helpers.md),
+[`dhs_design()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/design_helpers.md)
 and
-[`mics_design()`](https://stataid-research-lab.github.io/SurveyNCD/reference/design_helpers.md)
+[`mics_design()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/design_helpers.md)
 use each programme’s standard variable names. Here the columns are
 already named `psu` and `stratum`, so only the weight is needed. Every
 estimation function below takes this design object.
@@ -89,7 +89,7 @@ ncd_table(des, conds, by = "sex", labels = labels)
 #>  Depression   6.5 (5.2-8.1)    7.3 (5.5-9.8)    5.6 (4.2-7.3)
 ```
 
-[`survey_prevalence()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_prevalence.md)
+[`survey_prevalence()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_prevalence.md)
 returns the numbers behind the table and accepts several grouping
 variables:
 
@@ -148,7 +148,7 @@ mm_prevalence(des, by = c("residence", "sex"))
 
 Comparisons between groups or surveys with different age structures need
 age-standardised estimates.
-[`who_standard_population()`](https://stataid-research-lab.github.io/SurveyNCD/reference/who_standard_population.md)
+[`who_standard_population()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/who_standard_population.md)
 re-aggregates the WHO World Standard Population to the STEPS age groups.
 
 ``` r

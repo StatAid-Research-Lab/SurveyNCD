@@ -23,7 +23,7 @@ ncd_table(
 - design:
 
   A survey design (see
-  [`dhs_design()`](https://stataid-research-lab.github.io/SurveyNCD/reference/design_helpers.md)
+  [`dhs_design()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/design_helpers.md)
   or
   [`survey::svydesign()`](https://rdrr.io/pkg/survey/man/svydesign.html));
   srvyr designs are accepted.

@@ -3,7 +3,7 @@
 Design-weighted prevalence of multimorbidity and mean number of
 conditions, accounting for stratification, clustering and sampling
 weights. Run
-[`multimorbidity_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/multimorbidity_index.md)
+[`multimorbidity_index()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/multimorbidity_index.md)
 first to create `mm_category` and `mm_n_conditions`.
 
 ## Usage
@@ -25,7 +25,7 @@ mm_prevalence(
 - data:
 
   A survey design whose data contain the output of
-  [`multimorbidity_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/multimorbidity_index.md),
+  [`multimorbidity_index()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/multimorbidity_index.md),
   or such a data frame.
 
 - ids, strata, weights:
@@ -58,7 +58,7 @@ A data frame of class `surveyncd_mm_prevalence` with any `by` columns,
 
 `data` can be either a survey design object (recommended; for example
 from
-[`dhs_design()`](https://stataid-research-lab.github.io/SurveyNCD/reference/design_helpers.md)
+[`dhs_design()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/design_helpers.md)
 or
 [`survey::svydesign()`](https://rdrr.io/pkg/survey/man/svydesign.html))
 or a data frame plus the names of the design columns. Respondents with a

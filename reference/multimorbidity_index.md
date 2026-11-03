@@ -30,7 +30,7 @@ multimorbidity_index(
 
   A character vector of column names in `data`. Each column must already
   be coded 0/1/NA (1 = condition present). Use
-  [`recode_binary()`](https://stataid-research-lab.github.io/SurveyNCD/reference/recode_binary.md)
+  [`recode_binary()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/recode_binary.md)
   first if your raw data uses Yes/No, 1/2, etc.
 
 - weights:
@@ -40,7 +40,7 @@ multimorbidity_index(
   condition counts equally – i.e. a simple unweighted sum, which is how
   the published Functional Comorbidity Index (Groll et al. 2005) is
   scored. See
-  [`fci_items()`](https://stataid-research-lab.github.io/SurveyNCD/reference/fci_items.md).
+  [`fci_items()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/fci_items.md).
 
 - na_action:
 

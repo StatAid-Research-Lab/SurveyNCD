@@ -5,7 +5,7 @@ population ranked from poorest to richest (x) against the cumulative
 share of the health variable (y), both using sampling weights. A curve
 above the diagonal means the variable is concentrated among poorer
 people. Tied respondents are grouped into one point, consistent with
-[`survey_concentration_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_concentration_index.md):
+[`survey_concentration_index()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_concentration_index.md):
 the concentration index equals one minus twice the area under the curve.
 
 ## Usage

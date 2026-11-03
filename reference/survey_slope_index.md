@@ -2,7 +2,7 @@
 
 Regression-based measures of socioeconomic inequality on the weighted
 fractional rank \\R\\ (0 = poorest, 1 = richest; tie-aware as in
-[`survey_concentration_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_concentration_index.md)):
+[`survey_concentration_index()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_concentration_index.md)):
 
 - the slope index of inequality (SII), the slope of a linear regression
   of the outcome on \\R\\: the absolute difference in the outcome

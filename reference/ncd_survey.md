@@ -88,7 +88,7 @@ sample is in `data-raw/` in the package source repository.
 
 ## See also
 
-[`child_anthro`](https://stataid-research-lab.github.io/SurveyNCD/reference/child_anthro.md)
+[`child_anthro`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/child_anthro.md)
 
 ## Examples
 

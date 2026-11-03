@@ -12,7 +12,7 @@ It also includes age group, sex and race/ethnicity. The extract has no
 self-reported conditions or wealth variable, so it cannot show the
 multimorbidity or socioeconomic-inequality functions. Those are
 demonstrated on simulated data in
-[`vignette("full-workflow")`](https://stataid-research-lab.github.io/SurveyNCD/articles/full-workflow.md).
+[`vignette("full-workflow")`](https://github.com/StatAid-Research-Lab/SurveyNCD/articles/full-workflow.md).
 Here it shows the design handling, group-wise prevalence, age
 standardisation and tables on a real complex sample.
 

@@ -24,13 +24,13 @@ plot_shap_summary(
 - shap_matrix:
 
   The matrix output from
-  [`survey_shap()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_shap.md).
+  [`survey_shap()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_shap.md).
 
 - data:
 
   The matrix or data frame of training features (e.g. the `X` matrix
   returned by
-  [`survey_xgboost()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_xgboost.md))
+  [`survey_xgboost()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_xgboost.md))
   or the original data frame. If the row count does not match the SHAP
   matrix, rows with missing values will be automatically filtered out.
 

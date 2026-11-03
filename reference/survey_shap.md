@@ -15,7 +15,7 @@ survey_shap(sxgb_model)
 - sxgb_model:
 
   The list output from the
-  [`survey_xgboost()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_xgboost.md)
+  [`survey_xgboost()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_xgboost.md)
   function.
 
 ## Value

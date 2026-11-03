@@ -13,43 +13,43 @@ must account for stratification, clustering, and sampling weights.
 A typical analysis has four steps:
 
 1.  **Design**:
-    [`dhs_design()`](https://stataid-research-lab.github.io/SurveyNCD/reference/design_helpers.md),
-    [`mics_design()`](https://stataid-research-lab.github.io/SurveyNCD/reference/design_helpers.md),
-    [`steps_design()`](https://stataid-research-lab.github.io/SurveyNCD/reference/design_helpers.md)
+    [`dhs_design()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/design_helpers.md),
+    [`mics_design()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/design_helpers.md),
+    [`steps_design()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/design_helpers.md)
     (or any survey/srvyr design).
 
 2.  **Clean and score**:
-    [`recode_binary()`](https://stataid-research-lab.github.io/SurveyNCD/reference/recode_binary.md),
-    [`multimorbidity_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/multimorbidity_index.md),
-    [`fci_items()`](https://stataid-research-lab.github.io/SurveyNCD/reference/fci_items.md),
-    [`who_anthro_score()`](https://stataid-research-lab.github.io/SurveyNCD/reference/who_anthro_score.md).
+    [`recode_binary()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/recode_binary.md),
+    [`multimorbidity_index()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/multimorbidity_index.md),
+    [`fci_items()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/fci_items.md),
+    [`who_anthro_score()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/who_anthro_score.md).
 
 3.  **Estimate**:
-    [`survey_prevalence()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_prevalence.md),
-    [`mm_prevalence()`](https://stataid-research-lab.github.io/SurveyNCD/reference/mm_prevalence.md),
-    [`mm_standardize()`](https://stataid-research-lab.github.io/SurveyNCD/reference/mm_standardize.md)
+    [`survey_prevalence()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_prevalence.md),
+    [`mm_prevalence()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/mm_prevalence.md),
+    [`mm_standardize()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/mm_standardize.md)
     with
-    [`who_standard_population()`](https://stataid-research-lab.github.io/SurveyNCD/reference/who_standard_population.md),
-    [`mm_patterns()`](https://stataid-research-lab.github.io/SurveyNCD/reference/mm_patterns.md),
-    [`mm_bounds()`](https://stataid-research-lab.github.io/SurveyNCD/reference/mm_bounds.md).
+    [`who_standard_population()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/who_standard_population.md),
+    [`mm_patterns()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/mm_patterns.md),
+    [`mm_bounds()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/mm_bounds.md).
 
 4.  **Inequality**:
-    [`survey_concentration_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_concentration_index.md),
-    [`survey_concentration_curve()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_concentration_curve.md),
-    [`survey_slope_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_slope_index.md).
+    [`survey_concentration_index()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_concentration_index.md),
+    [`survey_concentration_curve()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_concentration_curve.md),
+    [`survey_slope_index()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_slope_index.md).
 
 Results can be reported with
-[`ncd_table()`](https://stataid-research-lab.github.io/SurveyNCD/reference/ncd_table.md)
+[`ncd_table()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/ncd_table.md)
 and plotted with `autoplot()`.
-[`survey_map_indicator()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_map_indicator.md),
-[`survey_xgboost()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_xgboost.md),
-[`survey_shap()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_shap.md)
+[`survey_map_indicator()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_map_indicator.md),
+[`survey_xgboost()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_xgboost.md),
+[`survey_shap()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_shap.md)
 and
-[`plot_shap_summary()`](https://stataid-research-lab.github.io/SurveyNCD/reference/plot_shap_summary.md)
+[`plot_shap_summary()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/plot_shap_summary.md)
 are experimental. See
-[`vignette("full-workflow")`](https://stataid-research-lab.github.io/SurveyNCD/articles/full-workflow.md)
+[`vignette("full-workflow")`](https://github.com/StatAid-Research-Lab/SurveyNCD/articles/full-workflow.md)
 and
-[`vignette("real-data-nhanes")`](https://stataid-research-lab.github.io/SurveyNCD/articles/real-data-nhanes.md).
+[`vignette("real-data-nhanes")`](https://github.com/StatAid-Research-Lab/SurveyNCD/articles/real-data-nhanes.md).
 
 ## References
 

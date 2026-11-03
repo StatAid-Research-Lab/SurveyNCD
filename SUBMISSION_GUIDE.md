@@ -12,7 +12,7 @@ in research.
 
 | Item | Status |
 |----|----|
-| Package 0.2.0: design helpers, [`survey_prevalence()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_prevalence.md), multimorbidity patterns, age standardisation, missing-answer bounds, corrected concentration indices, curves, SII/RII, [`ncd_table()`](https://stataid-research-lab.github.io/SurveyNCD/reference/ncd_table.md), `autoplot()`, NHANES vignette, tie fix, simulated datasets | Done. 154 tests pass; `R CMD check` 0 errors, 0 warnings (offline sandbox) |
+| Package 0.2.0: design helpers, [`survey_prevalence()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_prevalence.md), multimorbidity patterns, age standardisation, missing-answer bounds, corrected concentration indices, curves, SII/RII, [`ncd_table()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/ncd_table.md), `autoplot()`, NHANES vignette, tie fix, simulated datasets | Done. 154 tests pass; `R CMD check` 0 errors, 0 warnings (offline sandbox) |
 | Simulated data with a known population (`ncd_survey`, `child_anthro`, `data-raw/`) | Done |
 | Full analysis using all 10 functions, with 8 tables and 6 figures (`analysis/`) | Done. Reproduces in about 6 minutes |
 | Validation against `rineq`, design bootstrap, tie check, 1,000-sample simulation | Done |

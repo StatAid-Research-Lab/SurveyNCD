@@ -1,7 +1,7 @@
 # Simulated child anthropometry (DHS-style)
 
 Children under five living in the households of
-[`ncd_survey`](https://stataid-research-lab.github.io/SurveyNCD/reference/ncd_survey.md),
+[`ncd_survey`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/ncd_survey.md),
 with height-for-age, weight-for-age and weight-for-height z-scores
 stored in the DHS recode convention: multiplied by 100, with flag codes
 9996 (height out of plausible range) and 9998 (missing), and a few

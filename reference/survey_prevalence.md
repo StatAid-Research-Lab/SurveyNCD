@@ -17,7 +17,7 @@ survey_prevalence(design, vars, by = NULL, level = 0.95, method = "logit")
 - design:
 
   A survey design (see
-  [`dhs_design()`](https://stataid-research-lab.github.io/SurveyNCD/reference/design_helpers.md)
+  [`dhs_design()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/design_helpers.md)
   or
   [`survey::svydesign()`](https://rdrr.io/pkg/survey/man/svydesign.html));
   srvyr designs are accepted.
@@ -50,7 +50,7 @@ simple random sampling with replacement).
 
 ## See also
 
-[`ncd_table()`](https://stataid-research-lab.github.io/SurveyNCD/reference/ncd_table.md)
+[`ncd_table()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/ncd_table.md)
 for a formatted table and `autoplot()` for a plot.
 
 ## Examples

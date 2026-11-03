@@ -10,7 +10,7 @@ zones, such as the disparities often seen between environmentally
 exposed coastal regions and inland districts.
 
 The
-[`survey_map_indicator()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_map_indicator.md)
+[`survey_map_indicator()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_map_indicator.md)
 function provides a universal architecture to merge calculated survey
 metrics with any standard spatial shapefile (`sf` object) and generate
 publication-ready thematic maps.

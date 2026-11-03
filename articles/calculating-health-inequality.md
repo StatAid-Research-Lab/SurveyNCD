@@ -37,7 +37,7 @@ indicate missing or biologically implausible data. Failing to account
 for these flags will severely distort your means and indices.
 
 The
-[`who_anthro_score()`](https://stataid-research-lab.github.io/SurveyNCD/reference/who_anthro_score.md)
+[`who_anthro_score()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/who_anthro_score.md)
 function automatically cleans these values and categorizes them
 according to strict WHO child growth standards.
 
@@ -91,7 +91,7 @@ svy_design <- cleaned_data %>%
 ## Phase 3: Calculating the Concentration Index
 
 The
-[`survey_concentration_index()`](https://stataid-research-lab.github.io/SurveyNCD/reference/survey_concentration_index.md)
+[`survey_concentration_index()`](https://github.com/StatAid-Research-Lab/SurveyNCD/reference/survey_concentration_index.md)
 function handles the internal complexities of calculating weighted
 fractional ranks and covariances across the survey design.
 

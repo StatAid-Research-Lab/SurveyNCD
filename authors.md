@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/StatAid-Research-Lab/SurveyNCD/blob/master/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/StatAid-Research-Lab/SurveyNCD/blob/v0.2.0/DESCRIPTION)
 
 Mia S (2026). *SurveyNCD: Survey-Weighted Analysis of Self-Reported
 Health Indicators*. R package version 0.2.0,

@@ -2,6 +2,8 @@
 
 ## SurveyNCD 0.2.0
 
+CRAN release: 2026-11-03
+
 ### New features
 
 - **Survey design helpers**

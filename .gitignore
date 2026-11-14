@@ -14,8 +14,9 @@ analysis_*.R
 run_*.R
 
 
-# keep reproducible paper materials (exceptions to the patterns above)
+# keep reproducible paper materials and package logo (exceptions to the patterns above)
 !paper/*.png
+!man/figures/**
 !analysis/run_all.R
 !analysis/output/**
 rjournal/*.aux
